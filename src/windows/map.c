@@ -749,7 +749,7 @@ static void window_map_invalidate()
 	w->widgets[WIDX_CLOSE].right = w->width - 2 - 11 + 10;
 	w->widgets[WIDX_MAP].right = w->width - 4;
 
-	if ((RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) || gSandboxMode)
+	if ((RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) || gCheatsSandboxMode)
 		w->widgets[WIDX_MAP].bottom = w->height - 1 - 72;
 	else if (w->selected_tab == PAGE_RIDES)
 		w->widgets[WIDX_MAP].bottom = w->height - 1 - 44;
@@ -793,7 +793,7 @@ static void window_map_invalidate()
 		w->widgets[i].type = WWT_EMPTY;
 	}
 
-	if ((RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) || gSandboxMode) {
+	if ((RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) || gCheatsSandboxMode) {
 		// scenario editor: build park entrance selected, show rotate button
 		if (
 			(RCT2_GLOBAL(RCT2_ADDRESS_INPUT_FLAGS, uint32) & INPUT_FLAG_TOOL_ACTIVE) &&
@@ -868,7 +868,7 @@ static void window_map_paint()
 		gfx_draw_sprite(dpi, 0x0B6E0190A, x, y, 0);
 	}
 
-	if (!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) && !gSandboxMode) {
+	if (!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) && !gCheatsSandboxMode) {
 		// Render the map legend
 		if (w->selected_tab == PAGE_RIDES) {
 			x = w->x + 4;
