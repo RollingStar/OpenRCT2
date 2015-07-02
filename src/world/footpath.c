@@ -146,11 +146,11 @@ static money32 footpath_element_insert(int type, int x, int y, int z, int slope,
 	// 0x006A6733 expects the flags to be at (*0xF3EF7C) + 8
 	RCT2_GLOBAL(0x00F3EF7C, uint32) = (uint32)(&flags - 2);
 
-	if (!map_can_construct_with_clear_at(x, y, z, zHigh, (void*)0x006A6733, bl))
+	if (!gCheatsDisableClearanceChecks && !map_can_construct_with_clear_at(x, y, z, zHigh, (void*)0x006A6733, bl))
 		return MONEY32_UNDEFINED;
 
 	RCT2_GLOBAL(0x00F3EFA4, uint8) = RCT2_GLOBAL(0x00F1AD60, uint8);
-	if (RCT2_GLOBAL(0x00F1AD60, uint8) & 4) {
+	if (!gCheatsDisableClearanceChecks && (RCT2_GLOBAL(0x00F1AD60, uint8) & 4)) {
 		RCT2_GLOBAL(RCT2_ADDRESS_GAME_COMMAND_ERROR_TEXT, rct_string_id) = STR_CANT_BUILD_THIS_UNDERWATER;
 		return MONEY32_UNDEFINED;
 	}
@@ -391,10 +391,7 @@ money32 footpath_remove_real(int x, int y, int z, int flags)
  */
 void game_command_place_footpath(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp)
 {
-	if (*ebx & (1 << 5))
-		RCT2_CALLFUNC_X(0x006A61DE, eax, ebx, ecx, edx, esi, edi, ebp);
-	else
-		*ebx = footpath_place_real((*edx >> 8) & 0xFF, *eax & 0xFFFF, *ecx & 0xFFFF, *edx & 0xFF, (*ebx >> 8) & 0xFF, *ebx & 0xFF, *edi & 0xFF);
+	*ebx = footpath_place_real((*edx >> 8) & 0xFF, *eax & 0xFFFF, *ecx & 0xFFFF, *edx & 0xFF, (*ebx >> 8) & 0xFF, *ebx & 0xFF, *edi & 0xFF);
 }
 
 /**
