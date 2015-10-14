@@ -301,7 +301,7 @@ int viewport_interaction_get_item_right(int x, int y, viewport_interaction_info 
 		return info->type;
 
 	case VIEWPORT_INTERACTION_ITEM_PARK:
-		if (!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) && !gSandboxMode)
+		if (!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) && !gCheatsSandboxMode)
 			break;
 
 		if (map_element_get_type(mapElement) != MAP_ELEMENT_TYPE_ENTRANCE)
@@ -484,7 +484,7 @@ static void viewport_interaction_remove_park_wall(rct_map_element *mapElement, i
 	if (sceneryEntry->wall.var_0D != 0xFF){
 		window_sign_small_open(mapElement->properties.fence.item[0]);
 	} else {
-		RCT2_GLOBAL(RCT2_ADDRESS_GAME_COMMAND_ERROR_STRING_ID, rct_string_id) = STR_CANT_REMOVE_THIS;
+		RCT2_GLOBAL(RCT2_ADDRESS_GAME_COMMAND_ERROR_TITLE, rct_string_id) = STR_CANT_REMOVE_THIS;
 		game_do_command(
 			x,
 			GAME_COMMAND_FLAG_APPLY,
@@ -513,7 +513,7 @@ static void viewport_interaction_remove_large_scenery(rct_map_element *mapElemen
 			((mapElement->properties.scenerymultiple.colour[1] & 0xE0) >> 5);
 		window_sign_open(id);
 	} else {
-		RCT2_GLOBAL(RCT2_ADDRESS_GAME_COMMAND_ERROR_STRING_ID, rct_string_id) = 1158;
+		RCT2_GLOBAL(RCT2_ADDRESS_GAME_COMMAND_ERROR_TITLE, rct_string_id) = STR_CANT_REMOVE_THIS;
 		game_do_command(
 			x, 
 			1 | ((mapElement->type & 0x3) << 8), 
@@ -573,7 +573,7 @@ static rct_peep *viewport_interaction_get_closest_peep(int x, int y, int maxDist
 void sub_68A15E(int screenX, int screenY, short *x, short *y, int *direction, rct_map_element **mapElement)
 {
 	sint16 my_x, my_y;
-	int z, interactionType;
+	int z = 0, interactionType;
 	rct_map_element *myMapElement;
 	rct_viewport *viewport;
 	get_map_coordinates_from_pos(screenX, screenY, VIEWPORT_INTERACTION_MASK_TERRAIN & VIEWPORT_INTERACTION_MASK_WATER, &my_x, &my_y, &interactionType, &myMapElement, &viewport);

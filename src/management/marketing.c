@@ -24,26 +24,27 @@
 #include "../localisation/localisation.h"
 #include "../management/finance.h"
 #include "../ride/ride.h"
+#include "../ride/ride_data.h"
 #include "marketing.h"
 #include "news_item.h"
 
 const money16 AdvertisingCampaignPricePerWeek[] = {
-	MONEY(50,00),	// PARK_ENTRY_FREE,
-	MONEY(50,00),	// RIDE_FREE,
-	MONEY(50,00),	// PARK_ENTRY_HALF_PRICE,
-	MONEY(50,00),	// FOOD_OR_DRINK_FREE,
-	MONEY(350,00),	// PARK,
-	MONEY(200,00)	// RIDE,
+	MONEY(50,00),	// PARK_ENTRY_FREE
+	MONEY(50,00),	// RIDE_FREE
+	MONEY(50,00),	// PARK_ENTRY_HALF_PRICE
+	MONEY(50,00),	// FOOD_OR_DRINK_FREE
+	MONEY(350,00),	// PARK
+	MONEY(200,00)	// RIDE
 };
 
-const int advertisingCampaignGuestGenerationProbabilities[] = { 400, 300, 200, 200, 250, 200 };
+static const int AdvertisingCampaignGuestGenerationProbabilities[] = { 400, 300, 200, 200, 250, 200 };
 
 uint8 *gMarketingCampaignDaysLeft = RCT2_ADDRESS(0x01358102, uint8);
 uint8 *gMarketingCampaignRideIndex = RCT2_ADDRESS(0x01358116, uint8);
 
 int marketing_get_campaign_guest_generation_probability(int campaign)
 {
-	int probability = advertisingCampaignGuestGenerationProbabilities[campaign];
+	int probability = AdvertisingCampaignGuestGenerationProbabilities[campaign];
 	rct_ride *ride;
 
 	// Lower probability of guest generation if price was already low
@@ -96,10 +97,7 @@ void marketing_update()
 			RCT2_GLOBAL(0x013CE952, uint16) = ride->name;
 			RCT2_GLOBAL(0x013CE954, uint32) = ride->name_arguments;
 		} else if (campaign == ADVERTISING_CAMPAIGN_FOOD_OR_DRINK_FREE) {
-			campaignItem += 2016;
-			if (campaignItem >= 2048)
-				campaignItem += 96;
-			RCT2_GLOBAL(0x013CE952, uint16) = campaignItem;
+			RCT2_GLOBAL(0x013CE952, uint16) = ShopItemStringIds[campaignItem].plural;
 		}
 
 		news_item_add_to_queue(NEWS_ITEM_MONEY, STR_MARKETING_FINISHED_BASE + campaign, 0);
@@ -169,4 +167,49 @@ void game_command_start_campaign(int* eax, int* ebx, int* ecx, int* edx, int* es
 	}
 
 	*ebx = numWeeks * AdvertisingCampaignPricePerWeek[type];
+}
+
+bool marketing_is_campaign_type_applicable(int campaignType)
+{
+	int i;
+	rct_ride *ride;
+	rct_ride_type *rideEntry;
+
+	switch (campaignType) {
+	case ADVERTISING_CAMPAIGN_PARK_ENTRY_FREE:
+	case ADVERTISING_CAMPAIGN_PARK_ENTRY_HALF_PRICE:
+		if (RCT2_GLOBAL(RCT2_ADDRESS_PARK_FLAGS, uint32) & PARK_FLAGS_PARK_FREE_ENTRY)
+			return false;
+		return true;
+
+	case ADVERTISING_CAMPAIGN_RIDE_FREE:
+		if (!(RCT2_GLOBAL(RCT2_ADDRESS_PARK_FLAGS, uint32) & PARK_FLAGS_PARK_FREE_ENTRY))
+			return false;
+
+		// fall-through
+	case ADVERTISING_CAMPAIGN_RIDE:
+		// Check if any rides exist
+		FOR_ALL_RIDES(i, ride) {
+			if (gRideClassifications[ride->type] == RIDE_CLASS_RIDE) {
+				return true;
+			}
+		}
+		return false;
+
+	case ADVERTISING_CAMPAIGN_FOOD_OR_DRINK_FREE:
+		// Check if any food or drink stalls exist
+		FOR_ALL_RIDES(i, ride) {
+			rideEntry = GET_RIDE_ENTRY(ride->subtype);
+			if (
+				shop_item_is_food_or_drink(rideEntry->shop_item) ||
+				shop_item_is_food_or_drink(rideEntry->shop_item_secondary)
+			) {
+				return true;
+			}
+		}
+		return false;
+
+	default:
+		return true;
+	}
 }

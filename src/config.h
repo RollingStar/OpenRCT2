@@ -39,7 +39,8 @@ enum {
 	SHORTCUT_PAUSE_GAME,
 	SHORTCUT_ZOOM_VIEW_OUT,
 	SHORTCUT_ZOOM_VIEW_IN,
-	SHORTCUT_ROTATE_VIEW,
+	SHORTCUT_ROTATE_VIEW_CLOCKWISE,
+	SHORTCUT_ROTATE_VIEW_ANTICLOCKWISE,
 	SHORTCUT_ROTATE_CONSTRUCTION_OBJECT,
 	SHORTCUT_UNDERGROUND_VIEW_TOGGLE,
 	SHORTCUT_REMOVE_BASE_LAND_TOGGLE,
@@ -71,6 +72,12 @@ enum {
 	SHORTCUT_INCREASE_GAME_SPEED,
 	SHORTCUT_OPEN_CHEAT_WINDOW,
 	SHORTCUT_REMOVE_TOP_BOTTOM_TOOLBAR_TOGGLE,
+	SHORTCUT_SCROLL_MAP_UP,
+	SHORTCUT_SCROLL_MAP_LEFT,
+	SHORTCUT_SCROLL_MAP_DOWN,
+	SHORTCUT_SCROLL_MAP_RIGHT,
+	SHORTCUT_OPEN_CHAT_WINDOW,
+	SHORTCUT_QUICK_SAVE_GAME,
 
 	SHORTCUT_COUNT
 };
@@ -91,11 +98,11 @@ enum {
 };
 
 enum {
-	AUTOSAVE_EVERY_WEEK,
-	AUTOSAVE_EVERY_2_WEEKS,
-	AUTOSAVE_EVERY_MONTH,
-	AUTOSAVE_EVERY_4_MONTHS,
-	AUTOSAVE_EVERY_YEAR,
+	AUTOSAVE_EVERY_MINUTE,
+	AUTOSAVE_EVERY_5MINUTES,
+	AUTOSAVE_EVERY_15MINUTES,
+	AUTOSAVE_EVERY_30MINUTES,
+	AUTOSAVE_EVERY_HOUR,
 	AUTOSAVE_NEVER
 };
 
@@ -151,28 +158,37 @@ typedef struct {
 	uint8 no_test_crashes;
 	uint8 date_format;
 	uint8 auto_staff_placement;
+	uint8 handymen_mow_default;
 	utf8string last_run_version;
 	uint8 invert_viewport_drag;
 	uint8 load_save_sort;
 	uint8 minimize_fullscreen_focus_loss;
+	uint8 day_night_cycle;
+	uint8 upper_case_banners;
+	uint8 allow_loading_with_incorrect_checksum;
+	uint8 steam_overlay_pause;
 } general_configuration;
 
 typedef struct {
 	uint8 toolbar_show_finances;
 	uint8 toolbar_show_research;
 	uint8 toolbar_show_cheats;
+	uint8 toolbar_show_news;
 	uint8 select_by_track_type;
 	uint8 console_small_font;
 	utf8string current_theme_preset;
 	utf8string current_title_sequence_preset;
+	uint32 object_selection_filter_flags;
 } interface_configuration;
 
 typedef struct {
 	uint8 title_music;
 	uint8 sound;
 	uint8 ride_music;
+	uint8 audio_focus;
 	uint8 master_volume;
 	uint8 music_volume;
+	utf8string device;
 } sound_configuration;
 
 typedef struct {
@@ -181,6 +197,8 @@ typedef struct {
 	uint8 disable_all_breakdowns;
 	uint8 unlock_all_prices;
 	uint8 build_in_pause_mode;
+	uint8 ignore_ride_intensity;
+	uint8 disable_vandalism;
 } cheat_configuration;
 
 typedef struct {
@@ -191,6 +209,12 @@ typedef struct {
 	uint8 enable_chat_peep_tracking;
 	uint8 enable_news;
 } twitch_configuration;
+
+typedef struct {
+	utf8string player_name;
+	uint32 default_port;
+	uint8 stay_connected;
+} network_configuration;
 
 typedef struct theme_window {
 	uint8 colours[6];
@@ -262,6 +286,7 @@ extern interface_configuration gConfigInterface;
 extern sound_configuration gConfigSound;
 extern cheat_configuration gConfigCheat;
 extern twitch_configuration gConfigTwitch;
+extern network_configuration gConfigNetwork;
 extern themes_configuration gConfigThemes;
 extern title_sequences_configuration gConfigTitleSequences;
 

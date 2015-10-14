@@ -96,6 +96,7 @@ void center_2d_coordinates(int x, int y, int z, int* out_x, int* out_y, rct_view
 void viewport_create(rct_window *w, int x, int y, int width, int height, int zoom, int center_x, int center_y, int center_z, char flags, sint16 sprite);
 void viewport_update_pointers();
 void viewport_update_position(rct_window *window);
+void viewport_update_sprite_follow(rct_window *window);
 void viewport_render(rct_drawpixelinfo *dpi, rct_viewport *viewport, int left, int top, int right, int bottom);
 void viewport_paint(rct_viewport* viewport, rct_drawpixelinfo* dpi, int left, int top, int right, int bottom);
 
@@ -103,7 +104,6 @@ void sub_689174(sint16* x, sint16* y, sint16 *z);
 
 rct_xy16 screen_coord_to_viewport_coord(rct_viewport *viewport, uint16 x, uint16 y);
 rct_xy16 viewport_coord_to_map_coord(int x, int y, int z);
-void sub_688972(int screenX, int screenY, sint16 *x, sint16 *y, rct_viewport **viewport);
 void screen_pos_to_map_pos(sint16 *x, sint16 *y, int *direction);
 
 void show_gridlines();
@@ -126,10 +126,18 @@ void sub_68A15E(int screenX, int screenY, short *x, short *y, int *direction, rc
 
 void viewport_interaction_remove_park_entrance(rct_map_element *mapElement, int x, int y);
 
-void sub_0x68615B(int ebp);
+void sub_68B2B7(int x, int y);
+void painter_setup();
 void sub_688485();
 void sub_688217();
 
 void viewport_invalidate(rct_viewport *viewport, int left, int top, int right, int bottom);
+
+void screen_get_map_xy(int screenX, int screenY, sint16 *x, sint16 *y, rct_viewport **viewport);
+void screen_get_map_xy_with_z(sint16 screenX, sint16 screenY, sint16 z, sint16 *mapX, sint16 *mapY);
+void screen_get_map_xy_quadrant(sint16 screenX, sint16 screenY, sint16 *mapX, sint16 *mapY, uint8 *quadrant);
+void screen_get_map_xy_quadrant_with_z(sint16 screenX, sint16 screenY, sint16 z, sint16 *mapX, sint16 *mapY, uint8 *quadrant);
+void screen_get_map_xy_side(sint16 screenX, sint16 screenY, sint16 *mapX, sint16 *mapY, uint8 *side);
+void screen_get_map_xy_side_with_z(sint16 screenX, sint16 screenY, sint16 z, sint16 *mapX, sint16 *mapY, uint8 *side);
 
 #endif

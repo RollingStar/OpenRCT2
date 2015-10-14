@@ -46,6 +46,7 @@ enum WINDOW_GUEST_LIST_WIDGET_IDX {
 	WIDX_INFO_TYPE_DROPDOWN,
 	WIDX_INFO_TYPE_DROPDOWN_BUTTON,
 	WIDX_MAP,
+	WIDX_TRACKING,
 	WIDX_TAB_1,
 	WIDX_TAB_2,
 	WIDX_GUEST_LIST
@@ -63,55 +64,55 @@ static rct_widget window_guest_list_widgets[] = {
 	{ WWT_RESIZE,			1,	0,		349,	43,	329,	0x0FFFFFFFF,	STR_NONE },						// tab content panel
 	{ WWT_DROPDOWN,			1,	5,		84,		59,	70,		STR_PAGE_1,		STR_NONE },						// page dropdown
 	{ WWT_DROPDOWN_BUTTON,	1,	73,		83,		60,	69, 	876,			STR_NONE },						// page dropdown button
-	{ WWT_DROPDOWN,			1,	126,	301,	59,	70, 	0x0FFFFFFFF,	STR_INFORMATION_TYPE_TIP },		// information type dropdown
-	{ WWT_DROPDOWN_BUTTON,	1,	290,	300,	60,	69, 	876,			STR_INFORMATION_TYPE_TIP },		// information type dropdown button
-	{ WWT_FLATBTN,			1,	321,	344,	46,	69, 	5192,			STR_SHOW_GUESTS_ON_MAP_TIP },	// map
+	{ WWT_DROPDOWN,			1,	120,	295,	59,	70, 	0x0FFFFFFFF,	STR_INFORMATION_TYPE_TIP },		// information type dropdown
+	{ WWT_DROPDOWN_BUTTON,	1,	284,	294,	60,	69, 	876,			STR_INFORMATION_TYPE_TIP },		// information type dropdown button
+	{ WWT_FLATBTN,			1,	297,	320,	46,	69, 	5192,			STR_SHOW_GUESTS_ON_MAP_TIP },	// map
+	{ WWT_FLATBTN,			1,	321,	344,	46,	69,		SPR_TRACK_PEEP,	STR_TRACKED_GUESTS_ONLY_TIP },	// tracking
 	{ WWT_TAB,				1,	3,		33,		17,	43, 	0x02000144E,	STR_INDIVIDUAL_GUESTS_TIP },	// tab 1
 	{ WWT_TAB,				1,	34,		64,		17,	43, 	0x02000144E,	STR_SUMMARISED_GUESTS_TIP },	// tab 2
 	{ WWT_SCROLL,			1,	3,		346,	72,	326,	3,				STR_NONE },						// guest list
 	{ WIDGETS_END },
 };
 
-static void window_guest_list_emptysub() { }
-static void window_guest_list_mouseup();
-static void window_guest_list_resize();
+static void window_guest_list_mouseup(rct_window *w, int widgetIndex);
+static void window_guest_list_resize(rct_window *w);
 static void window_guest_list_mousedown(int widgetIndex, rct_window*w, rct_widget* widget);
-static void window_guest_list_dropdown();
+static void window_guest_list_dropdown(rct_window *w, int widgetIndex, int dropdownIndex);
 static void window_guest_list_update(rct_window *w);
-static void window_guest_list_scrollgetsize();
-static void window_guest_list_scrollmousedown();
-static void window_guest_list_scrollmouseover();
-static void window_guest_list_tooltip();
-static void window_guest_list_invalidate();
-static void window_guest_list_paint();
-static void window_guest_list_scrollpaint();
+static void window_guest_list_scrollgetsize(rct_window *w, int scrollIndex, int *width, int *height);
+static void window_guest_list_scrollmousedown(rct_window *w, int scrollIndex, int x, int y);
+static void window_guest_list_scrollmouseover(rct_window *w, int scrollIndex, int x, int y);
+static void window_guest_list_tooltip(rct_window* w, int widgetIndex, rct_string_id *stringId);
+static void window_guest_list_invalidate(rct_window *w);
+static void window_guest_list_paint(rct_window *w, rct_drawpixelinfo *dpi);
+static void window_guest_list_scrollpaint(rct_window *w, rct_drawpixelinfo *dpi, int scrollIndex);
 
-static void* window_guest_list_events[] = {
-	window_guest_list_emptysub,
+static rct_window_event_list window_guest_list_events = {
+	NULL,
 	window_guest_list_mouseup,
 	window_guest_list_resize,
 	window_guest_list_mousedown,
 	window_guest_list_dropdown,
-	window_guest_list_emptysub,
+	NULL,
 	window_guest_list_update,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_guest_list_scrollgetsize,
 	window_guest_list_scrollmousedown,
-	window_guest_list_emptysub,
+	NULL,
 	window_guest_list_scrollmouseover,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
+	NULL,
+	NULL,
+	NULL,
 	window_guest_list_tooltip,
-	window_guest_list_emptysub,
-	window_guest_list_emptysub,
+	NULL,
+	NULL,
 	window_guest_list_invalidate,
 	window_guest_list_paint,
 	window_guest_list_scrollpaint
@@ -124,6 +125,7 @@ static int _window_guest_list_selected_page;     // 0x00F1EE07
 static int _window_guest_list_selected_view;     // 0x00F1EE13
 static int _window_guest_list_num_pages;         // 0x00F1EE08
 static int _window_guest_list_num_groups;        // 0x00F1AF22
+static bool _window_guest_list_tracking_only;
 
 static uint16 _window_guest_list_groups_num_guests[240];
 static uint32 _window_guest_list_groups_argument_1[240];
@@ -148,7 +150,7 @@ void window_guest_list_open()
 	if (window != NULL)
 		return;
 
-	window = window_create_auto_pos(350, 330, (uint32*)window_guest_list_events, WC_GUEST_LIST, WF_10 | WF_RESIZABLE);
+	window = window_create_auto_pos(350, 330, &window_guest_list_events, WC_GUEST_LIST, WF_10 | WF_RESIZABLE);
 	window->widgets = window_guest_list_widgets;
 	window->enabled_widgets =
 		(1 << WIDX_CLOSE) |
@@ -157,6 +159,7 @@ void window_guest_list_open()
 		(1 << WIDX_INFO_TYPE_DROPDOWN) |
 		(1 << WIDX_INFO_TYPE_DROPDOWN_BUTTON) |
 		(1 << WIDX_MAP) |
+		(1 << WIDX_TRACKING) |
 		(1 << WIDX_TAB_1) |
 		(1 << WIDX_TAB_2);
 
@@ -167,6 +170,7 @@ void window_guest_list_open()
 	_window_guest_list_selected_filter = -1;
 	_window_guest_list_selected_page = 0;
 	_window_guest_list_num_pages = 1;
+	_window_guest_list_tracking_only = false;
 	window_guest_list_widgets[WIDX_PAGE_DROPDOWN].type = WWT_EMPTY;
 	window_guest_list_widgets[WIDX_PAGE_DROPDOWN_BUTTON].type = WWT_EMPTY;
 	window->var_492 = 0;
@@ -194,11 +198,12 @@ void window_guest_list_open_with_filter(int type, int index)
 
 	_window_guest_list_selected_page = 0;
 	_window_guest_list_num_pages = 1;
+	_window_guest_list_tracking_only = false;
 
 	RCT2_GLOBAL(0x009AC7E0, uint8) = 0;
 	RCT2_GLOBAL(0x009AC7F0, uint8) = 0;
 
-	rct_ride *ride;
+	rct_ride *ride = NULL;
 	if (type != 3) {	// common for cases 0, 1, 2
 		ride = GET_RIDE(index & 0x000000FF);
 		eax = ride->name;
@@ -265,19 +270,23 @@ void window_guest_list_open_with_filter(int type, int index)
  * 
  *  rct2: 0x00699AAF
  */
-static void window_guest_list_mouseup()
+static void window_guest_list_mouseup(rct_window *w, int widgetIndex)
 {
-	short widgetIndex;
-	rct_window *w;
-
-	window_widget_get_registers(w, widgetIndex);
-
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
 		break;
 	case WIDX_MAP:
 		window_map_open();
+		break;
+	case WIDX_TRACKING:
+		_window_guest_list_tracking_only = !_window_guest_list_tracking_only;
+		if (_window_guest_list_tracking_only)
+			w->pressed_widgets |= (1 << WIDX_TRACKING);
+		else
+			w->pressed_widgets &= ~(1 << WIDX_TRACKING);
+		window_invalidate(w);
+		w->scrolls[0].v_top = 0;
 		break;
 	}
 }
@@ -286,12 +295,8 @@ static void window_guest_list_mouseup()
  * 
  *  rct2: 0x00699EA3
  */
-static void window_guest_list_resize()
+static void window_guest_list_resize(rct_window *w)
 {
-	rct_window *w;
-
-	window_get_register(w);
-
 	w->min_width = 350;
 	w->min_height = 330;
 	if (w->width < w->min_width) {
@@ -320,6 +325,9 @@ static void window_guest_list_mousedown(int widgetIndex, rct_window*w, rct_widge
 		_window_guest_list_selected_tab = widgetIndex - WIDX_TAB_1;
 		_window_guest_list_selected_page = 0;
 		_window_guest_list_num_pages = 1;
+		window_guest_list_widgets[WIDX_TRACKING].type = WWT_EMPTY;
+		if (_window_guest_list_selected_tab == PAGE_INDIVIDUAL)
+			window_guest_list_widgets[WIDX_TRACKING].type = WWT_FLATBTN;
 		window_guest_list_widgets[WIDX_PAGE_DROPDOWN].type = WWT_EMPTY;
 		window_guest_list_widgets[WIDX_PAGE_DROPDOWN_BUTTON].type = WWT_EMPTY;
 		w->list_information_type = 0;
@@ -373,13 +381,8 @@ static void window_guest_list_mousedown(int widgetIndex, rct_window*w, rct_widge
  * 
  *  rct2: 0x00699AE1
  */
-static void window_guest_list_dropdown()
+static void window_guest_list_dropdown(rct_window *w, int widgetIndex, int dropdownIndex)
 {
-	short dropdownIndex, widgetIndex;
-	rct_window *w;
-
-	window_dropdown_get_registers(w, widgetIndex, dropdownIndex);
-
 	switch (widgetIndex) {
 	case WIDX_PAGE_DROPDOWN_BUTTON:
 		if (dropdownIndex == -1)
@@ -414,13 +417,10 @@ static void window_guest_list_update(rct_window *w)
  * 
  *  rct2: 0x00699C55
  */
-static void window_guest_list_scrollgetsize()
+static void window_guest_list_scrollgetsize(rct_window *w, int scrollIndex, int *width, int *height)
 {
-	int i, y, numGuests, spriteIndex, width, height;
-	rct_window *w;
+	int i, y, numGuests, spriteIndex;
 	rct_peep *peep;
-
-	window_get_register(w);
 
 	switch (_window_guest_list_selected_tab) {
 	case PAGE_INDIVIDUAL:
@@ -428,15 +428,18 @@ static void window_guest_list_scrollgetsize()
 		numGuests = 0;
 
 		FOR_ALL_GUESTS(spriteIndex, peep) {
-			if (peep->var_2A != 0)
+			if (peep->outside_of_park != 0)
 				continue;
 			if (_window_guest_list_selected_filter != -1)
 				if (window_guest_list_is_peep_in_filter(peep))
 					continue;
+			if (_window_guest_list_tracking_only && !(peep->flags & PEEP_FLAGS_TRACKING))
+				continue;
 			numGuests++;
 		}
 		w->var_492 = numGuests;
 		y = numGuests * 10;
+		RCT2_GLOBAL(0x00F1EE09, uint32) = numGuests;
 		break;
 	case PAGE_SUMMARISED:
 		// Find the groups
@@ -446,7 +449,6 @@ static void window_guest_list_scrollgetsize()
 		break;
 	}
 
-	RCT2_GLOBAL(0x00F1EE09, uint32) = numGuests;
 	i = _window_guest_list_selected_page;
 	for (i = _window_guest_list_selected_page - 1; i >= 0; i--)
 		y -= 0x7BF2;
@@ -467,35 +469,31 @@ static void window_guest_list_scrollgetsize()
 		window_invalidate(w);
 	}
 
-	width = 447;
-	height = y;
-
-	window_scrollsize_set_registers(width, height);
+	*width = 447;
+	*height = y;
 }
 
 /**
  * 
  *  rct2: 0x00699D7D
  */
-static void window_guest_list_scrollmousedown()
+static void window_guest_list_scrollmousedown(rct_window *w, int scrollIndex, int x, int y)
 {
 	int i, spriteIndex;
-	short x, y, scrollIndex;
-	rct_window *w;
 	rct_peep *peep;
-
-	window_scrollmouse_get_registers(w, scrollIndex, x, y);
 
 	switch (_window_guest_list_selected_tab) {
 	case PAGE_INDIVIDUAL:
 		i = y / 10;
 		i += _window_guest_list_selected_page * 3173;
 		FOR_ALL_GUESTS(spriteIndex, peep) {
-			if (peep->var_2A != 0)
+			if (peep->outside_of_park != 0)
 				continue;
 			if (_window_guest_list_selected_filter != -1)
 				if (window_guest_list_is_peep_in_filter(peep))
 					continue;
+			if (_window_guest_list_tracking_only && !(peep->flags & PEEP_FLAGS_TRACKING))
+				continue;
 
 			if (i == 0) {
 				// Open guest window
@@ -514,6 +512,7 @@ static void window_guest_list_scrollmousedown()
 			RCT2_GLOBAL(0x00F1EDFA, uint32) = _window_guest_list_groups_argument_2[i];
 			_window_guest_list_selected_filter = _window_guest_list_selected_view;
 			_window_guest_list_selected_tab = PAGE_INDIVIDUAL;
+			window_guest_list_widgets[WIDX_TRACKING].type = WWT_FLATBTN;
 			window_invalidate(w);
 			w->scrolls[0].v_top = 0;
 		}
@@ -525,13 +524,9 @@ static void window_guest_list_scrollmousedown()
  * 
  *  rct2: 0x00699D3B
  */
-static void window_guest_list_scrollmouseover()
+static void window_guest_list_scrollmouseover(rct_window *w, int scrollIndex, int x, int y)
 {
 	int i;
-	short x, y, scrollIndex;
-	rct_window *w;
-
-	window_scrollmouse_get_registers(w, scrollIndex, x, y);
 
 	i = y / (_window_guest_list_selected_tab == PAGE_INDIVIDUAL ? 10 : 21);
 	i += _window_guest_list_selected_page * 3173;
@@ -545,7 +540,7 @@ static void window_guest_list_scrollmouseover()
  * 
  *  rct2: 0x00699E4A
  */
-static void window_guest_list_tooltip()
+static void window_guest_list_tooltip(rct_window* w, int widgetIndex, rct_string_id *stringId)
 {
 	RCT2_GLOBAL(0x013CE952, uint16) = STR_LIST;
 }
@@ -554,11 +549,8 @@ static void window_guest_list_tooltip()
  * 
  *  rct2: 0x00699511
  */
-static void window_guest_list_invalidate()
+static void window_guest_list_invalidate(rct_window *w)
 {
-	rct_window *w;
-
-	window_get_register(w);
 	colour_scheme_update(w);
 
 	w->pressed_widgets &= ~(1 << WIDX_TAB_1);
@@ -587,13 +579,9 @@ static void window_guest_list_invalidate()
  * 
  *  rct2: 0x006995CC
  */
-static void window_guest_list_paint()
+static void window_guest_list_paint(rct_window *w, rct_drawpixelinfo *dpi)
 {
 	int i, x, y, format;
-	rct_window *w;
-	rct_drawpixelinfo *dpi;
-
-	window_paint_get_registers(w, dpi);
 
 	// Widgets
 	window_draw_widgets(w, dpi);
@@ -647,16 +635,12 @@ static void window_guest_list_paint()
  * 
  *  rct2: 0x00699701
  */
-static void window_guest_list_scrollpaint()
+static void window_guest_list_scrollpaint(rct_window *w, rct_drawpixelinfo *dpi, int scrollIndex)
 {
 	int spriteIndex, format, numGuests, i, j, y;
-	rct_window *w;
-	rct_drawpixelinfo *dpi;
 	rct_peep *peep;
 	rct_peep_thought *thought;
 	uint32 argument_1, argument_2;
-
-	window_paint_get_registers(w, dpi);
 
 	// Background fill
 	gfx_fill_rect(dpi, dpi->x, dpi->y, dpi->x + dpi->width - 1, dpi->y + dpi->height - 1, ((char*)0x0141FC48)[w->colours[1] * 8]);
@@ -669,7 +653,7 @@ static void window_guest_list_scrollpaint()
 		// For each guest
 		FOR_ALL_GUESTS(spriteIndex, peep) {
 			peep->var_0C &= ~0x200;
-			if (peep->var_2A != 0)
+			if (peep->outside_of_park != 0)
 				continue;
 			if (_window_guest_list_selected_filter != -1) {
 				if (window_guest_list_is_peep_in_filter(peep))
@@ -677,6 +661,8 @@ static void window_guest_list_scrollpaint()
 				RCT2_GLOBAL(RCT2_ADDRESS_WINDOW_MAP_FLASHING_FLAGS, uint16) |= (1 << 0);
 				peep->var_0C |= 0x200;
 			}
+			if (_window_guest_list_tracking_only && !(peep->flags & PEEP_FLAGS_TRACKING))
+				continue;
 
 			// 
 			if (y + 11 >= -0x7FFF && y + 11 > dpi->y && y < 0x7FFF) {
@@ -851,12 +837,12 @@ static void window_guest_list_find_groups()
 
 	// Set all guests to unassigned
 	FOR_ALL_GUESTS(spriteIndex, peep)
-		if (peep->var_2A == 0)
+		if (peep->outside_of_park == 0)
 			peep->var_0C |= (1 << 8);
 
 	// For each guest / group
 	FOR_ALL_GUESTS(spriteIndex, peep) {
-		if (peep->var_2A != 0 || !(peep->var_0C & (1 << 8)))
+		if (peep->outside_of_park != 0 || !(peep->var_0C & (1 << 8)))
 			continue;
 
 		// New group, cap at 240 though
@@ -879,7 +865,7 @@ static void window_guest_list_find_groups()
 
 		// Find more peeps that belong to same group
 		FOR_ALL_GUESTS(spriteIndex2, peep2) {
-			if (peep2->var_2A != 0 || !(peep2->var_0C & (1 << 8)))
+			if (peep2->outside_of_park != 0 || !(peep2->var_0C & (1 << 8)))
 				continue;
 
 			uint32 argument1, argument2;

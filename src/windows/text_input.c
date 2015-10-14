@@ -31,6 +31,7 @@
 #include "../interface/window.h"
 #include "../interface/widget.h"
 #include "../localisation/localisation.h"
+#include "../util/util.h"
 
 #define WW 250
 #define WH 90
@@ -53,44 +54,43 @@ static rct_widget window_text_input_widgets[] = {
 		{ WIDGETS_END }
 };
 
-static void window_text_input_emptysub(){}
-static void window_text_input_mouseup();
-static void window_text_input_paint();
+static void window_text_input_close(rct_window *w);
+static void window_text_input_mouseup(rct_window *w, int widgetIndex);
+static void window_text_input_update7(rct_window *w);
 static void window_text_input_text(int key, rct_window* w);
-static void window_text_input_update7();
-static void window_text_input_close();
-static void window_text_input_invalidate();
+static void window_text_input_invalidate(rct_window *w);
+static void window_text_input_paint(rct_window *w, rct_drawpixelinfo *dpi);
 
 //0x9A3F7C
-static void* window_text_input_events[] = {
+static rct_window_event_list window_text_input_events = {
 	window_text_input_close,
 	window_text_input_mouseup,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_text_input_update7,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_text,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
-	window_text_input_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_text_input_invalidate,
 	window_text_input_paint,
-	window_text_input_emptysub
+	NULL
 };
 
 int input_text_description;
@@ -118,6 +118,8 @@ void window_text_input_open(rct_window* call_w, int call_widget, rct_string_id t
 	// from crashing the game.
 	text_input[maxLength - 1] = '\0';
 
+	utf8_remove_format_codes(text_input);
+
 	// This is the text displayed above the input box
 	input_text_description = description;
 
@@ -137,7 +139,7 @@ void window_text_input_open(rct_window* call_w, int call_widget, rct_string_id t
 	rct_window* w = window_create_centred(
 		WW, 
 		height,
-		(uint32*)window_text_input_events, 
+		&window_text_input_events, 
 		WC_TEXTINPUT,
 		WF_STICK_TO_FRONT
 	);
@@ -198,7 +200,7 @@ void window_text_input_raw_open(rct_window* call_w, int call_widget, rct_string_
 	rct_window* w = window_create_centred(
 		WW,
 		height,
-		(uint32*)window_text_input_events,
+		&window_text_input_events,
 		WC_TEXTINPUT,
 		WF_STICK_TO_FRONT
 		);
@@ -225,14 +227,11 @@ void window_text_input_raw_open(rct_window* call_w, int call_widget, rct_string_
 /**
 *
 */
-static void window_text_input_mouseup(){
-	short widgetIndex;
-	rct_window *w;
+static void window_text_input_mouseup(rct_window *w, int widgetIndex)
+{
 	rct_window *calling_w;
-	window_widget_get_registers(w, widgetIndex);
 
 	calling_w = window_find_by_number(calling_class, calling_number);
-
 	switch (widgetIndex){
 	case WIDX_CANCEL:
 	case WIDX_CLOSE:
@@ -256,12 +255,8 @@ static void window_text_input_mouseup(){
 /**
 *
 */
-static void window_text_input_paint(){
-	rct_window *w;
-	rct_drawpixelinfo *dpi;
-
-	window_paint_get_registers(w, dpi);
-
+static void window_text_input_paint(rct_window *w, rct_drawpixelinfo *dpi)
+{
 	window_draw_widgets(w, dpi);
 
 	int y = w->y + 25;
@@ -292,16 +287,18 @@ static void window_text_input_paint(){
 	int char_count = 0;
 	uint8 cur_drawn = 0;
 
-	for (int line = 0; line <= no_lines; ++line){
+	int cursorX, cursorY;
+	for (int line = 0; line <= no_lines; line++) {
 		gfx_draw_string(dpi, wrap_pointer, w->colours[1], w->x + 12, y);
 
-		int string_length = get_string_length(wrap_pointer);
+		int string_length = get_string_size(wrap_pointer) - 1;
 
-		if (!cur_drawn && (gTextInputCursorPosition <= char_count + string_length)){
+		if (!cur_drawn && (gTextInputCursorPosition <= char_count + string_length)) {
 			// Make a copy of the string for measuring the width.
 			char temp_string[512] = { 0 };
 			memcpy(temp_string, wrap_pointer, gTextInputCursorPosition - char_count);
-			int cur_x = w->x + 13 + gfx_get_string_width(temp_string);
+			cursorX = w->x + 13 + gfx_get_string_width(temp_string);
+			cursorY = y;
 
 			int width = 6;
 			if ((uint32)gTextInputCursorPosition < strlen(text_input)){
@@ -314,7 +311,7 @@ static void window_text_input_paint(){
 
 			if (w->frame_no > 15){
 				uint8 colour = RCT2_ADDRESS(0x0141FC48, uint8)[w->colours[1] * 8];
-				gfx_fill_rect(dpi, cur_x, y + 9, cur_x + width, y + 9, colour + 5);
+				gfx_fill_rect(dpi, cursorX, y + 9, cursorX + width, y + 9, colour + 5);
 			}
 
 			cur_drawn++;
@@ -327,11 +324,28 @@ static void window_text_input_paint(){
 
 		y += 10;
 	}
+
+	if (!cur_drawn) {
+		cursorX = gLastDrawStringX;
+		cursorY = y - 10;
+	}
+
+	// IME composition
+	if (gTextInputCompositionActive) {
+		int compositionWidth = gfx_get_string_width(gTextInputComposition);
+		int x = cursorX - (compositionWidth / 2);
+		int y = cursorY + 13;
+		int w = compositionWidth;
+		int h = 10;
+
+		gfx_fill_rect(dpi, x - 1, y - 1, x + w + 1, y + h + 1, 12);
+		gfx_fill_rect(dpi, x, y, x + w, y + h, 0);
+		gfx_draw_string(dpi, gTextInputComposition, 12, x, y);
+	}
 }
 
-
-static void window_text_input_text(int key, rct_window* w){
-
+void window_text_input_key(rct_window* w, int key)
+{
 	int text = key;
 	char new_char = platform_scancode_to_rct_keycode(0xFF&key);
 
@@ -349,12 +363,8 @@ static void window_text_input_text(int key, rct_window* w){
 	window_invalidate(w);
 }
 
-void window_text_input_update7()
+void window_text_input_update7(rct_window *w)
 {
-	rct_window* w;
-
-	window_get_register(w);
-
 	rct_window* calling_w = window_find_by_number(calling_class, calling_number);
 	// If the calling window is closed then close the text
 	// input window.
@@ -368,18 +378,15 @@ void window_text_input_update7()
 	window_invalidate(w);
 }
 
-static void window_text_input_close()
+static void window_text_input_close(rct_window *w)
 {
 	// Make sure that we take it out of the text input
 	// mode otherwise problems may occur.
 	platform_stop_text_input();
 }
 
-static void window_text_input_invalidate(){
-	rct_window* w;
-
-	window_get_register(w);
-
+static void window_text_input_invalidate(rct_window *w)
+{
 	// Work out the existing size of the window
 	char wrapped_string[512];
 	strcpy(wrapped_string, text_input);

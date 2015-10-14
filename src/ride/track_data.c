@@ -24,225 +24,225 @@
 const rct_track_coordinates* FlatTrackCoordinates = RCT2_ADDRESS(0x009972BB, const rct_track_coordinates);
 
 const rct_track_coordinates TrackCoordinates[256] = {
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 16, 0, 0 },
-		{ 0, 0, 0, 64, 0, 0 },
-		{ 0, 0, 0, 8, 0, 0 },
-		{ 0, 0, 0, 32, 0, 0 },
-		{ 0, 0, 0, 32, 0, 0 },
-		{ 0, 0, 0, 8, 0, 0 },
-		{ 0, 0, 16, 0, 0, 0 },
-		{ 0, 0, 64, 0, 0, 0 },
-		{ 0, 0, 8, 0, 0, 0 },
-		{ 0, 0, 32, 0, 0, 0 },
-		{ 0, 0, 32, 0, 0, 0 },
-		{ 0, 0, 8, 0, 0, 0 },
-		{ 0, 3, 0, 0, -64, -64 },
-		{ 0, 1, 0, 0, -64, 64 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 3, 0, 0, -64, -64 },
-		{ 0, 1, 0, 0, -64, 64 },
-		{ 0, 0, 0, 8, 0, 0 },
-		{ 0, 0, 0, 8, 0, 0 },
-		{ 0, 0, 0, 8, 0, 0 },
-		{ 0, 0, 0, 8, 0, 0 },
-		{ 0, 0, 8, 0, 0, 0 },
-		{ 0, 0, 8, 0, 0, 0 },
-		{ 0, 0, 8, 0, 0, 0 },
-		{ 0, 0, 8, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 3, 0, 64, -64, -64 },
-		{ 0, 1, 0, 64, -64, 64 },
-		{ 0, 3, 64, 0, -64, -64 },
-		{ 0, 1, 64, 0, -64, 64 },
-		{ 0, 0, 0, 0, -64, -32 },
-		{ 0, 0, 0, 0, -64, 32 },
-		{ 0, 0, 0, 0, -32, -32 },
-		{ 0, 0, 0, 0, -32, 32 },
-		{ 0, 3, 0, 0, -32, -32 },
-		{ 0, 1, 0, 0, -32, 32 },
-		{ 0, 3, 0, 0, -32, -32 },
-		{ 0, 1, 0, 0, -32, 32 },
-		{ 0, 3, 0, 32, -32, -32 },
-		{ 0, 1, 0, 32, -32, 32 },
-		{ 0, 3, 32, 0, -32, -32 },
-		{ 0, 1, 32, 0, -32, 32 },
-		{ 0, 3, 0, 0, 0, 0 },
-		{ 0, 1, 0, 0, 0, 0 },
-		{ 0, 0, 0, 16, -64, 0 },
-		{ 0, 0, 0, 16, -64, 0 },
-		{ 0, 0, 0, -16, -64, 0 },
-		{ 0, 0, 0, -16, -64, 0 },
-		{ 0, 2, 0, 152, -32, 0 },
-		{ 0, 2, 0, -152, 32, 0 },
-		{ 0, 3, 0, 80, -32, -32 },
-		{ 0, 1, 0, 80, -32, 32 },
-		{ 0, 3, 0, -80, -32, -32 },
-		{ 0, 1, 0, -80, -32, 32 },
-		{ 0, 0, 0, 24, 0, 0 },
-		{ 0, 0, 0, 24, 0, 0 },
-		{ 0, 0, 24, 0, 0, 0 },
-		{ 0, 0, 24, 0, 0, 0 },
-		{ 0, 0, 0, 96, 32, 0 },
-		{ 0, 0, 0, 32, 32, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 16, 0, 0 },
-		{ 0, 0, 0, 64, 0, 0 },
-		{ 0, 0, 0, 8, 0, 0 },
-		{ 0, 0, 0, 32, 0, 0 },
-		{ 0, 0, 0, 32, 0, 0 },
-		{ 0, 0, 0, 8, 0, 0 },
-		{ 0, 0, 16, 0, 0, 0 },
-		{ 0, 0, 64, 0, 0, 0 },
-		{ 0, 0, 8, 0, 0, 0 },
-		{ 0, 0, 32, 0, 0, 0 },
-		{ 0, 0, 32, 0, 0, 0 },
-		{ 0, 0, 8, 0, 0, 0 },
-		{ 0, 3, 0, 0, -64, -64 },
-		{ 0, 1, 0, 0, -64, 64 },
-		{ 0, 0, 0, 0, -64, -32 },
-		{ 0, 0, 0, 0, -64, 32 },
-		{ 0, 3, 0, 0, -32, -32 },
-		{ 0, 1, 0, 0, -32, 32 },
-		{ 0, 2, 0, 16, 0, -96 },
-		{ 0, 2, 0, 16, 0, 96 },
-		{ 0, 2, 16, 0, 0, -96 },
-		{ 0, 2, 16, 0, 0, 96 },
-		{ 0, 2, 0, 16, 0, -160 },
-		{ 0, 2, 0, 16, 0, 160 },
-		{ 0, 2, 16, 0, 0, -160 },
-		{ 0, 2, 16, 0, 0, 160 },
-		{ 0, 3, 0, 64, 0, 0 },
-		{ 0, 1, 0, 64, 0, 0 },
-		{ 0, 3, 64, 0, 0, 0 },
-		{ 0, 1, 64, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 3, 0, 16, -64, -64 },
-		{ 0, 1, 0, 16, -64, 64 },
-		{ 0, 3, 16, 0, -64, -64 },
-		{ 0, 1, 16, 0, -64, 64 },
-		{ 0, 3, 0, 16, -64, -64 },
-		{ 0, 1, 0, 16, -64, 64 },
-		{ 0, 3, 16, 0, -64, -64 },
-		{ 0, 1, 16, 0, -64, 64 },
-		{ 0, 0, 0, 16, 0, 0 },
-		{ 0, 0, 0, 16, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 16, 0, 0, 0 },
-		{ 0, 0, 16, 0, 0, 0 },
-		{ 0, 0, 16, 16, -128, 0 },
-		{ 0, 0, 0, 88, -96, 0 },
-		{ 0, 0, 0, 88, -96, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 88, 0, -96, 0 },
-		{ 0, 0, 88, 0, -96, 0 },
-		{ 0, 0, 0, -96, -96, 0 },
-		{ 0, 0, 0, 240, -160, 0 },
-		{ 0, 0, 0, 80, 32, 0 },
-		{ 0, 0, 0, 32, 32, 0 },
-		{ 0, 0, 32, 0, 32, 0 },
-		{ 0, 0, 0, 56, 32, 0 },
-		{ 0, 0, 56, 0, 0, 0 },
-		{ 0, 0, 0, 56, 0, 0 },
-		{ 0, 0, 56, 0, 32, 0 },
-		{ 0, 0, 24, 0, 0, 0 },
-		{ 0, 7, 0, 0, -64, -32 },
-		{ 0, 4, 0, 0, -64, 32 },
-		{ 4, 0, 0, 0, -64, 32 },
-		{ 4, 1, 0, 0, -32, 64 },
-		{ 0, 7, 0, 0, -64, -32 },
-		{ 0, 4, 0, 0, -64, 32 },
-		{ 4, 0, 0, 0, -64, 32 },
-		{ 4, 1, 0, 0, -32, 64 },
-		{ 4, 4, 0, 0, -32, 32 },
-		{ 4, 4, 0, 16, -32, 32 },
-		{ 4, 4, 0, 64, -32, 32 },
-		{ 4, 4, 0, 8, -32, 32 },
-		{ 4, 4, 0, 32, -32, 32 },
-		{ 4, 4, 0, 32, -32, 32 },
-		{ 4, 4, 0, 8, -32, 32 },
-		{ 4, 4, 16, 0, -32, 32 },
-		{ 4, 4, 64, 0, -32, 32 },
-		{ 4, 4, 8, 0, -32, 32 },
-		{ 4, 4, 32, 0, -32, 32 },
-		{ 4, 4, 32, 0, -32, 32 },
-		{ 4, 4, 8, 0, -32, 32 },
-		{ 4, 4, 0, 24, -32, 32 },
-		{ 4, 4, 0, 24, -32, 32 },
-		{ 4, 4, 24, 0, -32, 32 },
-		{ 4, 4, 24, 0, -32, 32 },
-		{ 4, 4, 0, 0, -32, 32 },
-		{ 4, 4, 0, 0, -32, 32 },
-		{ 4, 4, 0, 0, -32, 32 },
-		{ 4, 4, 0, 0, -32, 32 },
-		{ 4, 4, 0, 8, -32, 32 },
-		{ 4, 4, 0, 8, -32, 32 },
-		{ 4, 4, 0, 8, -32, 32 },
-		{ 4, 4, 0, 8, -32, 32 },
-		{ 4, 4, 8, 0, -32, 32 },
-		{ 4, 4, 8, 0, -32, 32 },
-		{ 4, 4, 8, 0, -32, 32 },
-		{ 4, 4, 8, 0, -32, 32 },
-		{ 4, 4, 0, 0, -32, 32 },
-		{ 4, 4, 0, 0, -32, 32 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 32, -64, 0 },
-		{ 0, 0, 0, 32, -64, 0 },
-		{ 0, 0, 0, -32, -64, 0 },
-		{ 0, 0, 0, -32, -64, 0 },
-		{ 0, 3, 0, 24, -32, -32 },
-		{ 0, 1, 0, 24, -32, 32 },
-		{ 0, 3, 24, 0, -32, -32 },
-		{ 0, 1, 24, 0, -32, 32 },
-		{ 0, 0, 0, 16, 0, 0 },
-		{ 0, 2, 0, 280, -64, -32 },
-		{ 0, 2, 0, 280, -64, 32 },
-		{ 0, 2, 0, -280, 64, -32 },
-		{ 0, 2, 0, -280, 64, 32 },
-		{ 0, 0, 0, -16, -64, 0 },
-		{ 0, 0, 0, -16, -64, 0 },
-		{ 0, 0, 0, 16, -64, 0 },
-		{ 0, 0, 0, 16, -64, 0 },
-		{ 0, 2, 0, 120, -32, 0 },
-		{ 0, 2, 0, -120, 32, 0 },
-		{ 0, 3, 0, 48, -32, -32 },
-		{ 0, 1, 0, 48, -32, 32 },
-		{ 0, 3, 0, -48, -32, -32 },
-		{ 0, 1, 0, -48, -32, 32 },
-		{ 0, 2, 0, 32, 0, 0 },
-		{ 0, 2, 0, -32, 0, 0 },
-		{ 0, 0, 0, 0, -160, 0 },
-		{ 0, 0, 0, 0, -160, 0 },
-		{ 0, 0, 0, 0, -32, 0 },
-		{ 0, 0, 0, 0, -32, 0 },
-		{ 0, 0, 0, 0, -32, 0 },
-		{ 0, 1, 0, 0, -32, 32 },
-		{ 0, 3, 0, 0, -32, -32 },
-		{ 0, 2, 0, -96, -96, 0 },
-		{ 0, 2, 0, 128, 64, 0 },
-		{ 0, 2, 0, -128, -96, 0 },
-		{ 0, 3, 0, 16, -32, -32 },
-		{ 0, 1, 0, 16, -32, 32 },
-		{ 0, 0, 0, 0, -64, 0 },
-		{ 0, 0, 0, 0, -64, 0 },
-		{ 0, 0, 0, 0, -32, 0 },
-		{ 0, 0, 80, 0, 32, 0 },
-		{ 0, 0, 240, 0, -160, 0 },
-		{ 0, 0, 0, 0, 0, 0 },
-		{ 0, 3, 0, 32, -32, -32 },
-		{ 0, 1, 0, 32, -32, 32 },
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_FLAT
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_END_STATION
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_BEGIN_STATION
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_MIDDLE_STATION
+		{ 0, 0, 0, 16, 0, 0 },		// ELEM_25_DEG_UP
+		{ 0, 0, 0, 64, 0, 0 },		// ELEM_60_DEG_UP
+		{ 0, 0, 0, 8, 0, 0 },		// ELEM_FLAT_TO_25_DEG_UP
+		{ 0, 0, 0, 32, 0, 0 },		// ELEM_25_DEG_UP_TO_60_DEG_UP
+		{ 0, 0, 0, 32, 0, 0 },		// ELEM_60_DEG_UP_TO_25_DEG_UP
+		{ 0, 0, 0, 8, 0, 0 },		// ELEM_25_DEG_UP_TO_FLAT
+		{ 0, 0, 16, 0, 0, 0 },		// ELEM_25_DEG_DOWN
+		{ 0, 0, 64, 0, 0, 0 },		// ELEM_60_DEG_DOWN
+		{ 0, 0, 8, 0, 0, 0 },		// ELEM_FLAT_TO_25_DEG_DOWN
+		{ 0, 0, 32, 0, 0, 0 },		// ELEM_25_DEG_DOWN_TO_60_DEG_DOWN
+		{ 0, 0, 32, 0, 0, 0 },		// ELEM_60_DEG_DOWN_TO_25_DEG_DOWN
+		{ 0, 0, 8, 0, 0, 0 },		// ELEM_25_DEG_DOWN_TO_FLAT
+		{ 0, 3, 0, 0, -64, -64 },	// ELEM_LEFT_QUARTER_TURN_5_TILES
+		{ 0, 1, 0, 0, -64, 64 },	// ELEM_RIGHT_QUARTER_TURN_5_TILES
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_FLAT_TO_LEFT_BANK
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_FLAT_TO_RIGHT_BANK
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_LEFT_BANK_TO_FLAT
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_RIGHT_BANK_TO_FLAT
+		{ 0, 3, 0, 0, -64, -64 },	// ELEM_BANKED_LEFT_QUARTER_TURN_5_TILES
+		{ 0, 1, 0, 0, -64, 64 },	// ELEM_BANKED_RIGHT_QUARTER_TURN_5_TILES
+		{ 0, 0, 0, 8, 0, 0 },		// ELEM_LEFT_BANK_TO_25_DEG_UP
+		{ 0, 0, 0, 8, 0, 0 },		// ELEM_RIGHT_BANK_TO_25_DEG_UP
+		{ 0, 0, 0, 8, 0, 0 },		// ELEM_25_DEG_UP_TO_LEFT_BANK
+		{ 0, 0, 0, 8, 0, 0 },		// ELEM_25_DEG_UP_TO_RIGHT_BANK
+		{ 0, 0, 8, 0, 0, 0 },		// ELEM_LEFT_BANK_TO_25_DEG_DOWN
+		{ 0, 0, 8, 0, 0, 0 },		// ELEM_RIGHT_BANK_TO_25_DEG_DOWN
+		{ 0, 0, 8, 0, 0, 0 },		// ELEM_25_DEG_DOWN_TO_LEFT_BANK
+		{ 0, 0, 8, 0, 0, 0 },		// ELEM_25_DEG_DOWN_TO_RIGHT_BANK
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_LEFT_BANK
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_RIGHT_BANK
+		{ 0, 3, 0, 64, -64, -64 },	// ELEM_LEFT_QUARTER_TURN_5_TILES_25_DEG_UP
+		{ 0, 1, 0, 64, -64, 64 },	// ELEM_RIGHT_QUARTER_TURN_5_TILES_25_DEG_UP
+		{ 0, 3, 64, 0, -64, -64 },	// ELEM_LEFT_QUARTER_TURN_5_TILES_25_DEG_DOWN
+		{ 0, 1, 64, 0, -64, 64 },	// ELEM_RIGHT_QUARTER_TURN_5_TILES_25_DEG_DOWN
+		{ 0, 0, 0, 0, -64, -32 },	// ELEM_S_BEND_LEFT
+		{ 0, 0, 0, 0, -64, 32 },	// ELEM_S_BEND_RIGHT
+		{ 0, 0, 0, 0, -32, -32 },	// ELEM_LEFT_VERTICAL_LOOP
+		{ 0, 0, 0, 0, -32, 32 },	// ELEM_RIGHT_VERTICAL_LOOP
+		{ 0, 3, 0, 0, -32, -32 },	// ELEM_LEFT_QUARTER_TURN_3_TILES
+		{ 0, 1, 0, 0, -32, 32 },	// ELEM_RIGHT_QUARTER_TURN_3_TILES
+		{ 0, 3, 0, 0, -32, -32 },	// ELEM_LEFT_QUARTER_TURN_3_TILES_BANK
+		{ 0, 1, 0, 0, -32, 32 },	// ELEM_RIGHT_QUARTER_TURN_3_TILES_BANK
+		{ 0, 3, 0, 32, -32, -32 },	// ELEM_LEFT_QUARTER_TURN_3_TILES_25_DEG_UP
+		{ 0, 1, 0, 32, -32, 32 },	// ELEM_RIGHT_QUARTER_TURN_3_TILES_25_DEG_UP
+		{ 0, 3, 32, 0, -32, -32 },	// ELEM_LEFT_QUARTER_TURN_3_TILES_25_DEG_DOWN
+		{ 0, 1, 32, 0, -32, 32 },	// ELEM_RIGHT_QUARTER_TURN_3_TILES_25_DEG_DOWN
+		{ 0, 3, 0, 0, 0, 0 },		// ELEM_LEFT_QUARTER_TURN_1_TILE
+		{ 0, 1, 0, 0, 0, 0 },		// ELEM_RIGHT_QUARTER_TURN_1_TILE
+		{ 0, 0, 0, 16, -64, 0 },	// ELEM_LEFT_TWIST_DOWN_TO_UP
+		{ 0, 0, 0, 16, -64, 0 },	// ELEM_RIGHT_TWIST_DOWN_TO_UP
+		{ 0, 0, 0, -16, -64, 0 },	// ELEM_LEFT_TWIST_UP_TO_DOWN
+		{ 0, 0, 0, -16, -64, 0 },	// ELEM_RIGHT_TWIST_UP_TO_DOWN
+		{ 0, 2, 0, 152, -32, 0 },	// ELEM_HALF_LOOP_UP
+		{ 0, 2, 0, -152, 32, 0 },	// ELEM_HALF_LOOP_DOWN
+		{ 0, 3, 0, 80, -32, -32 },	// ELEM_LEFT_CORKSCREW_UP
+		{ 0, 1, 0, 80, -32, 32 },	// ELEM_RIGHT_CORKSCREW_UP
+		{ 0, 3, 0, -80, -32, -32 },	// ELEM_LEFT_CORKSCREW_DOWN
+		{ 0, 1, 0, -80, -32, 32 },	// ELEM_RIGHT_CORKSCREW_DOWN
+		{ 0, 0, 0, 24, 0, 0 },		// ELEM_FLAT_TO_60_DEG_UP
+		{ 0, 0, 0, 24, 0, 0 },		// ELEM_60_DEG_UP_TO_FLAT
+		{ 0, 0, 24, 0, 0, 0 },		// ELEM_FLAT_TO_60_DEG_DOWN
+		{ 0, 0, 24, 0, 0, 0 },		// ELEM_60_DEG_DOWN_TO_FLAT
+		{ 0, 0, 0, 96, 32, 0 },		// ELEM_TOWER_BASE
+		{ 0, 0, 0, 32, 32, 0 },		// ELEM_TOWER_SECTION
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_FLAT_COVERED
+		{ 0, 0, 0, 16, 0, 0 },		// ELEM_25_DEG_UP_COVERED
+		{ 0, 0, 0, 64, 0, 0 },		// ELEM_60_DEG_UP_COVERED
+		{ 0, 0, 0, 8, 0, 0 },		// ELEM_FLAT_TO_25_DEG_UP_COVERED
+		{ 0, 0, 0, 32, 0, 0 },		// ELEM_25_DEG_UP_TO_60_DEG_UP_COVERED
+		{ 0, 0, 0, 32, 0, 0 },		// ELEM_60_DEG_UP_TO_25_DEG_UP_COVERED
+		{ 0, 0, 0, 8, 0, 0 },		// ELEM_25_DEG_UP_TO_FLAT_COVERED
+		{ 0, 0, 16, 0, 0, 0 },		// ELEM_25_DEG_DOWN_COVERED
+		{ 0, 0, 64, 0, 0, 0 },		// ELEM_60_DEG_DOWN_COVERED
+		{ 0, 0, 8, 0, 0, 0 },		// ELEM_FLAT_TO_25_DEG_DOWN_COVERED
+		{ 0, 0, 32, 0, 0, 0 },		// ELEM_25_DEG_DOWN_TO_60_DEG_DOWN_COVERED
+		{ 0, 0, 32, 0, 0, 0 },		// ELEM_60_DEG_DOWN_TO_25_DEG_DOWN_COVERED
+		{ 0, 0, 8, 0, 0, 0 },		// ELEM_25_DEG_DOWN_TO_FLAT_COVERED
+		{ 0, 3, 0, 0, -64, -64 },	// ELEM_LEFT_QUARTER_TURN_5_TILES_COVERED
+		{ 0, 1, 0, 0, -64, 64 },	// ELEM_RIGHT_QUARTER_TURN_5_TILES_COVERED
+		{ 0, 0, 0, 0, -64, -32 },	// ELEM_S_BEND_LEFT_COVERED
+		{ 0, 0, 0, 0, -64, 32 },	// ELEM_S_BEND_RIGHT_COVERED
+		{ 0, 3, 0, 0, -32, -32 },	// ELEM_LEFT_QUARTER_TURN_3_TILES_COVERED
+		{ 0, 1, 0, 0, -32, 32 },	// ELEM_RIGHT_QUARTER_TURN_3_TILES_COVERED
+		{ 0, 2, 0, 16, 0, -96 },	// ELEM_LEFT_HALF_BANKED_HELIX_UP_SMALL
+		{ 0, 2, 0, 16, 0, 96 },		// ELEM_RIGHT_HALF_BANKED_HELIX_UP_SMALL
+		{ 0, 2, 16, 0, 0, -96 },	// ELEM_LEFT_HALF_BANKED_HELIX_DOWN_SMALL
+		{ 0, 2, 16, 0, 0, 96 },		// ELEM_RIGHT_HALF_BANKED_HELIX_DOWN_SMALL
+		{ 0, 2, 0, 16, 0, -160 },	// ELEM_LEFT_HALF_BANKED_HELIX_UP_LARGE
+		{ 0, 2, 0, 16, 0, 160 },	// ELEM_RIGHT_HALF_BANKED_HELIX_UP_LARGE
+		{ 0, 2, 16, 0, 0, -160 },	// ELEM_LEFT_HALF_BANKED_HELIX_DOWN_LARGE
+		{ 0, 2, 16, 0, 0, 160 },	// ELEM_RIGHT_HALF_BANKED_HELIX_DOWN_LARGE
+		{ 0, 3, 0, 64, 0, 0 },		// ELEM_LEFT_QUARTER_TURN_1_TILE_60_DEG_UP
+		{ 0, 1, 0, 64, 0, 0 },		// ELEM_RIGHT_QUARTER_TURN_1_TILE_60_DEG_UP
+		{ 0, 3, 64, 0, 0, 0 },		// ELEM_LEFT_QUARTER_TURN_1_TILE_60_DEG_DOWN
+		{ 0, 1, 64, 0, 0, 0 },		// ELEM_RIGHT_QUARTER_TURN_1_TILE_60_DEG_DOWN
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_BRAKES
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_ROTATION_CONTROL_TOGGLE
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_INVERTED_90_DEG_UP_TO_FLAT_QUARTER_LOOP
+		{ 0, 3, 0, 16, -64, -64 },	// ELEM_LEFT_QUARTER_BANKED_HELIX_LARGE_UP
+		{ 0, 1, 0, 16, -64, 64 },	// ELEM_RIGHT_QUARTER_BANKED_HELIX_LARGE_UP
+		{ 0, 3, 16, 0, -64, -64 },	// ELEM_LEFT_QUARTER_BANKED_HELIX_LARGE_DOWN
+		{ 0, 1, 16, 0, -64, 64 },	// ELEM_RIGHT_QUARTER_BANKED_HELIX_LARGE_DOWN
+		{ 0, 3, 0, 16, -64, -64 },	// ELEM_LEFT_QUARTER_HELIX_LARGE_UP
+		{ 0, 1, 0, 16, -64, 64 },	// ELEM_RIGHT_QUARTER_HELIX_LARGE_UP
+		{ 0, 3, 16, 0, -64, -64 },	// ELEM_LEFT_QUARTER_HELIX_LARGE_DOWN
+		{ 0, 1, 16, 0, -64, 64 },	// ELEM_RIGHT_QUARTER_HELIX_LARGE_DOWN
+		{ 0, 0, 0, 16, 0, 0 },		// ELEM_25_DEG_UP_LEFT_BANKED
+		{ 0, 0, 0, 16, 0, 0 },		// ELEM_25_DEG_UP_RIGHT_BANKED
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_WATERFALL
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_RAPIDS
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_ON_RIDE_PHOTO
+		{ 0, 0, 16, 0, 0, 0 },		// ELEM_25_DEG_DOWN_LEFT_BANKED
+		{ 0, 0, 16, 0, 0, 0 },		// ELEM_25_DEG_DOWN_RIGHT_BANKED
+		{ 0, 0, 16, 16, -128, 0 },	// ELEM_WATER_SPLASH
+		{ 0, 0, 0, 88, -96, 0 },	// ELEM_FLAT_TO_60_DEG_UP_LONG_BASE
+		{ 0, 0, 0, 88, -96, 0 },	// ELEM_60_DEG_UP_TO_FLAT_LONG_BASE
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_WHIRLPOOL
+		{ 0, 0, 88, 0, -96, 0 },	// ELEM_60_DEG_DOWN_TO_FLAT_LONG_BASE
+		{ 0, 0, 88, 0, -96, 0 },	// ELEM_FLAT_TO_60_DEG_DOWN_LONG_BASE
+		{ 0, 0, 0, -96, -96, 0 },	// ELEM_CABLE_LIFT_HILL
+		{ 0, 0, 0, 240, -160, 0 },	// ELEM_REVERSE_WHOA_BELLY_SLOPE
+		{ 0, 0, 0, 80, 32, 0 },		// ELEM_REVERSE_WHOA_BELLY_VERTICAL
+		{ 0, 0, 0, 32, 32, 0 },		// ELEM_90_DEG_UP
+		{ 0, 0, 32, 0, 32, 0 },		// ELEM_90_DEG_DOWN
+		{ 0, 0, 0, 56, 32, 0 },		// ELEM_60_DEG_UP_TO_90_DEG_UP
+		{ 0, 0, 56, 0, 0, 0 },		// ELEM_90_DEG_DOWN_TO_60_DEG_DOWN
+		{ 0, 0, 0, 56, 0, 0 },		// ELEM_90_DEG_UP_TO_60_DEG_UP
+		{ 0, 0, 56, 0, 32, 0 },		// ELEM_60_DEG_DOWN_TO_90_DEG_DOWN
+		{ 0, 0, 24, 0, 0, 0 },		// ELEM_BRAKE_FOR_DROP
+		{ 0, 7, 0, 0, -64, -32 },	// ELEM_LEFT_EIGHTH_TO_DIAG
+		{ 0, 4, 0, 0, -64, 32 },	// ELEM_RIGHT_EIGHTH_TO_DIAG
+		{ 4, 0, 0, 0, -64, 32 },	// ELEM_LEFT_EIGHTH_TO_ORTHOGONAL
+		{ 4, 1, 0, 0, -32, 64 },	// ELEM_RIGHT_EIGHTH_TO_ORTHOGONAL
+		{ 0, 7, 0, 0, -64, -32 },	// ELEM_LEFT_EIGHTH_BANK_TO_DIAG
+		{ 0, 4, 0, 0, -64, 32 },	// ELEM_RIGHT_EIGHTH_BANK_TO_DIAG
+		{ 4, 0, 0, 0, -64, 32 },	// ELEM_LEFT_EIGHTH_BANK_TO_ORTHOGONAL
+		{ 4, 1, 0, 0, -32, 64 },	// ELEM_RIGHT_EIGHTH_BANK_TO_ORTHOGONAL
+		{ 4, 4, 0, 0, -32, 32 },	// ELEM_DIAG_FLAT
+		{ 4, 4, 0, 16, -32, 32 },	// ELEM_DIAG_25_DEG_UP
+		{ 4, 4, 0, 64, -32, 32 },	// ELEM_DIAG_60_DEG_UP
+		{ 4, 4, 0, 8, -32, 32 },	// ELEM_DIAG_FLAT_TO_25_DEG_UP
+		{ 4, 4, 0, 32, -32, 32 },	// ELEM_DIAG_25_DEG_UP_TO_60_DEG_UP
+		{ 4, 4, 0, 32, -32, 32 },	// ELEM_DIAG_60_DEG_UP_TO_25_DEG_UP
+		{ 4, 4, 0, 8, -32, 32 },	// ELEM_DIAG_25_DEG_UP_TO_FLAT
+		{ 4, 4, 16, 0, -32, 32 },	// ELEM_DIAG_25_DEG_DOWN
+		{ 4, 4, 64, 0, -32, 32 },	// ELEM_DIAG_60_DEG_DOWN
+		{ 4, 4, 8, 0, -32, 32 },	// ELEM_DIAG_FLAT_TO_25_DEG_DOWN
+		{ 4, 4, 32, 0, -32, 32 },	// ELEM_DIAG_25_DEG_DOWN_TO_60_DEG_DOWN
+		{ 4, 4, 32, 0, -32, 32 },	// ELEM_DIAG_60_DEG_DOWN_TO_25_DEG_DOWN
+		{ 4, 4, 8, 0, -32, 32 },	// ELEM_DIAG_25_DEG_DOWN_TO_FLAT
+		{ 4, 4, 0, 24, -32, 32 },	// ELEM_DIAG_FLAT_TO_60_DEG_UP
+		{ 4, 4, 0, 24, -32, 32 },	// ELEM_DIAG_60_DEG_UP_TO_FLAT
+		{ 4, 4, 24, 0, -32, 32 },	// ELEM_DIAG_FLAT_TO_60_DEG_DOWN
+		{ 4, 4, 24, 0, -32, 32 },	// ELEM_DIAG_60_DEG_DOWN_TO_FLAT
+		{ 4, 4, 0, 0, -32, 32 },	// ELEM_DIAG_FLAT_TO_LEFT_BANK
+		{ 4, 4, 0, 0, -32, 32 },	// ELEM_DIAG_FLAT_TO_RIGHT_BANK
+		{ 4, 4, 0, 0, -32, 32 },	// ELEM_DIAG_LEFT_BANK_TO_FLAT
+		{ 4, 4, 0, 0, -32, 32 },	// ELEM_DIAG_RIGHT_BANK_TO_FLAT
+		{ 4, 4, 0, 8, -32, 32 },	// ELEM_DIAG_LEFT_BANK_TO_25_DEG_UP
+		{ 4, 4, 0, 8, -32, 32 },	// ELEM_DIAG_RIGHT_BANK_TO_25_DEG_UP
+		{ 4, 4, 0, 8, -32, 32 },	// ELEM_DIAG_25_DEG_UP_TO_LEFT_BANK
+		{ 4, 4, 0, 8, -32, 32 },	// ELEM_DIAG_25_DEG_UP_TO_RIGHT_BANK
+		{ 4, 4, 8, 0, -32, 32 },	// ELEM_DIAG_LEFT_BANK_TO_25_DEG_DOWN
+		{ 4, 4, 8, 0, -32, 32 },	// ELEM_DIAG_RIGHT_BANK_TO_25_DEG_DOWN
+		{ 4, 4, 8, 0, -32, 32 },	// ELEM_DIAG_25_DEG_DOWN_TO_LEFT_BANK
+		{ 4, 4, 8, 0, -32, 32 },	// ELEM_DIAG_25_DEG_DOWN_TO_RIGHT_BANK
+		{ 4, 4, 0, 0, -32, 32 },	// ELEM_DIAG_LEFT_BANK
+		{ 4, 4, 0, 0, -32, 32 },	// ELEM_DIAG_RIGHT_BANK
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_LOG_FLUME_REVERSER
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_SPINNING_TUNNEL
+		{ 0, 0, 0, 32, -64, 0 },	// ELEM_LEFT_BARREL_ROLL_UP_TO_DOWN
+		{ 0, 0, 0, 32, -64, 0 },	// ELEM_RIGHT_BARREL_ROLL_UP_TO_DOWN
+		{ 0, 0, 0, -32, -64, 0 },	// ELEM_LEFT_BARREL_ROLL_DOWN_TO_UP
+		{ 0, 0, 0, -32, -64, 0 },	// ELEM_RIGHT_BARREL_ROLL_DOWN_TO_UP
+		{ 0, 3, 0, 24, -32, -32 },	// ELEM_LEFT_BANK_TO_LEFT_QUARTER_TURN_3_TILES_25_DEG_UP
+		{ 0, 1, 0, 24, -32, 32 },	// ELEM_RIGHT_BANK_TO_RIGHT_QUARTER_TURN_3_TILES_25_DEG_UP
+		{ 0, 3, 24, 0, -32, -32 },	// ELEM_LEFT_QUARTER_TURN_3_TILES_25_DEG_DOWN_TO_LEFT_BANK
+		{ 0, 1, 24, 0, -32, 32 },	// ELEM_RIGHT_QUARTER_TURN_3_TILES_25_DEG_DOWN_TO_RIGHT_BANK
+		{ 0, 0, 0, 16, 0, 0 },		// ELEM_POWERED_LIFT
+		{ 0, 2, 0, 280, -64, -32 },	// ELEM_LEFT_LARGE_HALF_LOOP_UP
+		{ 0, 2, 0, 280, -64, 32 },	// ELEM_RIGHT_LARGE_HALF_LOOP_UP
+		{ 0, 2, 0, -280, 64, -32 },	// ELEM_RIGHT_LARGE_HALF_LOOP_DOWN
+		{ 0, 2, 0, -280, 64, 32 },	// ELEM_LEFT_LARGE_HALF_LOOP_DOWN
+		{ 0, 0, 0, -16, -64, 0 },	// ELEM_LEFT_FLYER_TWIST_UP_TO_DOWN
+		{ 0, 0, 0, -16, -64, 0 },	// ELEM_RIGHT_FLYER_TWIST_UP_TO_DOWN
+		{ 0, 0, 0, 16, -64, 0 },	// ELEM_LEFT_FLYER_TWIST_DOWN_TO_UP
+		{ 0, 0, 0, 16, -64, 0 },	// ELEM_RIGHT_FLYER_TWIST_DOWN_TO_UP
+		{ 0, 2, 0, 120, -32, 0 },	// ELEM_FLYER_HALF_LOOP_UP
+		{ 0, 2, 0, -120, 32, 0 },	// ELEM_FLYER_HALF_LOOP_DOWN
+		{ 0, 3, 0, 48, -32, -32 },	// ELEM_LEFT_FLY_CORKSCREW_UP_TO_DOWN
+		{ 0, 1, 0, 48, -32, 32 },	// ELEM_RIGHT_FLY_CORKSCREW_UP_TO_DOWN
+		{ 0, 3, 0, -48, -32, -32 },	// ELEM_LEFT_FLY_CORKSCREW_DOWN_TO_UP
+		{ 0, 1, 0, -48, -32, 32 },	// ELEM_RIGHT_FLY_CORKSCREW_DOWN_TO_UP
+		{ 0, 2, 0, 32, 0, 0 },		// ELEM_HEARTLINE_TRANSFER_UP
+		{ 0, 2, 0, -32, 0, 0 },		// ELEM_HEARTLINE_TRANSFER_DOWN
+		{ 0, 0, 0, 0, -160, 0 },	// ELEM_LEFT_HEARTLINE_ROLL
+		{ 0, 0, 0, 0, -160, 0 },	// ELEM_RIGHT_HEARTLINE_ROLL
+		{ 0, 0, 0, 0, -32, 0 },		// ELEM_MINI_GOLF_HOLE_A
+		{ 0, 0, 0, 0, -32, 0 },		// ELEM_MINI_GOLF_HOLE_B
+		{ 0, 0, 0, 0, -32, 0 },		// ELEM_MINI_GOLF_HOLE_C
+		{ 0, 1, 0, 0, -32, 32 },	// ELEM_MINI_GOLF_HOLE_D
+		{ 0, 3, 0, 0, -32, -32 },	// ELEM_MINI_GOLF_HOLE_E
+		{ 0, 2, 0, -96, -96, 0 },	// ELEM_INVERTED_FLAT_TO_90_DEG_DOWN_QUARTER_LOOP
+		{ 0, 2, 0, 128, 64, 0 },	// ELEM_90_DEG_UP_QUARTER_LOOP_TO_INVERTED
+		{ 0, 2, 0, -128, -96, 0 },	// ELEM_QUARTER_LOOP_INVERT_TO_90_DEG_DOWN
+		{ 0, 3, 0, 16, -32, -32 },	// ELEM_LEFT_CURVED_LIFT_HILL
+		{ 0, 1, 0, 16, -32, 32 },	// ELEM_RIGHT_CURVED_LIFT_HILL
+		{ 0, 0, 0, 0, -64, 0 },		// ELEM_LEFT_REVERSER
+		{ 0, 0, 0, 0, -64, 0 },		// ELEM_RIGHT_REVERSER
+		{ 0, 0, 0, 0, -32, 0 },		// ELEM_AIR_THRUST_TOP_CAP
+		{ 0, 0, 80, 0, 32, 0 },		// ELEM_AIR_THRUST_VERTICAL_DOWN
+		{ 0, 0, 240, 0, -160, 0 },	// ELEM_AIR_THRUST_VERTICAL_DOWN_TO_LEVEL
+		{ 0, 0, 0, 0, 0, 0 },		// ELEM_BLOCK_BRAKES
+		{ 0, 3, 0, 32, -32, -32 },	// ELEM_BANKED_LEFT_QUARTER_TURN_3_TILES_25_DEG_UP
+		{ 0, 1, 0, 32, -32, 32 },	// ELEM_BANKED_RIGHT_QUARTER_TURN_3_TILES_25_DEG_UP
 		{ 0, 3, 32, 0, -32, -32 },
 		{ 0, 1, 32, 0, -32, 32 },
 		{ 0, 3, 0, 64, -64, -64 },
@@ -4688,4 +4688,877 @@ const rct_preview_track *FlatRideTrackBlocks[255] = {
 	FlatRideTrackBlocks252,
 	FlatRideTrackBlocks253,
 	FlatRideTrackBlocks254
+};
+
+const uint8 TrackPieceLengths[256] = {
+	32,		// TRACK_ELEM_FLAT
+	32,		// TRACK_ELEM_END_STATION
+	32,		// TRACK_ELEM_BEGIN_STATION
+	32,		// TRACK_ELEM_MIDDLE_STATION
+	33,		// TRACK_ELEM_25_DEG_UP
+	40,		// TRACK_ELEM_60_DEG_UP
+	32,		// TRACK_ELEM_FLAT_TO_25_DEG_UP
+	34,		// TRACK_ELEM_25_DEG_UP_TO_60_DEG_UP
+	34,		// TRACK_ELEM_60_DEG_UP_TO_25_DEG_UP
+	32,		// TRACK_ELEM_25_DEG_UP_TO_FLAT
+	33,		// TRACK_ELEM_25_DEG_DOWN
+	40,		// TRACK_ELEM_60_DEG_DOWN
+	32,		// TRACK_ELEM_FLAT_TO_25_DEG_DOWN
+	34,		// TRACK_ELEM_25_DEG_DOWN_TO_60_DEG_DOWN
+	34,		// TRACK_ELEM_60_DEG_DOWN_TO_25_DEG_DOWN
+	32,		// TRACK_ELEM_25_DEG_DOWN_TO_FLAT
+	124,	// TRACK_ELEM_LEFT_QUARTER_TURN_5_TILES
+	124,	// TRACK_ELEM_RIGHT_QUARTER_TURN_5_TILES
+	32,		// TRACK_ELEM_FLAT_TO_LEFT_BANK
+	32,		// TRACK_ELEM_FLAT_TO_RIGHT_BANK
+	32,		// TRACK_ELEM_LEFT_BANK_TO_FLAT
+	32,		// TRACK_ELEM_RIGHT_BANK_TO_FLAT
+	124,	// TRACK_ELEM_BANKED_LEFT_QUARTER_TURN_5_TILES
+	124,	// TRACK_ELEM_BANKED_RIGHT_QUARTER_TURN_5_TILES
+	32,		// TRACK_ELEM_LEFT_BANK_TO_25_DEG_UP
+	32,		// TRACK_ELEM_RIGHT_BANK_TO_25_DEG_UP
+	32,		// TRACK_ELEM_25_DEG_UP_TO_LEFT_BANK
+	32,		// TRACK_ELEM_25_DEG_UP_TO_RIGHT_BANK
+	32,		// TRACK_ELEM_LEFT_BANK_TO_25_DEG_DOWN
+	32,		// TRACK_ELEM_RIGHT_BANK_TO_25_DEG_DOWN
+	32,		// TRACK_ELEM_25_DEG_DOWN_TO_LEFT_BANK
+	32,		// TRACK_ELEM_25_DEG_DOWN_TO_RIGHT_BANK
+	32,		// TRACK_ELEM_LEFT_BANK
+	32,		// TRACK_ELEM_RIGHT_BANK
+	130,	// TRACK_ELEM_LEFT_QUARTER_TURN_5_TILES_25_DEG_UP
+	130,	// TRACK_ELEM_RIGHT_QUARTER_TURN_5_TILES_25_DEG_UP
+	130,	// TRACK_ELEM_LEFT_QUARTER_TURN_5_TILES_25_DEG_DOWN
+	130,	// TRACK_ELEM_RIGHT_QUARTER_TURN_5_TILES_25_DEG_DOWN
+	96,		// TRACK_ELEM_S_BEND_LEFT
+	96,		// TRACK_ELEM_S_BEND_RIGHT
+	120,	// TRACK_ELEM_LEFT_VERTICAL_LOOP
+	120,	// TRACK_ELEM_RIGHT_VERTICAL_LOOP
+	75,		// TRACK_ELEM_LEFT_QUARTER_TURN_3_TILES
+	75,		// TRACK_ELEM_RIGHT_QUARTER_TURN_3_TILES
+	75,		// TRACK_ELEM_LEFT_QUARTER_TURN_3_TILES_BANK
+	75,		// TRACK_ELEM_RIGHT_QUARTER_TURN_3_TILES_BANK
+	77,		// TRACK_ELEM_LEFT_QUARTER_TURN_3_TILES_25_DEG_UP
+	77,		// TRACK_ELEM_RIGHT_QUARTER_TURN_3_TILES_25_DEG_UP
+	77,		// TRACK_ELEM_LEFT_QUARTER_TURN_3_TILES_25_DEG_DOWN
+	77,		// TRACK_ELEM_RIGHT_QUARTER_TURN_3_TILES_25_DEG_DOWN
+	24,		// TRACK_ELEM_LEFT_QUARTER_TURN_1_TILE
+	24,		// TRACK_ELEM_RIGHT_QUARTER_TURN_1_TILE
+	96,		// TRACK_ELEM_LEFT_TWIST_DOWN_TO_UP
+	96,		// TRACK_ELEM_RIGHT_TWIST_DOWN_TO_UP
+	96,		// TRACK_ELEM_LEFT_TWIST_UP_TO_DOWN
+	96,		// TRACK_ELEM_RIGHT_TWIST_UP_TO_DOWN
+	60,		// TRACK_ELEM_HALF_LOOP_UP
+	60,		// TRACK_ELEM_HALF_LOOP_DOWN
+	55,		// TRACK_ELEM_LEFT_CORKSCREW_UP
+	55,		// TRACK_ELEM_RIGHT_CORKSCREW_UP
+	55,		// TRACK_ELEM_LEFT_CORKSCREW_DOWN
+	55,		// TRACK_ELEM_RIGHT_CORKSCREW_DOWN
+	36,		// TRACK_ELEM_FLAT_TO_60_DEG_UP
+	36,		// TRACK_ELEM_60_DEG_UP_TO_FLAT
+	36,		// TRACK_ELEM_FLAT_TO_60_DEG_DOWN
+	36,		// TRACK_ELEM_60_DEG_DOWN_TO_FLAT
+	32,		// TRACK_ELEM_TOWER_BASE
+	32,		// TRACK_ELEM_TOWER_SECTION
+	32,		// TRACK_ELEM_FLAT_COVERED
+	33,		// TRACK_ELEM_25_DEG_UP_COVERED
+	40,		// TRACK_ELEM_60_DEG_UP_COVERED
+	32,		// TRACK_ELEM_FLAT_TO_25_DEG_UP_COVERED
+	34,		// TRACK_ELEM_25_DEG_UP_TO_60_DEG_UP_COVERED
+	34,		// TRACK_ELEM_60_DEG_UP_TO_25_DEG_UP_COVERED
+	32,		// TRACK_ELEM_25_DEG_UP_TO_FLAT_COVERED
+	33,		// TRACK_ELEM_25_DEG_DOWN_COVERED
+	40,		// TRACK_ELEM_60_DEG_DOWN_COVERED
+	32,		// TRACK_ELEM_FLAT_TO_25_DEG_DOWN_COVERED
+	34,		// TRACK_ELEM_25_DEG_DOWN_TO_60_DEG_DOWN_COVERED
+	34,		// TRACK_ELEM_60_DEG_DOWN_TO_25_DEG_DOWN_COVERED
+	32,		// TRACK_ELEM_25_DEG_DOWN_TO_FLAT_COVERED
+	124,	// TRACK_ELEM_LEFT_QUARTER_TURN_5_TILES_COVERED
+	124,	// TRACK_ELEM_RIGHT_QUARTER_TURN_5_TILES_COVERED
+	96,		// TRACK_ELEM_S_BEND_LEFT_COVERED
+	96,		// TRACK_ELEM_S_BEND_RIGHT_COVERED
+	75,		// TRACK_ELEM_LEFT_QUARTER_TURN_3_TILES_COVERED
+	75,		// TRACK_ELEM_RIGHT_QUARTER_TURN_3_TILES_COVERED
+	150,	// TRACK_ELEM_LEFT_HALF_BANKED_HELIX_UP_SMALL
+	150,	// TRACK_ELEM_RIGHT_HALF_BANKED_HELIX_UP_SMALL
+	150,	// TRACK_ELEM_LEFT_HALF_BANKED_HELIX_DOWN_SMALL
+	150,	// TRACK_ELEM_RIGHT_HALF_BANKED_HELIX_DOWN_SMALL
+	248,	// TRACK_ELEM_LEFT_HALF_BANKED_HELIX_UP_LARGE
+	248,	// TRACK_ELEM_RIGHT_HALF_BANKED_HELIX_UP_LARGE
+	248,	// TRACK_ELEM_LEFT_HALF_BANKED_HELIX_DOWN_LARGE
+	248,	// TRACK_ELEM_RIGHT_HALF_BANKED_HELIX_DOWN_LARGE
+	64,		// TRACK_ELEM_LEFT_QUARTER_TURN_1_TILE_60_DEG_UP
+	64,		// TRACK_ELEM_RIGHT_QUARTER_TURN_1_TILE_60_DEG_UP
+	64,		// TRACK_ELEM_LEFT_QUARTER_TURN_1_TILE_60_DEG_DOWN
+	64,		// TRACK_ELEM_RIGHT_QUARTER_TURN_1_TILE_60_DEG_DOWN
+	32,		// TRACK_ELEM_BRAKES
+	32,		// TRACK_ELEM_ROTATION_CONTROL_TOGGLE
+	32,		// TRACK_ELEM_INVERTED_90_DEG_UP_TO_FLAT_QUARTER_LOOP
+	124,	// TRACK_ELEM_LEFT_QUARTER_BANKED_HELIX_LARGE_UP
+	124,	// TRACK_ELEM_RIGHT_QUARTER_BANKED_HELIX_LARGE_UP
+	124,	// TRACK_ELEM_LEFT_QUARTER_BANKED_HELIX_LARGE_DOWN
+	124,	// TRACK_ELEM_RIGHT_QUARTER_BANKED_HELIX_LARGE_DOWN
+	124,	// TRACK_ELEM_LEFT_QUARTER_HELIX_LARGE_UP
+	124,	// TRACK_ELEM_RIGHT_QUARTER_HELIX_LARGE_UP
+	124,	// TRACK_ELEM_LEFT_QUARTER_HELIX_LARGE_DOWN
+	124,	// TRACK_ELEM_RIGHT_QUARTER_HELIX_LARGE_DOWN
+	33,		// TRACK_ELEM_25_DEG_UP_LEFT_BANKED
+	33,		// TRACK_ELEM_25_DEG_UP_RIGHT_BANKED
+	32,		// TRACK_ELEM_WATERFALL
+	32,		// TRACK_ELEM_RAPIDS
+	32,		// TRACK_ELEM_ON_RIDE_PHOTO
+	33,		// TRACK_ELEM_25_DEG_DOWN_LEFT_BANKED
+	33,		// TRACK_ELEM_25_DEG_DOWN_RIGHT_BANKED
+	128,	// TRACK_ELEM_WATER_SPLASH
+	165,	// TRACK_ELEM_FLAT_TO_60_DEG_UP_LONG_BASE
+	165,	// TRACK_ELEM_60_DEG_UP_TO_FLAT_LONG_BASE
+	32,		// TRACK_ELEM_WHIRLPOOL
+	165,	// TRACK_ELEM_FLAT_TO_60_DEG_DOWN_LONG_BASE
+	165,	// TRACK_ELEM_60_DEG_UP_TO_FLAT_LONG_BASE_122
+	138,	// TRACK_ELEM_CABLE_LIFT_HILL
+	32,		// TRACK_ELEM_REVERSE_WHOA_BELLY_SLOPE
+	32,		// TRACK_ELEM_REVERSE_WHOA_BELLY_VERTICAL
+	32,		// TRACK_ELEM_90_DEG_UP
+	32,		// TRACK_ELEM_90_DEG_DOWN
+	32,		// TRACK_ELEM_60_DEG_UP_TO_90_DEG_UP
+	32,		// TRACK_ELEM_90_DEG_DOWN_TO_60_DEG_DOWN
+	32,		// TRACK_ELEM_90_DEG_UP_TO_60_DEG_UP
+	32,		// TRACK_ELEM_60_DEG_DOWN_TO_90_DEG_DOWN
+	32,		// TRACK_ELEM_BRAKE_FOR_DROP
+	87,		// TRACK_ELEM_LEFT_EIGHTH_TO_DIAG
+	87,		// TRACK_ELEM_RIGHT_EIGHTH_TO_DIAG
+	87,		// TRACK_ELEM_LEFT_EIGHTH_TO_ORTHOGONAL
+	87,		// TRACK_ELEM_RIGHT_EIGHTH_TO_ORTHOGONAL
+	87,		// TRACK_ELEM_LEFT_EIGHTH_BANK_TO_DIAG
+	87,		// TRACK_ELEM_RIGHT_EIGHTH_BANK_TO_DIAG
+	87,		// TRACK_ELEM_LEFT_EIGHTH_BANK_TO_ORTHOGONAL
+	87,		// TRACK_ELEM_RIGHT_EIGHTH_BANK_TO_ORTHOGONAL
+	45,		// TRACK_ELEM_DIAG_FLAT
+	45,		// TRACK_ELEM_DIAG_25_DEG_UP
+	45,		// TRACK_ELEM_DIAG_60_DEG_UP
+	45,		// TRACK_ELEM_DIAG_FLAT_TO_25_DEG_UP
+	45,		// TRACK_ELEM_DIAG_25_DEG_UP_TO_60_DEG_UP
+	45,		// TRACK_ELEM_DIAG_60_DEG_UP_TO_25_DEG_UP
+	45,		// TRACK_ELEM_DIAG_25_DEG_UP_TO_FLAT
+	45,		// TRACK_ELEM_DIAG_25_DEG_DOWN
+	45,		// TRACK_ELEM_DIAG_60_DEG_DOWN
+	45,		// TRACK_ELEM_DIAG_FLAT_TO_25_DEG_DOWN
+	45,		// TRACK_ELEM_DIAG_25_DEG_DOWN_TO_60_DEG_DOWN
+	45,		// TRACK_ELEM_DIAG_60_DEG_DOWN_TO_25_DEG_DOWN
+	45,		// TRACK_ELEM_DIAG_25_DEG_DOWN_TO_FLAT
+	45,		// TRACK_ELEM_DIAG_FLAT_TO_60_DEG_UP
+	45,		// TRACK_ELEM_DIAG_60_DEG_UP_TO_FLAT
+	45,		// TRACK_ELEM_DIAG_FLAT_TO_60_DEG_DOWN
+	45,		// TRACK_ELEM_DIAG_60_DEG_DOWN_TO_FLAT
+	45,		// TRACK_ELEM_DIAG_FLAT_TO_LEFT_BANK
+	45,		// TRACK_ELEM_DIAG_FLAT_TO_RIGHT_BANK
+	45,		// TRACK_ELEM_DIAG_LEFT_BANK_TO_FLAT
+	45,		// TRACK_ELEM_DIAG_RIGHT_BANK_TO_FLAT
+	45,		// TRACK_ELEM_DIAG_LEFT_BANK_TO_25_DEG_UP
+	45,		// TRACK_ELEM_DIAG_RIGHT_BANK_TO_25_DEG_UP
+	45,		// TRACK_ELEM_DIAG_25_DEG_UP_TO_LEFT_BANK
+	45,		// TRACK_ELEM_DIAG_25_DEG_UP_TO_RIGHT_BANK
+	45,		// TRACK_ELEM_DIAG_LEFT_BANK_TO_25_DEG_DOWN
+	45,		// TRACK_ELEM_DIAG_RIGHT_BANK_TO_25_DEG_DOWN
+	45,		// TRACK_ELEM_DIAG_25_DEG_DOWN_TO_LEFT_BANK
+	45,		// TRACK_ELEM_DIAG_25_DEG_DOWN_TO_RIGHT_BANK
+	45,		// TRACK_ELEM_DIAG_LEFT_BANK
+	45,		// TRACK_ELEM_DIAG_RIGHT_BANK
+	16,		// TRACK_ELEM_LOG_FLUME_REVERSER
+	32,		// TRACK_ELEM_SPINNING_TUNNEL
+	96,		// TRACK_ELEM_LEFT_BARREL_ROLL_UP_TO_DOWN
+	96,		// TRACK_ELEM_RIGHT_BARREL_ROLL_UP_TO_DOWN
+	96,		// TRACK_ELEM_LEFT_BARREL_ROLL_DOWN_TO_UP
+	96,		// TRACK_ELEM_RIGHT_BARREL_ROLL_DOWN_TO_UP
+	64,		// TRACK_ELEM_LEFT_BANK_TO_LEFT_QUARTER_TURN_3_TILES_25_DEG_UP
+	64,		// TRACK_ELEM_RIGHT_BANK_TO_RIGHT_QUARTER_TURN_3_TILES_25_DEG_UP
+	64,		// TRACK_ELEM_LEFT_QUARTER_TURN_3_TILES_25_DEG_DOWN_TO_LEFT_BANK
+	64,		// TRACK_ELEM_RIGHT_QUARTER_TURN_3_TILES_25_DEG_DOWN_TO_RIGHT_BANK
+	32,		// TRACK_ELEM_POWERED_LIFT
+	100,	// TRACK_ELEM_LEFT_LARGE_HALF_LOOP_UP
+	100,	// TRACK_ELEM_RIGHT_LARGE_HALF_LOOP_UP
+	100,	// TRACK_ELEM_RIGHT_LARGE_HALF_LOOP_DOWN
+	100,	// TRACK_ELEM_LEFT_LARGE_HALF_LOOP_DOWN
+	96,		// 
+	96,		// 
+	96,		// 
+	96,		// 
+	64,		// 
+	64,		// 
+	64,		// 
+	64,		// 
+	64,		// 
+	64,		// 
+	16,		// 
+	16,		// 
+	64,		// 
+	64,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	80,		// 
+	80,		// 
+	80,		// 
+	64,		// 
+	64,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	32,		// 
+	80,		// 
+	80,		// 
+	80,		// 
+};
+
+// rct2: 0x00998C95
+const track_curve_chain gTrackCurveChain[256] = {
+	{ 0, 0 },
+	{ 257, 257 },
+	{ 257, 257 },
+	{ 257, 257 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 5, 5 },
+	{ 6, 6 },
+	{ 310, 0 },
+	{ 311, 0 },
+	{ 0, 308 },
+	{ 0, 309 },
+	{ 313, 0 },
+	{ 0, 312 },
+	{ 317, 0 },
+	{ 316, 0 },
+	{ 0, 315 },
+	{ 0, 314 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 323, 0 },
+	{ 323, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 343, 343 },
+	{ 344, 344 },
+	{ 345, 345 },
+	{ 346, 346 },
+	{ 347, 347 },
+	{ 348, 348 },
+	{ 349, 349 },
+	{ 350, 350 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 355, 355 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 358, 358 },
+	{ 359, 359 },
+	{ 360, 360 },
+	{ 361, 361 },
+	{ 362, 362 },
+	{ 363, 363 },
+	{ 364, 364 },
+	{ 365, 365 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 368, 368 },
+	{ 369, 369 },
+	{ 0, 0 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 381, 0 },
+	{ 381, 381 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 7, 0 },
+	{ 8, 0 },
+	{ 0, 7 },
+	{ 0, 8 },
+	{ 0, 7 },
+	{ 0, 8 },
+	{ 7, 0 },
+	{ 8, 0 },
+	{ 0, 7 },
+	{ 0, 8 },
+	{ 7, 0 },
+	{ 8, 0 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 432, 0 },
+	{ 433, 0 },
+	{ 0, 430 },
+	{ 0, 431 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 438, 190 },
+	{ 442, 0 },
+	{ 441, 0 },
+	{ 0, 440 },
+	{ 0, 439 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 464, 0 },
+	{ 0, 463 },
+	{ 465, 465 },
+	{ 466, 466 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 470, 381 },
+	{ 470, 470 },
+	{ 0, 470 },
+	{ 0, 0 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+};
+
+// rct2: 0x00999095
+const track_curve_chain gFlatRideTrackCurveChain[256] = {
+	{ 0, 0 },
+	{ 257, 257 },
+	{ 257, 257 },
+	{ 257, 257 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 5, 5 },
+	{ 6, 6 },
+	{ 310, 0 },
+	{ 311, 0 },
+	{ 0, 308 },
+	{ 0, 309 },
+	{ 313, 0 },
+	{ 0, 312 },
+	{ 317, 0 },
+	{ 316, 0 },
+	{ 0, 315 },
+	{ 0, 314 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 323, 0 },
+	{ 323, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 343, 343 },
+	{ 344, 344 },
+	{ 345, 345 },
+	{ 346, 346 },
+	{ 347, 347 },
+	{ 348, 348 },
+	{ 349, 349 },
+	{ 350, 350 },
+	{ 65535, 65535 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 355, 355 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 358, 358 },
+	{ 359, 359 },
+	{ 360, 360 },
+	{ 361, 361 },
+	{ 362, 362 },
+	{ 363, 363 },
+	{ 364, 364 },
+	{ 365, 365 },
+	{ 65535, 65535 },
+	{ 65535, 65535 },
+	{ 368, 368 },
+	{ 369, 369 },
+	{ 0, 0 },
+	{ 65535, 65535 },
+	{ 65535, 65535 },
+	{ 0, 0 },
+	{ 65535, 65535 },
+	{ 65535, 65535 },
+	{ 0, 0 },
+	{ 65535, 65535 },
+	{ 65535, 65535 },
+	{ 65535, 65535 },
+	{ 381, 0 },
+	{ 381, 381 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 7, 0 },
+	{ 8, 0 },
+	{ 0, 7 },
+	{ 0, 8 },
+	{ 0, 7 },
+	{ 0, 8 },
+	{ 7, 0 },
+	{ 8, 0 },
+	{ 0, 7 },
+	{ 0, 8 },
+	{ 7, 0 },
+	{ 8, 0 },
+	{ 7, 7 },
+	{ 8, 8 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 432, 0 },
+	{ 433, 0 },
+	{ 0, 430 },
+	{ 0, 431 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 438, 190 },
+	{ 442, 0 },
+	{ 441, 0 },
+	{ 0, 440 },
+	{ 0, 439 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 465, 465 },
+	{ 466, 466 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 470, 381 },
+	{ 470, 470 },
+	{ 0, 470 },
+	{ 0, 0 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 1 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 1 },
+	{ 2, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 1, 0 },
+	{ 2, 0 },
+	{ 0, 1 },
+	{ 0, 2 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 3, 3 },
+	{ 4, 4 },
+	{ 0, 0 },
+	{ 0, 0 },
+	{ 0, 57088 },
+};
+
+const uint32 RideTypeTrackPaintFunctions[91] = {
+	0x008A42F4,						// RIDE_TYPE_SPIRAL_ROLLER_COASTER
+	0x008A6DB0,						// RIDE_TYPE_STAND_UP_ROLLER_COASTER
+	0x008A85E4,						// RIDE_TYPE_SUSPENDED_SWINGING_COASTER
+	0x008A8EE4,						// RIDE_TYPE_INVERTED_ROLLER_COASTER
+	0x008AAA0C,						// RIDE_TYPE_JUNIOR_ROLLER_COASTER
+	0x008ACE48,						// RIDE_TYPE_MINIATURE_RAILWAY
+	0x008ADF34,						// RIDE_TYPE_MONORAIL
+	0x008AFC24,						// RIDE_TYPE_MINI_SUSPENDED_COASTER
+	0x008B0D60,						// RIDE_TYPE_BOAT_RIDE
+	0x008A534C,						// RIDE_TYPE_WOODEN_WILD_MOUSE
+	0x008A5634,						// RIDE_TYPE_STEEPLECHASE
+	0x006F7000,						// RIDE_TYPE_CAR_RIDE
+	0x006FD0E8,						// RIDE_TYPE_LAUNCHED_FREEFALL
+	0x006FE240,						// RIDE_TYPE_BOBSLEIGH_COASTER
+	0x0070DC5C,						// RIDE_TYPE_OBSERVATION_TOWER
+	0x008A5B88,						// RIDE_TYPE_LOOPING_ROLLER_COASTER
+	0x0070EDB4,						// RIDE_TYPE_DINGHY_SLIDE
+	0x0071BC40,						// RIDE_TYPE_MINE_TRAIN_COASTER
+	0x00743EC8,						// RIDE_TYPE_CHAIRLIFT
+	0x008A7784,						// RIDE_TYPE_CORKSCREW_ROLLER_COASTER
+	0x008A81E8,						// RIDE_TYPE_MAZE
+	0x0074840C,						// RIDE_TYPE_SPIRAL_SLIDE
+	0x0074A668,						// RIDE_TYPE_GO_KARTS
+	0x0074DDEC,						// RIDE_TYPE_LOG_FLUME
+	0x0075745C,						// RIDE_TYPE_RIVER_RAPIDS
+	0x0075C9D0,						// RIDE_TYPE_DODGEMS
+	0x008A83E0,						// RIDE_TYPE_PIRATE_SHIP
+	0x00760070,						// RIDE_TYPE_SWINGING_INVERTER_SHIP
+	0x00761160,						// RIDE_TYPE_FOOD_STALL
+	0x00761160,						// RIDE_TYPE_1D
+	0x00761160,						// RIDE_TYPE_DRINK_STALL
+	0x00761160,						// RIDE_TYPE_1F
+	0x00761160,						// RIDE_TYPE_SHOP
+	0x0076190C,						// RIDE_TYPE_MERRY_GO_ROUND
+	0x00761160,						// RIDE_TYPE_22
+	0x00761160,						// RIDE_TYPE_INFORMATION_KIOSK
+	0x00762D44,						// RIDE_TYPE_TOILETS
+	0x008A8CC8,						// RIDE_TYPE_FERRIS_WHEEL
+	0x00763520,						// RIDE_TYPE_MOTION_SIMULATOR
+	0x0076554C,						// RIDE_TYPE_3D_CINEMA
+	0x0076659C,						// RIDE_TYPE_TOP_SPIN
+	0x00767A40,						// RIDE_TYPE_SPACE_RINGS
+	0x00768BAC,						// RIDE_TYPE_REVERSE_FREEFALL_COASTER
+	0x0076C5BC,						// RIDE_TYPE_LIFT
+	0x008A9C08,						// RIDE_TYPE_VERTICAL_DROP_ROLLER_COASTER
+	0x00761160,						// RIDE_TYPE_CASH_MACHINE
+	0x0076D658,						// RIDE_TYPE_TWIST
+	0x0076E7B0,						// RIDE_TYPE_HAUNTED_HOUSE
+	0x00762D44,						// RIDE_TYPE_FIRST_AID
+	0x0076F8D4,						// RIDE_TYPE_CIRCUS_SHOW
+	0x00770924,						// RIDE_TYPE_GHOST_TRAIN
+	0x008AB2A0,						// RIDE_TYPE_TWISTER_ROLLER_COASTER
+	0x008AC164,						// RIDE_TYPE_WOODEN_ROLLER_COASTER
+	0x00778124,						// RIDE_TYPE_SIDE_FRICTION_ROLLER_COASTER
+	0x0078AE80,						// RIDE_TYPE_WILD_MOUSE
+	0x00792978,						// RIDE_TYPE_MULTI_DIMENSION_ROLLER_COASTER
+	0x00792978,						// RIDE_TYPE_38
+	0x007C6C00,						// RIDE_TYPE_FLYING_ROLLER_COASTER
+	0x007C6C00,						// RIDE_TYPE_3A
+	0x00811184,						// RIDE_TYPE_VIRGINIA_REEL
+	0x008164AC,						// RIDE_TYPE_SPLASH_BOATS
+	0x0081F268,						// RIDE_TYPE_MINI_HELICOPTERS
+	0x008245A8,						// RIDE_TYPE_LAY_DOWN_ROLLER_COASTER
+	0x0086347C,						// RIDE_TYPE_SUSPENDED_MONORAIL
+	0x008245A8,						// RIDE_TYPE_40
+	0x0086E2F8,						// RIDE_TYPE_REVERSER_ROLLER_COASTER
+	0x00876618,						// RIDE_TYPE_HEARTLINE_TWISTER_COASTER
+	0x0087EDC4,						// RIDE_TYPE_MINI_GOLF
+	0x008AD280,						// RIDE_TYPE_GIGA_COASTER
+	0x00886074,						// RIDE_TYPE_ROTO_DROP
+	0x00887208,						// RIDE_TYPE_FLYING_SAUCERS
+	0x00889C28,						// RIDE_TYPE_CROOKED_HOUSE
+	0x0088AC88,						// RIDE_TYPE_MONORAIL_CYCLES
+	0x008AE36C,						// RIDE_TYPE_COMPACT_INVERTED_COASTER
+	0x008AEDE0,						// RIDE_TYPE_WATER_COASTER
+	0x008AF764,						// RIDE_TYPE_AIR_POWERED_VERTICAL_COASTER
+	0x00890940,						// RIDE_TYPE_INVERTED_HAIRPIN_COASTER
+	0x00898384,						// RIDE_TYPE_MAGIC_CARPET
+	0x008995D4,						// RIDE_TYPE_SUBMARINE_RIDE
+	0x0089B0C0,						// RIDE_TYPE_RIVER_RAFTS
+	0x00761160,						// RIDE_TYPE_50
+	0x008A13B4,						// RIDE_TYPE_ENTERPRISE
+	0x00761160,						// RIDE_TYPE_52
+	0x00761160,						// RIDE_TYPE_53
+	0x00761160,						// RIDE_TYPE_54
+	0x00000000,						// RIDE_TYPE_55
+	0x008B005C,						// RIDE_TYPE_INVERTED_IMPULSE_COASTER
+	0x008A46D8,						// RIDE_TYPE_MINI_ROLLER_COASTER
+	0x008B0610,						// RIDE_TYPE_MINE_RIDE
+	0x00000000,						// RIDE_TYPE_59
+	0x008A5F6C,						// RIDE_TYPE_LIM_LAUNCHED_ROLLER_COASTER
 };

@@ -4,6 +4,7 @@
 #include "../addresses.h"
 #include "../drawing/drawing.h"
 #include "../localisation/localisation.h"
+#include "../localisation/user.h"
 #include "../platform/platform.h"
 #include "../world/park.h"
 #include "../util/sawyercoding.h"
@@ -13,6 +14,7 @@
 #include "../input.h"
 #include "../network/twitch.h"
 #include "../object.h"
+#include "../world/banner.h"
 #include "../world/scenery.h"
 #include "../management/research.h"
 #include "console.h"
@@ -29,17 +31,17 @@ bool gConsoleOpen = false;
 static bool _consoleInitialised = false;
 static int _consoleLeft, _consoleTop, _consoleRight, _consoleBottom;
 static int _lastMainViewportX, _lastMainViewportY;
-static char _consoleBuffer[CONSOLE_BUFFER_SIZE] = { 0 };
-static char *_consoleBufferPointer = _consoleBuffer;
-static char *_consoleViewBufferStart = _consoleBuffer;
-static char _consoleCurrentLine[CONSOLE_INPUT_SIZE];
-static char *_consoleCurrentLinePointer = _consoleCurrentLine;
+static utf8 _consoleBuffer[CONSOLE_BUFFER_SIZE] = { 0 };
+static utf8 *_consoleBufferPointer = _consoleBuffer;
+static utf8 *_consoleViewBufferStart = _consoleBuffer;
+static utf8 _consoleCurrentLine[CONSOLE_INPUT_SIZE];
+static utf8 *_consoleCurrentLinePointer = _consoleCurrentLine;
 static int _consoleCaretTicks;
-static char _consolePrintfBuffer[CONSOLE_BUFFER_2_SIZE];
-static char _consoleErrorBuffer[CONSOLE_BUFFER_2_SIZE];
+static utf8 _consolePrintfBuffer[CONSOLE_BUFFER_2_SIZE];
+static utf8 _consoleErrorBuffer[CONSOLE_BUFFER_2_SIZE];
 static int _consoleScrollPos = 0;
 
-static char _consoleHistory[CONSOLE_HISTORY_SIZE][CONSOLE_INPUT_SIZE];
+static utf8 _consoleHistory[CONSOLE_HISTORY_SIZE][CONSOLE_INPUT_SIZE];
 static int _consoleHistoryIndex = 0;
 static int _consoleHistoryCount = 0;
 
@@ -47,14 +49,14 @@ static void console_invalidate();
 static void console_write_prompt();
 static void console_update_scroll();
 static void console_clear_input();
-static void console_history_add(const char *src);
+static void console_history_add(const utf8 *src);
 static void console_write_all_commands();
-static int console_parse_int(const char *src, bool *valid);
-static double console_parse_double(const char *src, bool *valid);
+static int console_parse_int(const utf8 *src, bool *valid);
+static double console_parse_double(const utf8 *src, bool *valid);
 
-static int cc_variables(const char **argv, int argc);
-static int cc_windows(const char **argv, int argc);
-static int cc_help(const char **argv, int argc);
+static int cc_variables(const utf8 **argv, int argc);
+static int cc_windows(const utf8 **argv, int argc);
+static int cc_help(const utf8 **argv, int argc);
 
 static bool invalidArguments(bool *invalid, bool arguments);
 
@@ -88,6 +90,7 @@ void console_init()
 {
 	_consoleInitialised = true;
 	console_writeline(OPENRCT2_NAME " " OPENRCT2_VERSION);
+	console_writeline("Type 'help' for a list of available commands. Type 'hide' to hide the console.");
 	console_writeline("");
 	console_write_prompt();
 }
@@ -120,12 +123,7 @@ void console_update()
 		}
 
 		// Remove unwated characters in console input
-		unsigned char *ch = (unsigned char*)_consoleCurrentLine;
-		while (*ch != 0) {
-			if (*ch < 32 || *ch > 126)
-				*ch = ' ';
-			ch++;
-		}
+		utf8_remove_format_codes(_consoleCurrentLine);
 	}
 
 	// Flash the caret
@@ -136,18 +134,20 @@ void console_draw(rct_drawpixelinfo *dpi)
 {
 	if (!gConsoleOpen)
 		return;
+
+	// Set font
+	RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_FONT_SPRITE_BASE, uint16) = (gConfigInterface.console_small_font ? FONT_SPRITE_BASE_SMALL : FONT_SPRITE_BASE_MEDIUM);
+	RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_FONT_FLAGS, uint16) = 0;
+	int lineHeight = font_get_line_height(RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_FONT_SPRITE_BASE, uint16));
+
 	int lines = 0;
-	int maxLines = ((_consoleBottom - 22 - _consoleTop) / 10) - 1;
-	char *ch = strchr(_consoleBuffer, 0);
+	int maxLines = ((_consoleBottom - 22 - _consoleTop) / lineHeight) - 1;
+	utf8 *ch = strchr(_consoleBuffer, 0);
 	while (ch > _consoleBuffer) {
 		ch--;
 		if (*ch == '\n')
 			lines++;
 	}
-
-	// Set font
-	RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_FONT_SPRITE_BASE, uint16) = (gConfigInterface.console_small_font ? 0 : 224);
-	RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_FONT_FLAGS, uint16) = 0;
 
 	// Background
 	gfx_fill_rect(dpi, _consoleLeft, _consoleTop, _consoleRight, _consoleBottom, 10);
@@ -156,13 +156,13 @@ void console_draw(rct_drawpixelinfo *dpi)
 	int y = _consoleTop + 4;
 	
 	// Draw previous lines
-	char lineBuffer[1 + 256];
+	utf8 lineBuffer[2 + 256], *lineCh;
 	ch = _consoleViewBufferStart;
 	int currentLine = 0;
 	int drawLines = 0;
 	while (*ch != 0) {
 		// Find line break or null terminator
-		char *nextLine = ch;
+		utf8 *nextLine = ch;
 		while (*nextLine != 0 && *nextLine != '\n') {
 			nextLine++;
 		}
@@ -172,7 +172,7 @@ void console_draw(rct_drawpixelinfo *dpi)
 			if (*nextLine == '\n') {
 				ch = nextLine + 1;
 				x = _consoleLeft + 4;
-				//y += 10;
+				// y += lineHeight;
 			}
 			else {
 				break;
@@ -184,10 +184,11 @@ void console_draw(rct_drawpixelinfo *dpi)
 			break;
 		drawLines++;
 
-		int lineLength = min(sizeof(lineBuffer) - 1, nextLine - ch);
-		strncpy(lineBuffer + 1, ch, lineLength);
-		lineBuffer[0] = FORMAT_GREEN;
-		lineBuffer[1 + lineLength] = 0;
+		int lineLength = min(sizeof(lineBuffer) - (size_t)utf8_get_codepoint_length(FORMAT_GREEN), (size_t)(nextLine - ch));
+		lineCh = lineBuffer;
+		lineCh = utf8_write_codepoint(lineCh, FORMAT_GREEN);
+		strncpy(lineCh, ch, lineLength);
+		lineCh[lineLength] = 0;
 
 		gfx_draw_string(dpi, lineBuffer, 255, x, y);
 
@@ -196,16 +197,18 @@ void console_draw(rct_drawpixelinfo *dpi)
 		if (*nextLine == '\n') {
 			ch = nextLine + 1;
 			x = _consoleLeft + 4;
-			y += 10;
+			y += lineHeight;
 		} else {
 			break;
 		}
 	}
 	x = _consoleLeft + 4;
 	y = _consoleBottom - 15;
+
 	// Draw current line
-	strcpy(lineBuffer + 1, _consoleCurrentLine);
-	lineBuffer[0] = FORMAT_GREEN;
+	lineCh = lineBuffer;
+	lineCh = utf8_write_codepoint(lineCh, FORMAT_GREEN);
+	strcpy(lineCh, _consoleCurrentLine);
 	gfx_draw_string(dpi, lineBuffer, 255, x, y);
 
 	// Draw caret
@@ -213,7 +216,7 @@ void console_draw(rct_drawpixelinfo *dpi)
 		memcpy(lineBuffer, _consoleCurrentLine, gTextInputCursorPosition);
 		lineBuffer[gTextInputCursorPosition] = 0;
 		int caretX = x + gfx_get_string_width(lineBuffer);
-		int caretY = y + 10;
+		int caretY = y + lineHeight;
 
 		gfx_fill_rect(dpi, caretX, caretY, caretX + 6, caretY + 1, FORMAT_GREEN);
 	}
@@ -272,7 +275,7 @@ static void console_write_prompt()
 	console_write("> ");
 }
 
-void console_write(const char *src)
+void console_write(const utf8 *src)
 {
 	int charactersRemainingInBuffer = CONSOLE_BUFFER_SIZE - (_consoleBufferPointer - _consoleBuffer) - 1;
 	int charactersToWrite = strlen(src);
@@ -286,27 +289,27 @@ void console_write(const char *src)
 	console_update_scroll();
 }
 
-void console_writeline(const char *src)
+void console_writeline(const utf8 *src)
 {
 	console_write(src);
 	console_write("\n");
 }
 
-void console_writeline_error(const char *src)
+void console_writeline_error(const utf8 *src)
 {
 	strcpy(_consoleErrorBuffer + 1, src);
 	_consoleErrorBuffer[0] = FORMAT_RED;
 	console_writeline(_consoleErrorBuffer);
 }
 
-void console_writeline_warning(const char *src)
+void console_writeline_warning(const utf8 *src)
 {
 	strcpy(_consoleErrorBuffer + 1, src);
 	_consoleErrorBuffer[0] = FORMAT_YELLOW;
 	console_writeline(_consoleErrorBuffer);
 }
 
-void console_printf(const char *format, ...)
+void console_printf(const utf8 *format, ...)
 {
 	va_list list;
 	va_start(list, format);
@@ -315,15 +318,15 @@ void console_printf(const char *format, ...)
 	console_writeline(_consolePrintfBuffer);
 }
 
-int console_parse_int(const char *src, bool *valid) {
-	char *end;
+int console_parse_int(const utf8 *src, bool *valid) {
+	utf8 *end;
 	int value;
 	value = strtol(src, &end, 10); *valid = (*end == '\0');
 	return value;
 }
 
-double console_parse_double(const char *src, bool *valid) {
-	char *end;
+double console_parse_double(const utf8 *src, bool *valid) {
+	utf8 *end;
 	double value;
 	value = strtod(src, &end); *valid = (*end == '\0');
 	return value;
@@ -350,7 +353,7 @@ void console_scroll(int delta)
 	int speed = 3;
 	int lines = 0;
 	int maxLines = ((_consoleBottom - 22 - _consoleTop) / 10) - 1;
-	char *ch = strchr(_consoleBuffer, 0);
+	utf8 *ch = strchr(_consoleBuffer, 0);
 	while (ch > _consoleBuffer) {
 		ch--;
 		if (*ch == '\n')
@@ -389,7 +392,7 @@ static void console_clear_input()
 	gTextInputLength = 0;
 }
 
-static void console_history_add(const char *src)
+static void console_history_add(const utf8 *src)
 {
 	if (_consoleHistoryCount >= CONSOLE_HISTORY_SIZE) {
 		for (int i = 0; i < _consoleHistoryCount - 1; i++)
@@ -400,26 +403,26 @@ static void console_history_add(const char *src)
 	_consoleHistoryIndex = _consoleHistoryCount;
 }
 
-static int cc_clear(const char **argv, int argc)
+static int cc_clear(const utf8 **argv, int argc)
 {
 	console_clear();
 	return 0;
 }
 
-static int cc_hide(const char **argv, int argc)
+static int cc_hide(const utf8 **argv, int argc)
 {
 	console_close();
 	return 0;
 }
 
-static int cc_echo(const char **argv, int argc)
+static int cc_echo(const utf8 **argv, int argc)
 {
 	if (argc > 0)
 		console_writeline(argv[0]);
 	return 0;
 }
 
-static int cc_get(const char **argv, int argc)
+static int cc_get(const utf8 **argv, int argc)
 {
 	if (argc > 0) {
 		if (strcmp(argv[0], "park_rating") == 0) {
@@ -495,7 +498,7 @@ static int cc_get(const char **argv, int argc)
 			console_printf("construction_rights_cost %d.%d0", RCT2_GLOBAL(RCT2_ADDRESS_CONSTRUCTION_RIGHTS_COST, money32) / 10, RCT2_GLOBAL(RCT2_ADDRESS_CONSTRUCTION_RIGHTS_COST, money32) % 10);
 		}
 		else if (strcmp(argv[0], "climate") == 0) {
-			const char* climate_names[] = { "cool_and_wet", "warm", "hot_and_dry", "cold" };
+			const utf8* climate_names[] = { "cool_and_wet", "warm", "hot_and_dry", "cold" };
 			console_printf("climate %s  (%d)", climate_names[RCT2_GLOBAL(RCT2_ADDRESS_CLIMATE, sint8)], RCT2_GLOBAL(RCT2_ADDRESS_CLIMATE, sint8));
 		}
 		else if (strcmp(argv[0], "game_speed") == 0) {
@@ -532,7 +535,7 @@ static int cc_get(const char **argv, int argc)
 	}
 	return 0;
 }
-static int cc_set(const char **argv, int argc)
+static int cc_set(const utf8 **argv, int argc)
 {
 	int i;
 	if (argc > 1) {
@@ -638,7 +641,7 @@ static int cc_set(const char **argv, int argc)
 				RCT2_GLOBAL(RCT2_ADDRESS_CLIMATE, sint8) = clamp(int_val[0], 0, 3);
 			}
 			else {
-				char* climate_names[] = { "cool_and_wet", "warm", "hot_and_dry", "cold" };
+				utf8* climate_names[] = { "cool_and_wet", "warm", "hot_and_dry", "cold" };
 				for (i = 0; i < 4; i++) {
 					if (strcmp(argv[1], climate_names[i]) == 0) {
 						RCT2_GLOBAL(RCT2_ADDRESS_CLIMATE, sint8) = i;
@@ -696,7 +699,7 @@ static int cc_set(const char **argv, int argc)
 	}
 	return 0;
 }
-static int cc_twitch(const char **argv, int argc)
+static int cc_twitch(const utf8 **argv, int argc)
 {
 #ifdef DISABLE_TWITCH
 	console_writeline_error("OpenRCT2 build not compiled with Twitch integeration.");
@@ -705,6 +708,7 @@ static int cc_twitch(const char **argv, int argc)
 #endif
 	return 0;
 }
+
 static void editor_load_selected_objects_console()
 {
 	uint8 *selection_flags = RCT2_GLOBAL(RCT2_ADDRESS_EDITOR_OBJECT_FLAGS_LIST, uint8*);
@@ -728,13 +732,13 @@ static void editor_load_selected_objects_console()
 	}
 }
 
-static int cc_load_object(const char **argv, int argc) {
+static int cc_load_object(const utf8 **argv, int argc) {
 	if (argc > 0) {
-		char path[260];
+		utf8 path[260];
 
 		subsitute_path(path, RCT2_ADDRESS(RCT2_ADDRESS_OBJECT_DATA_PATH, char), argv[0]);
 		// Require pointer to start of filename
-		char* last_char = path + strlen(path);
+		utf8* last_char = path + strlen(path);
 		strcat(path, ".DAT\0");
 
 		rct_object_entry entry;
@@ -793,7 +797,7 @@ static int cc_load_object(const char **argv, int argc) {
 							scenery_set_default_placement_configuration();
 							window_new_ride_init_vars();
 
-							RCT2_GLOBAL(0x009DEB7C, uint16) = 0;
+							RCT2_GLOBAL(RCT2_ADDRESS_WINDOW_UPDATE_TICKS, uint16) = 0;
 							gfx_invalidate_screen();
 							console_writeline("Object file loaded.");
 						}
@@ -814,8 +818,9 @@ static int cc_load_object(const char **argv, int argc) {
 
 	return 0;
 }
-static int cc_object_count(const char **argv, int argc) {
-	const char* object_type_names[] = { "Rides", "Small scenery", "Large scenery", "Walls", "Banners", "Paths", "Path Additions", "Scenery groups", "Park entrances", "Water" };
+
+static int cc_object_count(const utf8 **argv, int argc) {
+	const utf8* object_type_names[] = { "Rides", "Small scenery", "Large scenery", "Walls", "Banners", "Paths", "Path Additions", "Scenery groups", "Park entrances", "Water" };
 	for (int i = 0; i < 10; i++) {
 
 		int entryGroupIndex = 0;
@@ -829,7 +834,20 @@ static int cc_object_count(const char **argv, int argc) {
 
 	return 0;
 }
-static int cc_open(const char **argv, int argc) {
+
+static int cc_reset_user_strings(const utf8 **argv, int argc)
+{
+	reset_user_strings();
+	return 0;
+}
+
+static int cc_fix_banner_count(const utf8 **argv, int argc)
+{
+	fix_banner_count();
+	return 0;
+}
+
+static int cc_open(const utf8 **argv, int argc) {
 	if (argc > 0) {
 		bool title = (RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_TITLE_DEMO) != 0;
 		bool invalidTitle = false;
@@ -857,15 +875,15 @@ static int cc_open(const char **argv, int argc) {
 }
 
 
-typedef int (*console_command_func)(const char **argv, int argc);
+typedef int (*console_command_func)(const utf8 **argv, int argc);
 typedef struct {
-	char *command;
+	utf8 *command;
 	console_command_func func;
-	char *help;
-	char *usage;
+	utf8 *help;
+	utf8 *usage;
 } console_command;
 
-char* console_variable_table[] = {
+utf8* console_variable_table[] = {
 	"park_rating",
 	"money",
 	"current_loan",
@@ -894,7 +912,7 @@ char* console_variable_table[] = {
 	"no_test_crashes",
 	"location"
 };
-char* console_window_table[] = {
+utf8* console_window_table[] = {
 	"object_selection",
 	"inventions_list",
 	"scenario_options",
@@ -918,22 +936,24 @@ console_command console_command_table[] = {
 									"This is a safer method opposed to \"open object_selection\".", 
 									"load_object <objectfilenodat>" },
 	{ "object_count", cc_object_count, "Shows the number of objects of each type in the scenario.", "object_count" },
-	{ "twitch", cc_twitch, "Twitch API" }
+	{ "twitch", cc_twitch, "Twitch API" },
+	{ "reset_user_strings", cc_reset_user_strings, "Resets all user-defined strings, to fix incorrectly occurring 'Chosen name in use already' errors.", "reset_user_strings" },
+	{ "fix_banner_count", cc_fix_banner_count, "Fixes incorrectly appearing 'Too many banners' error by marking every banner entry without a map element as null.", "fix_banner_count" }
 };
 
-static int cc_windows(const char **argv, int argc) {
+static int cc_windows(const utf8 **argv, int argc) {
 	for (int i = 0; i < countof(console_window_table); i++)
 		console_writeline(console_window_table[i]);
 	return 0;
 }
-static int cc_variables(const char **argv, int argc)
+static int cc_variables(const utf8 **argv, int argc)
 {
 	for (int i = 0; i < countof(console_variable_table); i++)
 		console_writeline(console_variable_table[i]);
 	return 0;
 }
 
-static int cc_help(const char **argv, int argc)
+static int cc_help(const utf8 **argv, int argc)
 {
 	if (argc > 0) {
 		for (int i = 0; i < countof(console_command_table); i++) {
@@ -955,20 +975,20 @@ static void console_write_all_commands()
 		console_writeline(console_command_table[i].command);
 }
 
-void console_execute(const char *src)
+void console_execute(const utf8 *src)
 {
 	console_writeline(src);
 
 	console_execute_silent(src);
 }
 
-void console_execute_silent(const char *src)
+void console_execute_silent(const utf8 *src)
 {
 	int argc = 0;
 	int argvCapacity = 8;
-	char **argv = malloc(argvCapacity * sizeof(char*));
-	const char *start = src;
-	const char *end;
+	utf8 **argv = malloc(argvCapacity * sizeof(utf8*));
+	const utf8 *start = src;
+	const utf8 *end;
 	bool inQuotes = false;
 	do {
 		while (*start == ' ')
@@ -993,13 +1013,13 @@ void console_execute_silent(const char *src)
 		int length = end - start;
 
 		if (length > 0) {
-			char *arg = malloc(length + 1);
+			utf8 *arg = malloc(length + 1);
 			memcpy(arg, start, length);
 			arg[length] = 0;
 
 			if (argc >= argvCapacity) {
 				argvCapacity *= 2;
-				argv = realloc(argv, argvCapacity * sizeof(char*));
+				argv = realloc(argv, argvCapacity * sizeof(utf8*));
 			}
 			argv[argc] = arg;
 			argc++;
@@ -1011,10 +1031,14 @@ void console_execute_silent(const char *src)
 	if (argc == 0)
 		return;
 
+	// Aliases for hiding the console
+	if(strcmp(argv[0],"quit") == 0 || strcmp(argv[0],"exit") == 0)
+		argv[0]="hide";
+
 	bool validCommand = false;
 	for (int i = 0; i < countof(console_command_table); i++) {
 		if (strcmp(argv[0], console_command_table[i].command) == 0) {
-			console_command_table[i].func(argv + 1, argc - 1);
+			console_command_table[i].func((const utf8 **)(argv + 1), argc - 1);
 			validCommand = true;
 			break;
 		}
@@ -1025,7 +1049,10 @@ void console_execute_silent(const char *src)
 	free(argv);
 
 	if (!validCommand) {
-		char output[] = { FORMAT_RED, "Unknown command. Type help to list available commands." };
+		utf8 output[128];
+		utf8 *dst = output;
+		dst = utf8_write_codepoint(dst, FORMAT_RED);
+		strcpy(dst, "Unknown command. Type help to list available commands.");
 		console_writeline(output);
 	}
 }

@@ -19,6 +19,8 @@
  *****************************************************************************/
 
 #include "util.h"
+#include <SDL.h>
+#include "../platform/platform.h"
 
 int squaredmetres_to_squaredfeet(int squaredMetres)
 {
@@ -41,7 +43,7 @@ int mph_to_kmph(int mph)
 	return (mph * 1648) / 1024;
 }
 
-bool filename_valid_characters(const char *filename)
+bool filename_valid_characters(const utf8 *filename)
 {
 	for (int i = 0; filename[i] != '\0'; i++) {
 		if (filename[i] == '\\' || filename[i] == '/' || filename[i] == ':' || filename[i] == '?' ||
@@ -51,7 +53,7 @@ bool filename_valid_characters(const char *filename)
 	return true;
 }
 
-const char *path_get_filename(const char *path)
+const char *path_get_filename(const utf8 *path)
 {
 	const char *result, *ch;
 
@@ -66,7 +68,7 @@ const char *path_get_filename(const char *path)
 	return result;
 }
 
-const char *path_get_extension(const char *path)
+const char *path_get_extension(const utf8 *path)
 {
 	const char *extension = NULL;
 	const char *ch = path;
@@ -81,7 +83,7 @@ const char *path_get_extension(const char *path)
 	return extension;
 }
 
-void path_set_extension(char *path, const char *newExtension)
+void path_set_extension(utf8 *path, const utf8 *newExtension)
 {
 	char *extension = NULL;
 	char *ch = path;
@@ -100,7 +102,7 @@ void path_set_extension(char *path, const char *newExtension)
 	strcpy(extension, newExtension);
 }
 
-void path_remove_extension(char *path)
+void path_remove_extension(utf8 *path)
 {
 	char *ch = path + strlen(path);
 	for (--ch; ch >= path; --ch) {
@@ -111,38 +113,26 @@ void path_remove_extension(char *path)
 	}
 }
 
-long fsize(FILE *fp)
+bool readentirefile(const utf8 *path, void **outBuffer, int *outLength)
 {
-	long originalPosition, size;
-
-	originalPosition = ftell(fp);
-	fseek(fp, 0, SEEK_END);
-	size = ftell(fp);
-	fseek(fp, originalPosition, SEEK_SET);
-
-	return size;
-}
-
-bool readentirefile(const char *path, void **outBuffer, long *outLength)
-{
-	FILE *fp;
-	long fpLength;
+	SDL_RWops *fp;
+	int fpLength;
 	void *fpBuffer;
 
 	// Open file
-	fp = fopen(path, "rb");
+	fp = SDL_RWFromFile(path, "rb");
 	if (fp == NULL)
 		return 0;
 
 	// Get length
-	fseek(fp, 0, SEEK_END);
-	fpLength = ftell(fp);
-	rewind(fp);
+	SDL_RWseek(fp, 0, RW_SEEK_END);
+	fpLength = (int)SDL_RWtell(fp);
+	SDL_RWseek(fp, 0, RW_SEEK_SET);
 
 	// Read whole file into a buffer
 	fpBuffer = malloc(fpLength);
-	fread(fpBuffer, fpLength, 1, fp);
-	fclose(fp);
+	SDL_RWread(fp, fpBuffer, fpLength, 1);
+	SDL_RWclose(fp);
 
 	*outBuffer = fpBuffer;
 	*outLength = fpLength;
@@ -158,6 +148,17 @@ int bitscanforward(int source)
 			return i;
 
 	return -1;
+}
+
+int bitcount(int source)
+{
+	int result = 0;
+	for (int i = 0; i < 32; i++) {
+		if (source & (1 << i)) {
+			result++;
+		}
+	}
+	return result;
 }
 
 bool strequals(const char *a, const char *b, int length, bool caseInsensitive)
@@ -179,7 +180,7 @@ int strcicmp(char const *a, char const *b)
 
 bool utf8_is_bom(const char *str)
 {
-	return str[0] == 0xEF && str[1] == 0xBB && str[2] == 0xBF;
+	return str[0] == (char)0xEF && str[1] == (char)0xBB && str[2] == (char)0xBF;
 }
 
 bool str_is_null_or_empty(const char *str)

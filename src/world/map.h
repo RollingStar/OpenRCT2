@@ -203,6 +203,10 @@ enum {
 	ENTRANCE_TYPE_PARK_ENTRANCE
 };
 
+enum {
+	ELEMENT_IS_UNDERWATER = 4,
+};
+
 #define MAP_ELEMENT_QUADRANT_MASK 0xC0
 #define MAP_ELEMENT_TYPE_MASK 0x3C
 #define MAP_ELEMENT_DIRECTION_MASK 0x03
@@ -227,6 +231,10 @@ typedef struct {
 	uint8 x, y;
 } rct_xy8;
 
+typedef struct{
+	uint8 x, y, z, direction;
+} rct_xyzd8;
+
 typedef struct {
 	sint16 x, y;
 } rct_xy16;
@@ -248,10 +256,16 @@ typedef struct {
 } rct2_peep_spawn;
 
 extern const rct_xy16 TileDirectionDelta[];
+
+extern rct_map_element *gMapElements;
+extern rct_map_element **gMapElementTilePointers;
+
 extern rct_xy16 *gMapSelectionTiles;
 extern rct2_peep_spawn *gPeepSpawns;
+// Used in the land tool window to enable mountain tool / land smoothing
+extern bool gLandMountainMode;
 // Used in the land tool window to allow dragging and changing land styles
-extern bool LandPaintMode;
+extern bool gLandPaintMode;
 // Used in the land rights tool window to either buy land rights or construction rights
 extern bool LandRightsMode;
 // Used in the clear scenery tool
@@ -279,6 +293,8 @@ int map_coord_is_connected(int x, int y, int z, uint8 faceDirection);
 void sub_6A876D();
 int map_is_location_owned(int x, int y, int z);
 int map_is_location_in_park(int x, int y);
+bool map_is_location_owned_or_has_rights(int x, int y);
+bool map_surface_is_blocked(sint16 x, sint16 y);
 int map_get_station(rct_map_element *mapElement);
 void map_element_remove(rct_map_element *mapElement);
 void map_remove_all_rides();
@@ -291,10 +307,13 @@ int map_can_construct_with_clear_at(int x, int y, int zLow, int zHigh, void *cle
 int map_can_construct_at(int x, int y, int zLow, int zHigh, uint8 bl);
 void rotate_map_coordinates(sint16 *x, sint16 *y, int rotation);
 rct_xy16 coordinate_3d_to_2d(const rct_xyz16* coordinate_3d, int rotation);
-money32 map_clear_scenery(int x0, int y0, int x1, int y1, int flags);
+money32 map_clear_scenery(int x0, int y0, int x1, int y1, int clear, int flags);
 money32 lower_water(sint16 x0, sint16 y0, sint16 x1, sint16 y1, uint8 flags);
 money32 raise_water(sint16 x0, sint16 y0, sint16 x1, sint16 y1, uint8 flags);
+money32 map_place_fence(int type, int x, int y, int z, int edge, int primaryColour, int secondaryColour, int tertiaryColour, int flags);
 
+void game_command_set_land_height(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
+void game_command_set_land_ownership(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
 void game_command_remove_scenery(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_remove_large_scenery(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_remove_banner(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
@@ -306,6 +325,7 @@ void game_command_clear_scenery(int* eax, int* ebx, int* ecx, int* edx, int* esi
 void game_command_change_surface_style(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_raise_land(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_lower_land(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
+void game_command_smooth_land(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_raise_water(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_lower_water(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_set_water_height(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
@@ -314,6 +334,7 @@ void game_command_place_banner(int* eax, int* ebx, int* ecx, int* edx, int* esi,
 void game_command_place_scenery(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_place_fence(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 void game_command_place_large_scenery(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
+void game_command_place_park_entrance(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 
 #define GET_MAP_ELEMENT(x) (&(RCT2_ADDRESS(RCT2_ADDRESS_MAP_ELEMENTS, rct_map_element)[x]))
 #define TILE_MAP_ELEMENT_POINTER(x) (RCT2_ADDRESS(RCT2_ADDRESS_TILE_MAP_ELEMENT_POINTERS, rct_map_element*)[x])
@@ -350,5 +371,16 @@ void map_invalidate_tile_zoom1(int x, int y, int z0, int z1);
 void map_invalidate_tile_zoom0(int x, int y, int z0, int z1);
 void map_invalidate_tile_full(int x, int y);
 void map_invalidate_element(int x, int y, rct_map_element *mapElement);
+
+int map_get_tile_side(int mapX, int mapY);
+int map_get_tile_quadrant(int mapX, int mapY);
+
+void map_clear_all_elements();
+
+rct_map_element *map_get_large_scenery_segment(int x, int y, int z, int direction, int sequence);
+bool map_large_scenery_get_origin(
+	int x, int y, int z, int direction, int sequence,
+	int *outX, int *outY, int *outZ
+);
 
 #endif

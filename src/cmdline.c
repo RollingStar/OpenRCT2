@@ -23,6 +23,7 @@
 #include "addresses.h"
 #include "cmdline.h"
 #include "interface/screenshot.h"
+#include "network/network.h"
 #include "openrct2.h"
 #include "platform/platform.h"
 #include "util/util.h"
@@ -45,6 +46,12 @@ typedef int (*cmdline_action)(const char **argv, int argc);
 
 int gExitCode = 0;
 
+#ifndef DISABLE_NETWORK
+int gNetworkStart = NETWORK_MODE_NONE;
+char gNetworkStartHost[128];
+int gNetworkStartPort = NETWORK_DEFAULT_PORT;
+#endif // DISABLE_NETWORK
+
 static void print_launch_information();
 static int cmdline_call_action(const char **argv, int argc);
 
@@ -64,13 +71,17 @@ static const char *const usage[] = {
 int cmdline_run(const char **argv, int argc)
 {
 	// 
-	int version = 0, verbose = 0, width = 0, height = 0;
+	int version = 0, headless = 0, verbose = 0, width = 0, height = 0, port = 0;
+	char *server = NULL;
 
 	argparse_option_t options[] = {
 		OPT_HELP(),
 		OPT_BOOLEAN('v', "version", &version, "show version information and exit"),
+		OPT_BOOLEAN(0, "headless", &headless, "run OpenRCT2 headless"),
 		OPT_BOOLEAN(0, "verbose", &verbose, "log verbose messages"),
 		OPT_INTEGER('m', "mode", &sprite_mode, "the type of sprite conversion. 0 = default, 1 = simple closest pixel match, 2 = dithering"),
+		OPT_STRING(0, "server", &server, "server to connect to"),
+		OPT_INTEGER(0, "port", &port, "port"),
 		OPT_END()
 	};
 
@@ -79,14 +90,27 @@ int cmdline_run(const char **argv, int argc)
 	argc = argparse_parse(&argparse, argc, argv);
 
 	if (version) {
-		printf("%s v%s\n", OPENRCT2_NAME, OPENRCT2_VERSION);
-		printf("%s (%s)\n", OPENRCT2_PLATFORM, OPENRCT2_ARCHITECTURE);
-		printf("%s\n", OPENRCT2_TIMESTAMP);
+		print_launch_information();
 		return 0;
 	}
 
+	if (headless)
+		gOpenRCT2Headless = true;
+
 	if (verbose)
 		_log_levels[DIAGNOSTIC_LEVEL_VERBOSE] = 1;
+
+#ifndef DISABLE_NETWORK
+	if (port != 0) {
+		gNetworkStart = NETWORK_MODE_SERVER;
+		gNetworkStartPort = port;
+	}
+
+	if (server != NULL) {
+		gNetworkStart = NETWORK_MODE_CLIENT;
+		strncpy(gNetworkStartHost, server, sizeof(gNetworkStartHost));
+	}
+#endif // DISABLE_NETWORK
 
 	if (argc != 0) {
 		gExitCode = cmdline_call_action(argv, argc);

@@ -33,6 +33,7 @@
 #include "world/climate.h"
 #include "world/footpath.h"
 #include "world/map.h"
+#include "world/map_animation.h"
 #include "world/scenery.h"
 
 typedef struct {
@@ -40,8 +41,10 @@ typedef struct {
 	int count;
 } RCT1DefaultObjectsGroup;
 
-const uint8 RCT1TerrainConvertTable[16];
-const uint8 RCT1TerrainEdgeConvertTable[16];
+static const uint8 RCT1TerrainConvertTable[16];
+static const uint8 RCT1TerrainEdgeConvertTable[16];
+static const uint8 RCT1PathTypeConversionTable[96];
+static const uint8 RCT1PathAdditionConversionTable[15];
 static const RCT1DefaultObjectsGroup RCT1DefaultObjects[10];
 
 static void rct1_remove_rides();
@@ -51,20 +54,15 @@ static void rct1_fix_scenery();
 static void rct1_fix_entrance_positions();
 static void rct1_reset_research();
 
-static void sub_69F06A();
-static void sub_666DFD();
-static void sub_69F007();
-static void sub_69F44B();
-static void sub_69F143();
-static void sub_69F2D0();
-static void sub_69F3AB();
-static void sub_6A2730();
+static void rct1_process_scenario_flags();
+static void rct1_reset_park_entrance_path_type();
+static void rct1_clear_extra_sprite_entries();
+static void rct1_clear_extra_tile_entries();
+static void rct1_fix_colours();
+static void rct1_fix_z();
+static void rct1_fix_paths();
+static void rct1_fix_walls();
 static void sub_69E891();
-
-static void read(void *dst, void *src, int length)
-{
-	memcpy(dst, src, length);
-}
 
 bool rct1_read_sc4(const char *path, rct1_s4 *s4)
 {
@@ -72,7 +70,7 @@ bool rct1_read_sc4(const char *path, rct1_s4 *s4)
 	long length, decodedLength;
 	bool success;
 
-	if (!readentirefile(path, (void**)&buffer, &length)) {
+	if (!readentirefile(path, (void**)&buffer, (int*)&length)) {
 		RCT2_GLOBAL(RCT2_ADDRESS_ERROR_TYPE, uint8) = 255;
 		RCT2_GLOBAL(RCT2_ADDRESS_ERROR_STRING_ID, uint16) = 3011;
 		return 0;
@@ -102,7 +100,7 @@ bool rct1_read_sv4(const char *path, rct1_s4 *s4)
 	long length, decodedLength;
 	bool success;
 
-	if (!readentirefile(path, (void**)&buffer, &length)) {
+	if (!readentirefile(path, (void**)&buffer, (int*)&length)) {
 		RCT2_GLOBAL(RCT2_ADDRESS_ERROR_TYPE, uint8) = 255;
 		RCT2_GLOBAL(RCT2_ADDRESS_ERROR_STRING_ID, uint16) = 3011;
 		return 0;
@@ -131,15 +129,15 @@ void rct1_import_s4(rct1_s4 *s4)
 	int i;
 	rct_banner *banner;
 
-	read((void*)RCT2_ADDRESS_CURRENT_MONTH_YEAR, &s4->month, 16);
+	memcpy((void*)RCT2_ADDRESS_CURRENT_MONTH_YEAR, &s4->month, 16);
 	memset((void*)RCT2_ADDRESS_MAP_ELEMENTS, 0, 0x30000 * sizeof(rct_map_element));
-	read((void*)RCT2_ADDRESS_MAP_ELEMENTS, s4->map_elements, sizeof(s4->map_elements));
-	read((void*)0x010E63B8, &s4->unk_counter, 4 + sizeof(s4->sprites));
+	memcpy((void*)RCT2_ADDRESS_MAP_ELEMENTS, s4->map_elements, sizeof(s4->map_elements));
+	memcpy((void*)0x010E63B8, &s4->unk_counter, 4 + sizeof(s4->sprites));
 
 	for (i = 0; i < MAX_BANNERS; i++)
 		gBanners[i].type = 255;
 
-	read((void*)0x013573BC, &s4->next_sprite_index, 12424);
+	memcpy((void*)0x013573BC, &s4->next_sprite_index, 12424);
 
 	for (i = 0; i < MAX_BANNERS; i++) {
 		banner = &gBanners[i];
@@ -147,13 +145,13 @@ void rct1_import_s4(rct1_s4 *s4)
 			banner->string_idx = 778;
 	}
 
-	read((void*)0x0135A8F4, &s4->string_table, 0x2F51C);
-	memset((void*)0x013CA672, 0, 204);
-	read((void*)0x0138B580, &s4->map_animations, 0x258F2);
-	read((void*)0x013C6A72, &s4->patrol_areas, sizeof(s4->patrol_areas));
+	memcpy((void*)0x0135A8F4, &s4->string_table, 0x2F51C);
+	memset((void*)RCT2_ADDRESS_STAFF_MODE_ARRAY, 0, 204);
+	memcpy((void*)0x0138B580, &s4->map_animations, 0x258F2);
+	memcpy((void*)0x013C6A72, &s4->patrol_areas, sizeof(s4->patrol_areas));
 
 	char *esi = (char*)0x13C6A72;
-	char *edi = (char*)0x13B0E72;
+	char *edi = (char*)RCT2_ADDRESS_STAFF_PATROL_AREAS;
 	int ebx, edx = 116;
 	do {
 		ebx = 32;
@@ -175,9 +173,9 @@ void rct1_import_s4(rct1_s4 *s4)
 		memset(edi, 0, 64); edi += 64;
 	} while (--edx);
 
-	read((void*)0x013CA672, &s4->unk_1F42AA, 116);
-	read((void*)0x013CA73A, &s4->unk_1F431E, 4);
-	read((void*)0x013CA73E, &s4->unk_1F4322, 0x41EA);
+	memcpy((void*)RCT2_ADDRESS_STAFF_MODE_ARRAY, &s4->unk_1F42AA, 116);
+	memcpy((void*)0x013CA73A, &s4->unk_1F431E, 4);
+	memcpy((void*)0x013CA73E, &s4->unk_1F4322, 0x41EA);
 }
 
 /**
@@ -190,7 +188,7 @@ void rct1_fix_landscape()
 	rct_sprite *sprite;
 	rct_ride *ride;
 
-	sub_69F007();
+	rct1_clear_extra_sprite_entries();
 
 	// Free sprite user strings
 	for (i = 0; i < MAX_SPRITES; i++) {
@@ -210,16 +208,16 @@ void rct1_fix_landscape()
 	RCT2_GLOBAL(RCT2_ADDRESS_GUESTS_HEADING_FOR_PARK, uint16) = 0;
 	RCT2_GLOBAL(RCT2_ADDRESS_LAST_GUESTS_IN_PARK, uint16) = 0;
 	RCT2_GLOBAL(RCT2_ADDRESS_GUEST_CHANGE_MODIFIER, uint8) = 0;
-	sub_69F44B();
-	sub_69F06A();
-	sub_69F143();
-	sub_69F2D0();
-	sub_69F3AB();
+	rct1_clear_extra_tile_entries();
+	rct1_process_scenario_flags();
+	rct1_fix_colours();
+	rct1_fix_z();
+	rct1_fix_paths();
 	rct1_remove_rides();
 	object_unload_all();
 	rct1_load_default_objects();
 	reset_loaded_objects();
-	sub_6A2730();
+	rct1_fix_walls();
 	rct1_fix_scenery();
 	rct1_fix_terrain();
 	rct1_fix_entrance_positions();
@@ -261,7 +259,7 @@ void rct1_fix_landscape()
 		RCT2_GLOBAL(RCT2_ADDRESS_INITIAL_CASH, money32)
 	);
 	finance_reset_cash_to_initial();
-	sub_69E869();
+	finance_update_loan_hash();
 
 	RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_LOAN, money32) = clamp(
 		MONEY(0,00),
@@ -304,7 +302,7 @@ static void rct1_remove_rides()
 		case MAP_ELEMENT_TYPE_PATH:
 			if (it.element->type & 1) {
 				it.element->properties.path.type &= 0xF7;
-				it.element->properties.path.addition_status = 255;
+				it.element->properties.path.ride_index = 255;
 			}
 			break;
 
@@ -327,6 +325,16 @@ static void rct1_remove_rides()
 	} while (map_element_iterator_next(&it));
 }
 
+static bool is_object_name_blank(rct_object_entry *entry)
+{
+	for (int i = 0; i < 8; i++) {
+		if (entry->name[i] != ' ') {
+			return false;
+		}
+	}
+	return true;
+}
+
 /**
  *
  *  rct2: 0x0069F53D
@@ -336,6 +344,10 @@ static void rct1_load_default_objects()
 	for (int i = 0; i < 9; i++) {
 		rct_object_entry *entries = (rct_object_entry*)RCT1DefaultObjects[i].entries;
 		for (int j = 0; j < RCT1DefaultObjects[i].count; j++) {
+			if (is_object_name_blank(&entries[j])) {
+				continue;
+			}
+
 			if (!object_load(j, &entries[j], NULL)) {
 				error_string_quit(0x99990000 + (i * 0x100) + j, -1);
 				return;
@@ -462,48 +474,38 @@ static void rct1_reset_research()
  *
  *  rct2: 0x0069F06A
  */
-static void sub_69F06A()
+static void rct1_process_scenario_flags()
 {
-	RCT2_CALLPROC_EBPSAFE(0x0069F06A); return;
+	uint32 scenarioFlags = RCT2_GLOBAL(0x013CE770, uint32);
 
-	// TODO, bug with the following code
-	RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 0) | (1 << 1) | (1 << 14) | (1 << 2) | (1 << 3);
-	if (!(RCT2_GLOBAL(0x013CE770, uint32) & (1 << 4))) {
-		RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 4);
-		banner_init(); // 6B9CB0
+	if (!(scenarioFlags & RCT1_SCENARIO_FLAG_ENABLE_BANNERS)) {
+		banner_init();
 	}
-	if (!(RCT2_GLOBAL(0x013CE770, uint32) & (1 << 6))) {
-		RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 6);
+	if (!(scenarioFlags & (1 << 6))) {
 		sub_69E891();
 	}
-	RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 7);
-	if (!(RCT2_GLOBAL(0x013CE770, uint32) & (1 << 8))) {
-		RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 8);
-		sub_666DFD();
+	if (!(scenarioFlags & RCT1_SCENARIO_FLAG_CUSTOM_PARK_ENTRANCE_PATH)) {
+		rct1_reset_park_entrance_path_type();
 	}
-	if (!(RCT2_GLOBAL(0x013CE770, uint32) & (1 << 9))) {
-		RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 9);
+	if (!(scenarioFlags & RCT1_SCENARIO_FLAG_NO_CASH_RESET)) {
 		finance_reset_cash_to_initial();
 	}
-	if (!(RCT2_GLOBAL(0x013CE770, uint32) & (1 << 13))) {
-		RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 13);
+	if (!(scenarioFlags & RCT1_SCENARIO_FLAG_CUSTOM_MAP_SIZE)) {
 		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SIZE_UNITS, uint16) = 127 * 32;
 		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SIZE_MINUS_2, uint16) = 4350;
-		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SIZE_UNITS, uint16) = 128;
+		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SIZE, uint16) = 128;
 		RCT2_GLOBAL(RCT2_ADDRESS_MAP_MAX_XY, uint16) = 4095;
 	}
-	if (!(RCT2_GLOBAL(0x013CE770, uint32) & (1 << 15))) {
-		RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 15);
+	if (!(scenarioFlags & (1 << 15))) {
 		RCT2_GLOBAL(0x01358838, uint32) = 0;
 	}
-	RCT2_GLOBAL(0x013CE770, uint32) |= (1 << 16) | (1 << 18) | (1 << 19);
 }
 
 /**
  *
  *  rct2: 0x00666DFD
  */
-static void sub_666DFD()
+static void rct1_reset_park_entrance_path_type()
 {
 	int x, y;
 	rct_map_element *mapElement;
@@ -513,9 +515,7 @@ static void sub_666DFD()
 	if (x == (sint16)0x8000)
 		return;
 
-	x /= 32;
-	y /= 32;
-	mapElement = map_get_first_element_at(x, y);
+	mapElement = map_get_first_element_at(x >> 5, y >> 5);
 	do {
 		if (map_element_get_type(mapElement) == MAP_ELEMENT_TYPE_ENTRANCE) {
 			if (mapElement->properties.entrance.type == ENTRANCE_TYPE_PARK_ENTRANCE) {
@@ -530,54 +530,361 @@ static void sub_666DFD()
  *
  *  rct2: 0x0069F007
  */
-static void sub_69F007()
+static void rct1_clear_extra_sprite_entries()
 {
-	RCT2_CALLPROC_EBPSAFE(0x0069F007);
+	rct_unk_sprite *sprite;
+	
+	for (int i = 5000; i < MAX_SPRITES; i++) {
+		sprite = &(g_sprite_list[i].unknown);
+		
+		memset(&g_sprite_list[i], 0, sizeof(rct_sprite));
+
+		sprite->sprite_identifier = 255;
+		sprite->sprite_index = i;
+		sprite->linked_list_type_offset = SPRITE_LINKEDLIST_OFFSET_NULL;
+		sprite->previous = SPRITE_INDEX_NULL;
+		sprite->next = RCT2_GLOBAL(RCT2_ADDRESS_SPRITES_NEXT_INDEX, uint16);
+		RCT2_GLOBAL(RCT2_ADDRESS_SPRITES_NEXT_INDEX, uint16) = i;
+
+		sprite = &(g_sprite_list[sprite->next].unknown);
+		sprite->previous = i;
+	}
+	RCT2_GLOBAL(0x013573C8, uint16) += 5000;
 }
 
 /**
  *
  *  rct2: 0x0069F44B
  */
-static void sub_69F44B()
+static void rct1_clear_extra_tile_entries()
 {
-	RCT2_CALLPROC_EBPSAFE(0x0069F44B);
+	// Reset the map tile pointers
+	for (int i = 0; i < 0x10000; i++) {
+		gMapElementTilePointers[i] = (rct_map_element*)-1;
+	}
+	
+	// Get the first free map element
+	rct_map_element *nextFreeMapElement = gMapElements;
+	for (int i = 0; i < 128 * 128; i++) {
+		do {
+
+		} while (!map_element_is_last_for_tile(nextFreeMapElement++));
+	}
+
+	rct_map_element *mapElement = gMapElements;
+	rct_map_element **tilePointer = gMapElementTilePointers;
+
+	// 128 rows of map data from RCT1 map
+	for (int x = 0; x < 128; x++) {
+		// Assign the first half of this row
+		for (int y = 0; y < 128; y++) {
+			*tilePointer++ = mapElement;
+			do {
+
+			} while (!map_element_is_last_for_tile(mapElement++));
+		}
+
+		// Fill the rest of the row with blank tiles
+		for (int y = 0; y < 128; y++) {
+			nextFreeMapElement->type = MAP_ELEMENT_TYPE_SURFACE;
+			nextFreeMapElement->flags = MAP_ELEMENT_FLAG_LAST_TILE;
+			nextFreeMapElement->base_height = 2;
+			nextFreeMapElement->clearance_height = 0;
+			nextFreeMapElement->properties.surface.slope = 0;
+			nextFreeMapElement->properties.surface.terrain = 0;
+			nextFreeMapElement->properties.surface.grass_length = GRASS_LENGTH_CLEAR_0;
+			nextFreeMapElement->properties.surface.ownership = 0;
+			*tilePointer++ = nextFreeMapElement++;
+		}
+	}
+
+	// 128 extra rows left to fill with blank tiles
+	for (int y = 0; y < 128 * 256; y++) {
+		nextFreeMapElement->type = MAP_ELEMENT_TYPE_SURFACE;
+		nextFreeMapElement->flags = MAP_ELEMENT_FLAG_LAST_TILE;
+		nextFreeMapElement->base_height = 2;
+		nextFreeMapElement->clearance_height = 0;
+		nextFreeMapElement->properties.surface.slope = 0;
+		nextFreeMapElement->properties.surface.terrain = 0;
+		nextFreeMapElement->properties.surface.grass_length = GRASS_LENGTH_CLEAR_0;
+		nextFreeMapElement->properties.surface.ownership = 0;
+		*tilePointer++ = nextFreeMapElement++;
+	}
+
+	RCT2_GLOBAL(0x0140E9A4, rct_map_element*) = nextFreeMapElement;
 }
 
 /**
  *
  *  rct2: 0x0069F143
  */
-static void sub_69F143()
+static void rct1_fix_colours()
 {
-	RCT2_CALLPROC_EBPSAFE(0x0069F143);
+	int rideIndex, colour;
+	rct_ride *ride;
+	rct_unk_sprite *sprite;
+	rct_peep *peep;
+	rct_balloon *balloon;
+	rct_map_element *mapElement;
+
+	FOR_ALL_RIDES(rideIndex, ride) {
+		for (int i = 0; i < 4; i++) {
+			ride->track_colour_main[i] = RCT1ColourConversionTable[ride->track_colour_main[i]];
+			ride->track_colour_additional[i] = RCT1ColourConversionTable[ride->track_colour_additional[i]];
+			ride->track_colour_supports[i] = RCT1ColourConversionTable[ride->track_colour_supports[i]];
+		}
+
+		for (int i = 0; i < 32; i++) {
+			ride->vehicle_colours[i].body_colour = RCT1ColourConversionTable[ride->vehicle_colours[i].body_colour];
+			ride->vehicle_colours[i].trim_colour = RCT1ColourConversionTable[ride->vehicle_colours[i].trim_colour];
+		}
+	}
+
+	for (int i = 0; i < MAX_SPRITES; i++) {
+		sprite = &(g_sprite_list[i].unknown);
+		switch (sprite->sprite_identifier) {
+		case SPRITE_IDENTIFIER_PEEP:
+			peep = (rct_peep*)sprite;
+			peep->tshirt_colour = RCT1ColourConversionTable[peep->tshirt_colour];
+			peep->trousers_colour = RCT1ColourConversionTable[peep->trousers_colour];
+			peep->balloon_colour = RCT1ColourConversionTable[peep->balloon_colour];
+			peep->umbrella_colour = RCT1ColourConversionTable[peep->umbrella_colour];
+			peep->hat_colour = RCT1ColourConversionTable[peep->hat_colour];
+			break;
+		case SPRITE_IDENTIFIER_MISC:
+			balloon = (rct_balloon*)sprite;
+			balloon->colour = RCT1ColourConversionTable[balloon->colour];
+			balloon->var_2D = RCT1ColourConversionTable[balloon->var_2D];
+			break;
+		}
+	}
+
+	mapElement = gMapElements;
+	while (mapElement < RCT2_GLOBAL(0x0140E9A4, rct_map_element*)) {
+		if (mapElement->base_height != 255) {
+			switch (map_element_get_type(mapElement)) {
+			case MAP_ELEMENT_TYPE_SCENERY:
+				colour = RCT1ColourConversionTable[mapElement->properties.scenery.colour_1 & 0x1F];
+				mapElement->properties.scenery.colour_1 &= 0xE0;
+				mapElement->properties.scenery.colour_1 |= colour;
+				break;
+			case MAP_ELEMENT_TYPE_FENCE:
+				colour = RCT1ColourConversionTable[
+					((mapElement->type & 0xC0) >> 3) |
+					((mapElement->properties.fence.type & 0xE0) >> 5)
+				];
+
+				mapElement->type &= 0x3F;
+				mapElement->properties.fence.type &= 0x1F;
+				mapElement->type |= (colour & 0x18) << 3;
+				mapElement->properties.fence.type |= (colour & 7) << 5;
+				break;
+			case MAP_ELEMENT_TYPE_SCENERY_MULTIPLE:
+				colour = RCT1ColourConversionTable[mapElement->properties.scenerymultiple.colour[0] & 0x1F];
+				mapElement->properties.scenerymultiple.colour[0] &= 0xE0;
+				mapElement->properties.scenerymultiple.colour[0] |= colour;
+
+				colour = RCT1ColourConversionTable[mapElement->properties.scenerymultiple.colour[1] & 0x1F];
+				mapElement->properties.scenerymultiple.colour[1] &= 0xE0;
+				mapElement->properties.scenerymultiple.colour[1] |= colour;
+				break;
+			}
+		}
+		mapElement++;
+	}
 }
 
 /**
  *
  *  rct2: 0x0069F2D0
  */
-static void sub_69F2D0()
+static void rct1_fix_z()
 {
-	RCT2_CALLPROC_EBPSAFE(0x0069F2D0);
+	int i;
+	rct_ride *ride;
+	rct_unk_sprite *sprite;
+	rct_peep *peep;
+	rct_ride_measurement *rideMeasurement;
+	rct_map_element *mapElement;
+
+	FOR_ALL_RIDES(i, ride) {
+		for (int i = 0; i < 4; i++) {
+			ride->station_heights[i] /= 2;
+		}
+		ride->var_116 /= 2;
+		ride->highest_drop_height = 1;
+		if (ride->var_11F != 255) {
+			ride->var_11F /= 2;
+		}
+		ride->var_13E /= 2;
+		ride->var_13F /= 2;
+	}
+
+	for (int i = 0; i < RCT2_GLOBAL(0x0138B580, uint16); i++) {
+		gAnimatedObjects[i].baseZ /= 2;
+	}
+
+	for (int i = 0; i < MAX_SPRITES; i++) {
+		sprite = &(g_sprite_list[i].unknown);
+		if (sprite->sprite_identifier == SPRITE_IDENTIFIER_PEEP) {
+			peep = (rct_peep*)sprite;
+			peep->next_z /= 2;
+			RCT2_GLOBAL((int)peep + 0xCE, uint8) /= 2;
+		}
+	}
+
+	for (int i = 0; i < MAX_RIDE_MEASUREMENTS; i++) {
+		rideMeasurement = GET_RIDE_MEASUREMENT(i);
+		if (rideMeasurement->ride_index == 255)
+			continue;
+
+		for (int i = 0; i < RIDE_MEASUREMENT_MAX_ITEMS; i++) {
+			rideMeasurement->altitude[i] /= 2;
+		}
+	}
+
+	mapElement = gMapElements;
+	while (mapElement < RCT2_GLOBAL(0x0140E9A4, rct_map_element*)) {
+		if (mapElement->base_height != 255) {
+			mapElement->base_height /= 2;
+			mapElement->clearance_height /= 2;
+		}
+		mapElement++;
+	}
+	RCT2_GLOBAL(0x01359208, uint16) = 7;
 }
 
 /**
  *
  *  rct2: 0x0069F3AB
  */
-static void sub_69F3AB()
+static void rct1_fix_paths()
 {
-	RCT2_CALLPROC_EBPSAFE(0x0069F3AB);
+	rct_map_element *mapElement;
+	int pathType, secondaryType, additions;
+
+	mapElement = gMapElements;
+	while (mapElement < RCT2_GLOBAL(0x0140E9A4, rct_map_element*)) {
+		switch (map_element_get_type(mapElement)) {
+		case MAP_ELEMENT_TYPE_PATH:
+			// Type
+			pathType = ((mapElement->properties.path.type & 0xF0) >> 2) | (mapElement->type & 3);
+			secondaryType = (mapElement->flags & 0x60) >> 5;
+			pathType = RCT1PathTypeConversionTable[pathType * 4 + secondaryType];
+
+			mapElement->type &= 0xFC;
+			mapElement->flags &= ~0x60;
+			mapElement->properties.path.type &= 0x0F;
+			mapElement->properties.path.additions &= 0x7F;
+			if (pathType & 0x80) {
+				mapElement->type |= 1;
+			}
+			mapElement->properties.path.type |= pathType << 4;
+
+			// Additions
+			additions = mapElement->properties.path.additions & 0x0F;
+			additions = RCT1PathAdditionConversionTable[additions];
+			if (additions & 0x80) {
+				additions &= ~0x80;
+				mapElement->flags |= MAP_ELEMENT_FLAG_BROKEN;
+			} else {
+				mapElement->flags &= ~MAP_ELEMENT_FLAG_BROKEN;
+			}
+			mapElement->properties.path.additions &= 0xF0;
+			mapElement->properties.path.additions |= additions;
+			break;
+		case MAP_ELEMENT_TYPE_ENTRANCE:
+			if (mapElement->properties.entrance.type == ENTRANCE_TYPE_PARK_ENTRANCE) {
+				pathType = mapElement->properties.entrance.path_type;
+				mapElement->properties.entrance.path_type = RCT1PathTypeConversionTable[pathType * 4] & 0x7F;
+			}
+			break;
+		}
+		mapElement++;
+	}
+}
+
+/**
+ *
+ *  rct2: 0x006A28F5
+ */
+static void rct1_convert_wall(int *type, int *colourA, int *colourB, int *colourC)
+{
+	switch (*type) {
+	case 12:	// creepy gate
+		*colourA = 24;
+		break;
+	case 26:	// medium brown castle wall
+		*type = 12;
+		*colourA = 25;
+		break;
+	case 27:	// tall castle wall with grey window
+		*type = 12;
+		*colourA = 2;
+	case 50:	// plate glass
+		*colourA = 24;
+		break;
+	case 13:
+		*colourB = *colourA;
+		*colourA = 24;
+		break;
+	case 11:	// tall castle wall with grey gate
+	case 22:	// brick wall with gate
+		*colourB = 2;
+		break;
+	case 35:	// wood post fence
+	case 42:	// tall grey castle wall
+	case 43:	// wooden fence with snow
+	case 44:
+	case 45:
+	case 46:
+		*colourA = 1;
+		break;
+	}
 }
 
 /**
  *
  *  rct2: 0x006A2730
  */
-static void sub_6A2730()
+static void rct1_fix_walls()
 {
-	RCT2_CALLPROC_EBPSAFE(0x006A2730);
+	rct_map_element *mapElement, originalMapElement;
+
+	for (int x = 0; x < 128; x++) {
+		for (int y = 0; y < 128; y++) {
+			mapElement = map_get_first_element_at(x, y);
+			do {
+				if (map_element_get_type(mapElement) == MAP_ELEMENT_TYPE_FENCE) {
+					originalMapElement = *mapElement;
+					map_element_remove(mapElement);
+
+					uint8 var_05 = originalMapElement.properties.fence.item[0];
+					uint16 var_06 = (
+						originalMapElement.properties.fence.item[1] |
+						(originalMapElement.properties.fence.item[2] << 8)
+					);
+
+					for (int edge = 0; edge < 4; edge++) {
+						int typeA = (var_05 >> (edge * 2)) & 3;
+						int typeB = (var_06 >> (edge * 4)) & 0x0F;
+						if (typeB != 0x0F) {
+							int type = typeA | (typeB << 2);
+							int colourA = (
+								((originalMapElement.type & 0xC0) >> 3) |
+								(originalMapElement.properties.fence.type >> 5)
+							);
+							int colourB = 0;
+							int colourC = 0;
+							rct1_convert_wall(&type, &colourA, &colourB, &colourC);
+							map_place_fence(type, x * 32, y * 32, 0, edge, colourA, colourB, colourC, 169);
+						}
+					}
+					break;
+				}
+			} while (!map_element_is_last_for_tile(mapElement++));
+		}
+	}
 }
 
 /**
@@ -586,12 +893,20 @@ static void sub_6A2730()
  */
 static void sub_69E891()
 {
-	RCT2_CALLPROC_EBPSAFE(0x0069E891);
+	RCT2_GLOBAL(0x013587D8, uint16) = 63;
 }
 
 #pragma region Tables
 
-const uint8 RCT1TerrainConvertTable[16] = {
+// rct2: 0x0097F0BC & 0x0098BC60
+const uint8 RCT1ColourConversionTable[32] = {
+	 0,  1,  2,  4,  5,  6,  7,  9,
+	11, 12, 13, 14, 15, 16, 18, 19,
+	20, 21, 22, 23, 24, 25, 26, 27,
+	28, 30, 31, 29,  3, 10, 17,  8
+};
+
+static const uint8 RCT1TerrainConvertTable[16] = {
 	TERRAIN_GRASS,
 	TERRAIN_SAND,
 	TERRAIN_DIRT,
@@ -610,7 +925,7 @@ const uint8 RCT1TerrainConvertTable[16] = {
 	TERRAIN_GRID_GREEN
 };
 
-const uint8 RCT1TerrainEdgeConvertTable[16] = {
+static const uint8 RCT1TerrainEdgeConvertTable[16] = {
 	TERRAIN_EDGE_ROCK,
 	TERRAIN_EDGE_ROCK,			// Originally TERRAIN_EDGE_BRICK
 	TERRAIN_EDGE_ROCK,			// Originally TERRAIN_EDGE_IRON
@@ -627,6 +942,42 @@ const uint8 RCT1TerrainEdgeConvertTable[16] = {
 	TERRAIN_EDGE_ROCK,			// Originally TERRAIN_EDGE_SKYSCRAPER_A
 	TERRAIN_EDGE_ROCK,			// Originally TERRAIN_EDGE_SKYSCRAPER_B
 	TERRAIN_EDGE_ROCK			// Unused
+};
+
+// rct2: 0x0098BC9F
+static const uint8 RCT1PathTypeConversionTable[96] = {
+	0x80 | 0, 0x80 | 1, 0x80 | 2, 0x80 | 3,
+	0x80 | 0, 0x80 | 1, 0x80 | 2, 0x80 | 3,
+	0x80 | 0, 0x80 | 1, 0x80 | 2, 0x80 | 3,
+	0x80 | 0, 0x80 | 1, 0x80 | 2, 0x80 | 3,
+	0, 0, 0, 0,
+	2, 2, 2, 2,
+	1, 1, 1, 1,
+	0, 0, 0, 0,
+	3, 3, 3, 3,
+	6, 6, 6, 6,
+	0, 0, 0, 0,
+	0, 0, 0, 0,
+	5, 5, 5, 5,
+	5, 5, 5, 5,
+	5, 5, 5, 5,
+	5, 5, 5, 5,
+	4, 4, 4, 4,
+	4, 4, 4, 4,
+	4, 4, 4, 4,
+	4, 4, 4, 4,
+	0, 0, 0, 0,
+	0, 0, 0, 0,
+	0, 0, 0, 0,
+	0, 0, 0, 0,
+};
+
+// rct2: 0x0098BCFF
+static const uint8 RCT1PathAdditionConversionTable[15] = {
+	0,
+	1, 2, 3, 4, 5, 6, 7,
+	0x80 | 1, 0x80 | 2, 0x80 | 3, 0x80 | 4, 0x80 | 6, 0x80 | 7,
+	8,
 };
 
 #pragma endregion
@@ -663,7 +1014,7 @@ static const rct_object_entry RCT1DefaultObjectsRides[] = {
 	{ 0x00008000, { "SWSH1   " }, 0 },
 	{ 0x00008000, { "SWSH2   " }, 0 },
 	{ 0x00008000, { "ICECR1  " }, 0 },
-	{ 0x00008000, { "CHPSH2  " }, 0 },
+	{ 0x00008000, { "CHPSH   " }, 0 },
 	{ 0x00008000, { "DRNKS   " }, 0 },
 	{ 0x00008000, { "CNDYF   " }, 0 },
 	{ 0x00008000, { "BURGB   " }, 0 },
@@ -1163,7 +1514,7 @@ static const rct_object_entry RCT1DefaultObjectsWater[] = {
 };
 
 static const RCT1DefaultObjectsGroup RCT1DefaultObjects[10] = {
-	{ NULL,								0											},
+	{ RCT1DefaultObjectsRides,			countof(RCT1DefaultObjectsRides)			},
 	{ RCT1DefaultObjectsSmallScenery,	countof(RCT1DefaultObjectsSmallScenery)		},
 	{ RCT1DefaultObjectsLargeScenery,	countof(RCT1DefaultObjectsLargeScenery)		},
 	{ RCT1DefaultObjectsWall,			countof(RCT1DefaultObjectsWall)				},

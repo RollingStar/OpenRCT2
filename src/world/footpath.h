@@ -48,7 +48,9 @@ enum {
 
 extern const rct_xy16 word_981D6C[4];
 
+money32 footpath_remove_real(int x, int y, int z, int flags);
 void game_command_place_footpath(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
+void game_command_place_footpath_from_track(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
 void game_command_remove_footpath(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
 money32 footpath_place(int type, int x, int y, int z, int slope, int flags);
 void footpath_remove(int x, int y, int z, int flags);
@@ -60,6 +62,7 @@ void footpath_bridge_get_info_from_pos(int screenX, int screenY, int *x, int *y,
 void footpath_remove_litter(int x, int y, int z);
 void footpath_connect_edges(int x, int y, rct_map_element *mapElement, int flags);
 void sub_6A759F();
+bool fence_in_the_way(int x, int y, int z0, int z1, int direction);
 void footpath_chain_ride_queue(int rideIndex, int entranceIndex, int x, int y, rct_map_element *mapElement, int direction);
 
 void footpath_bridge_get_info_from_pos(int screenX, int screenY, int *x, int *y, int *direction, rct_map_element **mapElement);
@@ -68,6 +71,7 @@ int footpath_is_connected_to_map_edge(int x, int y, int z, int direction, int fl
 bool footpath_element_is_sloped(rct_map_element *mapElement);
 int footpath_element_get_slope_direction(rct_map_element *mapElement);
 bool footpath_element_is_queue(rct_map_element *mapElement);
+bool footpath_element_is_wide(rct_map_element *mapElement);
 void footpath_remove_edges_at(int x, int y, rct_map_element *mapElement);
 
 #endif

@@ -173,7 +173,7 @@ typedef struct {
 	uint8 track_spine_colour[4];					// 0x60
 	uint8 track_rail_colour[4];						// 0x64
 	uint8 track_support_colour[4];					// 0x68
-	uint32 var_6C;
+	uint32 flags2;									// 0x6C
 	rct_object_entry vehicle_object;				// 0x70
 	uint8 space_required_x;							// 0x80
 	uint8 space_required_y;							// 0x81
@@ -186,6 +186,10 @@ typedef struct{
 	uint8 preview[4][TRACK_PREVIEW_IMAGE_SIZE];		// 0xA3
 } rct_track_design;
 
+enum {
+	TRACK_FLAGS2_CONTAINS_LOG_FLUME_REVERSER = (1 << 1),
+	TRACK_FLAGS2_SIX_FLAGS_RIDE_DEPRECATED = (1 << 31)		// Not used anymore.
+};
 
 enum {
 	TRACK_NONE = 0,
@@ -480,7 +484,24 @@ enum {
 	TRACK_ELEM_LEFT_LARGE_HALF_LOOP_DOWN
 };
 
+enum {
+	TRACK_ELEMENT_LOCATION_IS_UNDERGROUND = 2,
+};
+
+typedef struct {
+	rct_xy_element last;
+	rct_xy_element current;
+	int currentZ;
+	int currentDirection;
+	rct_map_element *first;
+	bool firstIteration;
+	bool looped;
+} track_circuit_iterator;
+
+extern const rct_trackdefinition *gFlatRideTrackDefinitions;
 extern const rct_trackdefinition *gTrackDefinitions;
+
+extern rct_map_element **gTrackSavedMapElements;
 
 void track_load_list(ride_list_item item);
 int sub_67726A(const char *path);
@@ -495,11 +516,13 @@ int track_is_connected_by_shape(rct_map_element *a, rct_map_element *b);
 int sub_6D01B3(uint8 bl, uint8 rideIndex, int x, int y, int z);
 int save_track_design(uint8 rideIndex);
 int install_track(char* source_path, char* dest_name);
-void window_track_list_format_name(char *dst, const char *src, char colour, char quotes);
+void window_track_list_format_name(utf8 *dst, const utf8 *src, int colour, bool quotes);
 void game_command_place_track_design(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
+void game_command_place_maze_design(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 
 void track_save_reset_scenery();
 void track_save_select_nearby_scenery(int rideIndex);
+void track_save_toggle_map_element(int interactionType, int x, int y, rct_map_element *mapElement);
 
 const rct_preview_track *get_track_def_from_ride(rct_ride *ride, int trackType);
 const rct_preview_track *get_track_def_from_ride_index(int rideIndex, int trackType);
@@ -507,6 +530,14 @@ const rct_track_coordinates *get_track_coord_from_ride(rct_ride *ride, int track
 
 void game_command_place_track(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
 void game_command_remove_track(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
+void game_command_set_maze_track(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
 void game_command_set_brakes_speed(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
+
+void track_circuit_iterator_begin(track_circuit_iterator *it, rct_xy_element first);
+bool track_circuit_iterator_previous(track_circuit_iterator *it);
+bool track_circuit_iterator_next(track_circuit_iterator *it);
+
+void track_get_back(rct_xy_element *input, rct_xy_element *output);
+void track_get_front(rct_xy_element *input, rct_xy_element *output);
 
 #endif

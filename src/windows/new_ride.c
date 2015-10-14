@@ -189,7 +189,7 @@ static rct_widget window_new_ride_widgets[] = {
 	{ WWT_GROUPBOX,			2,	3,		292,	47,		116,	STR_CURRENTLY_IN_DEVELOPMENT,			STR_NONE							},
 	{ WWT_GROUPBOX,			2,	3,		292,	124,	188,	STR_LAST_DEVELOPMENT,					STR_NONE							},
 	{ WWT_FLATBTN,			2,	265,	288,	161,	184,	0xFFFFFFFF,								STR_RESEARCH_SHOW_DETAILS_TIP		},
-	{ WWT_FLATBTN,			2,	265,	288,	68,		91,		5190,									STR_FINANCES_RESEARCH				},
+	{ WWT_FLATBTN,			2,	265,	288,	68,		91,		5190,									STR_FINANCES_RESEARCH_TIP				},
 	{ WIDGETS_END },
 };
 
@@ -197,46 +197,44 @@ static rct_widget window_new_ride_widgets[] = {
 
 #pragma region Events
 
-static void window_new_ride_emptysub() { }
-
-static void window_new_ride_mouseup();
+static void window_new_ride_mouseup(rct_window *w, int widgetIndex);
 static void window_new_ride_mousedown(int widgetIndex, rct_window *w, rct_widget *widget);
 static void window_new_ride_update(rct_window *w);
-static void window_new_ride_scrollgetsize();
-static void window_new_ride_scrollmousedown();
-static void window_new_ride_scrollmouseover();
-static void window_new_ride_tooltip();
-static void window_new_ride_invalidate();
-static void window_new_ride_paint();
-static void window_new_ride_scrollpaint();
+static void window_new_ride_scrollgetsize(rct_window *w, int scrollIndex, int *width, int *height);
+static void window_new_ride_scrollmousedown(rct_window *w, int scrollIndex, int x, int y);
+static void window_new_ride_scrollmouseover(rct_window *w, int scrollIndex, int x, int y);
+static void window_new_ride_tooltip(rct_window* w, int widgetIndex, rct_string_id *stringId);
+static void window_new_ride_invalidate(rct_window *w);
+static void window_new_ride_paint(rct_window *w, rct_drawpixelinfo *dpi);
+static void window_new_ride_scrollpaint(rct_window *w, rct_drawpixelinfo *dpi, int scrollIndex);
 
 // 0x0098E354
-static void* window_new_ride_events[] = {
-	window_new_ride_emptysub,
+static rct_window_event_list window_new_ride_events = {
+	NULL,
 	window_new_ride_mouseup,
-	window_new_ride_emptysub,
+	NULL,
 	window_new_ride_mousedown,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
+	NULL,
+	NULL,
 	window_new_ride_update,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_new_ride_scrollgetsize,
 	window_new_ride_scrollmousedown,
-	window_new_ride_emptysub,
+	NULL,
 	window_new_ride_scrollmouseover,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
+	NULL,
+	NULL,
+	NULL,
 	window_new_ride_tooltip,
-	window_new_ride_emptysub,
-	window_new_ride_emptysub,
+	NULL,
+	NULL,
 	window_new_ride_invalidate,
 	window_new_ride_paint,
 	window_new_ride_scrollpaint
@@ -322,6 +320,7 @@ static void window_new_ride_populate_list()
 
 				quadIndex = rideEntryIndex >> 5;
 				bitIndex = rideEntryIndex & 0x1F;
+				// Skip if vehicle type is not invented yet
 				if (!(RCT2_ADDRESS(0x01357424, uint32)[quadIndex] & (1 << bitIndex)))
 					continue;
 
@@ -381,7 +380,8 @@ static void window_new_ride_populate_list()
  */
 static void window_new_ride_scroll_to_focused_ride(rct_window *w)
 {
-	int scrollWidth, scrollHeight;
+	int scrollWidth = 0;
+	int scrollHeight = 0;
 	window_get_scroll_size(w, 0, &scrollWidth, &scrollHeight);
 	
 	// Find row index of the focused ride type
@@ -422,7 +422,7 @@ rct_window *window_new_ride_open()
 	window_close_by_class(WC_TRACK_DESIGN_LIST);
 	window_close_by_class(WC_TRACK_DESIGN_PLACE);
 
-	w = window_create_auto_pos(601, 370, (uint32*)window_new_ride_events, WC_CONSTRUCT_RIDE, WF_10);
+	w = window_create_auto_pos(601, 370, &window_new_ride_events, WC_CONSTRUCT_RIDE, WF_10);
 	w->widgets = window_new_ride_widgets;
 	w->enabled_widgets =
 		(1 << WIDX_CLOSE) |
@@ -612,13 +612,8 @@ static void window_new_ride_draw_tab_images(rct_drawpixelinfo *dpi, rct_window *
  *
  *  rct2: 0x006B6B38
  */
-static void window_new_ride_mouseup()
+static void window_new_ride_mouseup(rct_window *w, int widgetIndex)
 {
-	short widgetIndex;
-	rct_window *w;
-
-	window_widget_get_registers(w, widgetIndex);
-
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
@@ -662,33 +657,25 @@ static void window_new_ride_update(rct_window *w)
  *
  *  rct2: 0x006B6BC9
  */
-static void window_new_ride_scrollgetsize()
+static void window_new_ride_scrollgetsize(rct_window *w, int scrollIndex, int *width, int *height)
 {
 	ride_list_item *listItem = (ride_list_item*)0x00F43523;
-	int width, height;
 
 	int count = 0;
 	while (listItem->type != 255 || listItem->entry_index != 255) {
 		count++;
 		listItem++;
 	}
-	width = 0;
-	height = ((count + 4) / 5) * 116;
-
-	window_scrollsize_set_registers(width, height);
+	*height = ((count + 4) / 5) * 116;
 }
 
 /**
  *
  *  rct2: 0x006B6C89
  */
-static void window_new_ride_scrollmousedown()
+static void window_new_ride_scrollmousedown(rct_window *w, int scrollIndex, int x, int y)
 {
-	short x, y, scrollIndex;
-	rct_window *w;
 	ride_list_item item;
-
-	window_scrollmouse_get_registers(w, scrollIndex, x, y);
 
 	// Made it impossible to click a ride in pause mode. Since the UI now stays responsive in pause mode, always allow clicking a ride.
 	/*if (RCT2_GLOBAL(RCT2_ADDRESS_GAME_PAUSED, uint8) != 0)
@@ -710,13 +697,9 @@ static void window_new_ride_scrollmousedown()
  *
  *  rct2: 0x006B6C51
  */
-static void window_new_ride_scrollmouseover()
+static void window_new_ride_scrollmouseover(rct_window *w, int scrollIndex, int x, int y)
 {
-	short x, y, scrollIndex;
-	rct_window *w;
 	ride_list_item item;
-
-	window_scrollmouse_get_registers(w, scrollIndex, x, y);
 
 	if (w->new_ride.selected_ride_id != -1)
 		return;
@@ -735,7 +718,7 @@ static void window_new_ride_scrollmouseover()
  *
  *  rct2: 0x006B6BBF
  */
-static void window_new_ride_tooltip()
+static void window_new_ride_tooltip(rct_window* w, int widgetIndex, rct_string_id *stringId)
 {
 	RCT2_GLOBAL(0x013CE952, uint16) = 3159;
 }
@@ -744,11 +727,8 @@ static void window_new_ride_tooltip()
  *
  *  rct2: 0x006B6819
  */
-static void window_new_ride_invalidate()
+static void window_new_ride_invalidate(rct_window *w)
 {
-	rct_window *w;
-
-	window_get_register(w);
 	colour_scheme_update(w);
 
 	window_new_ride_set_pressed_tab(w);
@@ -772,13 +752,8 @@ static void window_new_ride_invalidate()
  *
  *  rct2: 0x006B689B
  */
-static void window_new_ride_paint()
+static void window_new_ride_paint(rct_window *w, rct_drawpixelinfo *dpi)
 {
-	rct_window *w;
-	rct_drawpixelinfo *dpi;
-
-	window_paint_get_registers(w, dpi);
-
 	window_draw_widgets(w, dpi);
 	window_new_ride_draw_tab_images(dpi, w);
 
@@ -795,13 +770,9 @@ static void window_new_ride_paint()
  *
  *  rct2: 0x006B6ABF
  */
-static void window_new_ride_scrollpaint()
+static void window_new_ride_scrollpaint(rct_window *w, rct_drawpixelinfo *dpi, int scrollIndex)
 {
-	rct_window *w;
-	rct_drawpixelinfo *dpi;
 	rct_ride_type **rideEntries = (rct_ride_type**)0x009ACFA4;
-
-	window_paint_get_registers(w, dpi);
 
 	if (_window_new_ride_current_tab == WINDOW_NEW_RIDE_PAGE_RESEARCH)
 		return;
@@ -820,7 +791,7 @@ static void window_new_ride_scrollpaint()
 		if (w->new_ride.highlighted_ride_id == *((sint16*)listItem) || flags != 0)
 			gfx_fill_rect_inset(dpi, x, y, x + 115, y + 115, w->colours[1], 0x80 | flags);
 		
-		// Draw ride image
+		// Draw ride image with feathered border
 		rideEntry = rideEntries[listItem->entry_index];
 		int image_id = rideEntry->images_offset;
 		if (listItem->type != rideEntry->ride_type[0]) {
@@ -828,7 +799,7 @@ static void window_new_ride_scrollpaint()
 			if (listItem->type != rideEntry->ride_type[1])
 				image_id++;
 		}
-		sub_681DE2(dpi, x + 2, y + 2, 29013, image_id);
+		gfx_draw_sprite_raw_masked(dpi, x + 2, y + 2, 29013, image_id);
 
 		// Next position
 		x += 116;
@@ -960,6 +931,7 @@ static void window_new_ride_select(rct_window *w)
 		return;
 
 	window_close(w);
+	window_close_construction_windows();
 
 	if (ride_type_has_flag(item.type, RIDE_TYPE_FLAG_HAS_TRACK)) {
 		track_load_list(item);

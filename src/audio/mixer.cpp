@@ -18,14 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
-#include <math.h>
-#include <SDL.h>
-
 extern "C" {
 	#include "../config.h"
 	#include "../platform/platform.h"
-	#include "audio.h"
 	#include "../localisation/localisation.h"
+	#include "audio.h"
 }
 #include "mixer.h"
 
@@ -90,11 +87,8 @@ bool Source_Sample::LoadWAV(const char* filename)
 {
 	log_verbose("Source_Sample::LoadWAV(%s)", filename);
 
-	utf8 utf8filename[512];
-	win1252_to_utf8(utf8filename, filename, sizeof(utf8filename));
-
 	Unload();
-	SDL_RWops* rw = SDL_RWFromFile(utf8filename, "rb");
+	SDL_RWops* rw = SDL_RWFromFile(filename, "rb");
 	if (rw == NULL) {
 		log_verbose("Error loading %s", filename);
 		return false;
@@ -118,15 +112,12 @@ bool Source_Sample::LoadWAV(const char* filename)
 	return true;
 }
 
-bool Source_Sample::LoadCSS1(const char* filename, unsigned int offset)
+bool Source_Sample::LoadCSS1(const char *filename, unsigned int offset)
 {
 	log_verbose("Source_Sample::LoadCSS1(%s, %d)", filename, offset);
 
-	utf8 utf8filename[512];
-	win1252_to_utf8(utf8filename, filename, sizeof(utf8filename));
-
 	Unload();
-	SDL_RWops* rw = SDL_RWFromFile(utf8filename, "rb");
+	SDL_RWops* rw = SDL_RWFromFile(filename, "rb");
 	if (rw == NULL) {
 		log_verbose("Unable to load %s", filename);
 		return false;
@@ -145,11 +136,20 @@ bool Source_Sample::LoadCSS1(const char* filename, unsigned int offset)
 	Uint32 soundsize;
 	SDL_RWread(rw, &soundsize, sizeof(soundsize), 1);
 	length = soundsize;
-	WAVEFORMATEX waveformat;
+	struct WaveFormatEx
+	{
+		Uint16 encoding;
+		Uint16 channels;
+		Uint32 frequency;
+		Uint32 byterate;
+		Uint16 blockalign;
+		Uint16 bitspersample;
+		Uint16 extrasize;
+	} waveformat;
 	SDL_RWread(rw, &waveformat, sizeof(waveformat), 1);
-	format.freq = waveformat.nSamplesPerSec;
+	format.freq = waveformat.frequency;
 	format.format = AUDIO_S16LSB;
-	format.channels = waveformat.nChannels;
+	format.channels = waveformat.channels;
 	data = new (std::nothrow) uint8[length];
 	if (!data) {
 		log_verbose("Unable to allocate data");
@@ -269,15 +269,24 @@ bool Source_SampleStream::LoadWAV(SDL_RWops* rw)
 		return false;
 	}
 	Uint64 chunkstart = SDL_RWtell(rw);
-	PCMWAVEFORMAT waveformat;
+	struct WaveFormat
+	{
+		Uint16 encoding;
+		Uint16 channels;
+		Uint32 frequency;
+		Uint32 byterate;
+		Uint16 blockalign;
+		Uint16 bitspersample;
+	} waveformat;
 	SDL_RWread(rw, &waveformat, sizeof(waveformat), 1);
 	SDL_RWseek(rw, chunkstart + fmtchunk_size, RW_SEEK_SET);
-	if (waveformat.wf.wFormatTag != WAVE_FORMAT_PCM) {
+	const Uint16 pcmformat = 0x0001;
+	if (waveformat.encoding != pcmformat) {
 		log_verbose("Not in proper format");
 		return false;
 	}
-	format.freq = waveformat.wf.nSamplesPerSec;
-	switch (waveformat.wBitsPerSample) {
+	format.freq = waveformat.frequency;
+	switch (waveformat.bitspersample) {
 		case 8:
 			format.format = AUDIO_U8;
 			break;
@@ -289,7 +298,7 @@ bool Source_SampleStream::LoadWAV(SDL_RWops* rw)
 			return false;
 			break;
 	}
-	format.channels = waveformat.wf.nChannels;
+	format.channels = waveformat.channels;
 	const Uint32 DATA = 0x61746164;
 	Uint32 datachunk_size = FindChunk(rw, DATA);
 	if (!datachunk_size) {
@@ -574,7 +583,7 @@ void SDLCALL Mixer::Callback(void* arg, uint8* stream, int length)
 
 void Mixer::MixChannel(Channel& channel, uint8* data, int length)
 {
-	if (channel.source && channel.source->Length() > 0 && !channel.done) {
+	if (channel.source && channel.source->Length() > 0 && !channel.done && gConfigSound.sound) {
 		AudioFormat streamformat = channel.source->Format();
 		int loaded = 0;
 		SDL_AudioCVT cvt;
@@ -789,6 +798,9 @@ void Mixer_Init(const char* device)
 
 void* Mixer_Play_Effect(int id, int loop, int volume, float pan, double rate, int deleteondone)
 {
+	if (!gConfigSound.sound) {
+		return 0;
+	}
 	if (id >= countof(gMixer.css1sources)) {
 		return 0;
 	}
@@ -851,13 +863,13 @@ void Mixer_Channel_SetGroup(void* channel, int group)
 
 void* Mixer_Play_Music(int pathid, int loop, int streaming)
 {
+	if (!gConfigSound.sound) {
+		return 0;
+	}
 	if (streaming) {
-		const char* filename = get_file_path(pathid);
+		const utf8 *filename = get_file_path(pathid);
 
-		utf8 utf8filename[512];
-		win1252_to_utf8(utf8filename, filename, sizeof(utf8filename));
-
-		SDL_RWops* rw = SDL_RWFromFile(utf8filename, "rb");
+		SDL_RWops* rw = SDL_RWFromFile(filename, "rb");
 		if (rw == NULL) {
 			return 0;
 		}

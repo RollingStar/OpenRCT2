@@ -155,16 +155,6 @@ void update_rain_animation()
 	if (RCT2_GLOBAL(0x009ABDF2, uint8) == 0)
 		return;
 
-	// Draw picked-up peep
-	if (RCT2_GLOBAL(RCT2_ADDRESS_PICKEDUP_PEEP_SPRITE, uint32) != 0xFFFFFFFF) {
-		gfx_draw_sprite(
-			(rct_drawpixelinfo*)RCT2_ADDRESS_SCREEN_DPI,
-			RCT2_GLOBAL(RCT2_ADDRESS_PICKEDUP_PEEP_SPRITE, uint32),
-			RCT2_GLOBAL(RCT2_ADDRESS_PICKEDUP_PEEP_X, sint16),
-			RCT2_GLOBAL(RCT2_ADDRESS_PICKEDUP_PEEP_Y, sint16), 0
-		);
-	}
-
 	// Get rain draw function and draw rain
 	uint32 draw_rain_func = RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_RAIN_LEVEL, uint8);
 	if (draw_rain_func > 0 && !(RCT2_GLOBAL(0x009DEA6F, uint8) & 1))
@@ -177,8 +167,8 @@ void update_rain_animation()
  */
 static void draw_light_rain(int left, int top, int width, int height)
 {
-	int x_start = -RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) + 8;
-	int y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) * 3) + 7;
+	int x_start = -(int)RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) + 8;
+	int y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) * 3) + 7;
 	y_start = -y_start;
 
 	x_start += left;
@@ -186,8 +176,8 @@ static void draw_light_rain(int left, int top, int width, int height)
 
 	gfx_draw_rain(left, top, width, height, x_start, y_start);
 
-	x_start = -RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) + 0x18;
-	y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) * 4) + 0x0D;
+	x_start = -(int)RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) + 0x18;
+	y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) * 4) + 0x0D;
 	y_start = -y_start;
 
 	x_start += left;
@@ -201,8 +191,8 @@ static void draw_light_rain(int left, int top, int width, int height)
  */
 static void draw_heavy_rain(int left, int top, int width, int height)
 {
-	int x_start = -RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int);
-	int y_start = RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) * 5;
+	int x_start = -(int)RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32);
+	int y_start = RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) * 5;
 	y_start = -y_start;
 
 	x_start += left;
@@ -210,8 +200,8 @@ static void draw_heavy_rain(int left, int top, int width, int height)
 
 	gfx_draw_rain(left, top, width, height, x_start, y_start);
 
-	x_start = -RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) + 0x10;
-	y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) * 6) + 5;
+	x_start = -(int)RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) + 0x10;
+	y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) * 6) + 5;
 	y_start = -y_start;
 
 	x_start += left;
@@ -219,8 +209,8 @@ static void draw_heavy_rain(int left, int top, int width, int height)
 
 	gfx_draw_rain(left, top, width, height, x_start, y_start);
 
-	x_start = -RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) + 8;
-	y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) * 3) + 7;
+	x_start = -(int)RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) + 8;
+	y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) * 3) + 7;
 	y_start = -y_start;
 
 	x_start += left;
@@ -228,8 +218,8 @@ static void draw_heavy_rain(int left, int top, int width, int height)
 
 	gfx_draw_rain(left, top, width, height, x_start, y_start);
 
-	x_start = -RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) + 0x18;
-	y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, int) * 4) + 0x0D;
+	x_start = -(int)RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) + 0x18;
+	y_start = (RCT2_GLOBAL(RCT2_ADDRESS_SCENARIO_TICKS, uint32) * 4) + 0x0D;
 	y_start = -y_start;
 
 	x_start += left;

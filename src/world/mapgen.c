@@ -18,10 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
-#ifndef _USE_MATH_DEFINES
-  #define _USE_MATH_DEFINES
-#endif
-#include <math.h>
 #include <time.h>
 #include "../addresses.h"
 #include "../object.h"
@@ -109,6 +105,8 @@ void mapgen_generate_blank(mapgen_settings *settings)
 	int x, y;
 	rct_map_element *mapElement;
 
+	map_clear_all_elements();
+
 	map_init(settings->mapSize);
 	for (y = 1; y < settings->mapSize - 1; y++) {
 		for (x = 1; x < settings->mapSize - 1; x++) {
@@ -152,6 +150,8 @@ void mapgen_generate(mapgen_settings *settings)
 			break;
 		}
 	}
+
+	map_clear_all_elements();
 
 	// Initialise the base map
 	map_init(mapSize);
@@ -739,12 +739,6 @@ static float generate(float x, float y)
 static int fast_floor(float x)
 {
 	return (x > 0) ? ((int)x) : (((int)x) - 1);
-}
-
-static int mod(int x, int m)
-{
-	int a = x % m;
-	return a < 0 ? a + m : a;
 }
 
 static float grad(int hash, float x, float y)

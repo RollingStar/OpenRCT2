@@ -8,20 +8,21 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- 
+
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- 
+
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
 #include "../addresses.h"
 #include "localisation.h"
+#include "../ride/ride.h"
 
-char *gUserStrings = (char*)0x0135A8F4;
+utf8 *gUserStrings = (char*)0x0135A8F4;
 
 static bool user_string_exists(const char *text);
 
@@ -35,10 +36,10 @@ void user_string_clear_all()
 }
 
 /**
- * 
+ *
  *  rct2: 0x006C421D
  */
-rct_string_id user_string_allocate(int base, const char *text)
+rct_string_id user_string_allocate(int base, const utf8 *text)
 {
 	int highBits = (base & 0x7F) << 9;
 	bool allowDuplicates = base & 0x80;
@@ -61,7 +62,7 @@ rct_string_id user_string_allocate(int base, const char *text)
 }
 
 /**
- * 
+ *
  *  rct2: 0x006C42AC
  */
 void user_string_free(rct_string_id id)
@@ -73,7 +74,7 @@ void user_string_free(rct_string_id id)
 	gUserStrings[id * USER_STRING_MAX_LENGTH] = 0;
 }
 
-static bool user_string_exists(const char *text)
+static bool user_string_exists(const utf8 *text)
 {
 	char *userString = gUserStrings;
 	for (int i = 0; i < MAX_USER_STRINGS; i++, userString += USER_STRING_MAX_LENGTH) {
@@ -89,4 +90,15 @@ static bool user_string_exists(const char *text)
 bool is_user_string_id(rct_string_id stringId)
 {
 	return stringId >= 0x8000 && stringId < 0x9000;
+}
+
+void reset_user_strings()
+{
+	char *userString = gUserStrings;
+
+	for (int i = 0; i < MAX_USER_STRINGS; i++, userString += USER_STRING_MAX_LENGTH) {
+		userString[0] = 0;
+	}
+
+	ride_reset_all_names();
 }

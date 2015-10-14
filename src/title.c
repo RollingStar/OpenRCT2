@@ -33,7 +33,9 @@
 #include "intro.h"
 #include "management/news_item.h"
 #include "management/research.h"
+#include "network/network.h"
 #include "openrct2.h"
+#include "peep/staff.h"
 #include "ride/ride.h"
 #include "scenario.h"
 #include "util/util.h"
@@ -110,7 +112,7 @@ void title_load()
 	reset_sprite_list();
 	ride_init_all();
 	window_guest_list_init_vars_a();
-	sub_6BD3A4();
+	staff_reset_modes();
 	map_init(150);
 	park_init();
 	date_reset();
@@ -123,13 +125,16 @@ void title_load()
 	reset_0x69EBE4();
 	stop_ride_music();
 	stop_crowd_sound();
-	stop_other_sounds();
+	//stop_other_sounds();
 	viewport_init_all();
 	news_item_init_queue();
 	title_create_windows();
 	title_init_showcase();
 	gfx_invalidate_screen();
-	RCT2_GLOBAL(0x009DEA66, uint16) = 0;
+	RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_AGE, uint16) = 0;
+#ifndef DISABLE_NETWORK
+	network_close();
+#endif
 
 	if (gOpenRCT2ShowChangelog) {
 		gOpenRCT2ShowChangelog = false;
@@ -168,9 +173,15 @@ static int title_load_park(const char *path)
 	rct_window* w;
 	int successfulLoad;
 
-	successfulLoad = _strcmpi(path_get_extension(path), ".sv6") == 0 ?
-		game_load_sv6(path) :
-		scenario_load(path);
+	if (_strcmpi(path_get_extension(path), ".sv6") == 0) {
+		SDL_RWops* rw = SDL_RWFromFile(path, "rb");
+		if (rw != NULL) {
+			successfulLoad = game_load_sv6(rw);
+			SDL_RWclose(rw);
+		}
+	} else {
+		successfulLoad = scenario_load(path);
+	}
 
 	if (!successfulLoad)
 		return 0;
@@ -181,9 +192,9 @@ static int title_load_park(const char *path)
 	w->saved_view_y = RCT2_GLOBAL(RCT2_ADDRESS_SAVED_VIEW_Y, sint16);
 
 	{
-		char _cl = (RCT2_GLOBAL(0x0138869E, sint16) & 0xFF) - w->viewport->zoom;
-		w->viewport->zoom = RCT2_GLOBAL(0x0138869E, sint16) & 0xFF;
-		*((char*)(&RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_ROTATION, sint32))) = RCT2_GLOBAL(0x0138869E, sint16) >> 8;
+		char _cl = (RCT2_GLOBAL(RCT2_ADDRESS_SAVED_VIEW_ZOOM_AND_ROTATION, sint16) & 0xFF) - w->viewport->zoom;
+		w->viewport->zoom = RCT2_GLOBAL(RCT2_ADDRESS_SAVED_VIEW_ZOOM_AND_ROTATION, sint16) & 0xFF;
+		*((char*)(&RCT2_GLOBAL(RCT2_ADDRESS_CURRENT_ROTATION, sint32))) = RCT2_GLOBAL(RCT2_ADDRESS_SAVED_VIEW_ZOOM_AND_ROTATION, sint16) >> 8;
 		if (_cl != 0) {
 			if (_cl < 0) {
 				_cl = -_cl;
@@ -206,8 +217,7 @@ static int title_load_park(const char *path)
 	scenery_set_default_placement_configuration();
 	news_item_init_queue();
 	gfx_invalidate_screen();
-	RCT2_GLOBAL(0x009DEA66, sint16) = 0;
-	RCT2_GLOBAL(0x009DEA5C, sint16) = 0x0D6D8;
+	RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_AGE, sint16) = 0;
 	gGameSpeed = 1;
 	return 1;
 }
@@ -300,7 +310,7 @@ static void title_do_next_script_opcode()
 		w = window_get_main();
 		if (w != NULL)
 			for (i = 0; i < script_operand; i++)
-				window_rotate_camera(w);
+				window_rotate_camera(w, 1);
 		break;
 	case TITLE_SCRIPT_ZOOM:
 		script_operand = (*_currentScript++);
@@ -328,7 +338,7 @@ static void title_do_next_script_opcode()
 			const uint8 *loadPtr;
 			char *ch, filename[32], path[MAX_PATH];
 			char separator = platform_get_path_separator();
-			
+
 			loadPtr = _currentScript - 1;
 
 			// Get filename
@@ -424,12 +434,20 @@ void DrawOpenRCT2(int x, int y)
 {
 	char buffer[256];
 	rct_drawpixelinfo *dpi = RCT2_ADDRESS(RCT2_ADDRESS_SCREEN_DPI, rct_drawpixelinfo);
-	
+
 	// Draw background
 	gfx_fill_rect_inset(dpi, x, y, x + 128, y + 20, 0x80 | 12, 0x8);
 
 	// Format text (name and version)
-	sprintf(buffer, "%c%c%c%s, v%s", FORMAT_MEDIUMFONT, FORMAT_OUTLINE, FORMAT_WHITE, OPENRCT2_NAME, OPENRCT2_VERSION);
+	char *ch = buffer;;
+	ch = utf8_write_codepoint(ch, FORMAT_MEDIUMFONT);
+	ch = utf8_write_codepoint(ch, FORMAT_OUTLINE);
+	ch = utf8_write_codepoint(ch, FORMAT_WHITE);
+	strcpy(ch, OPENRCT2_NAME);
+	strcat(buffer, ", v");
+	strcat(buffer, OPENRCT2_VERSION);
+
+	// sprintf(buffer, "%c%c%c%s, v%s", FORMAT_MEDIUMFONT, FORMAT_OUTLINE, FORMAT_WHITE, OPENRCT2_NAME, OPENRCT2_VERSION);
 	if (!str_is_null_or_empty(OPENRCT2_BRANCH))
 		sprintf(strchr(buffer, 0), "-%s", OPENRCT2_BRANCH);
 	if (!str_is_null_or_empty(OPENRCT2_BUILD_NUMBER))
@@ -471,16 +489,10 @@ void title_update()
 	window_map_tooltip_update_visibility();
 	window_dispatch_update_all();
 
-	RCT2_GLOBAL(0x01388698, uint16)++;
+	RCT2_GLOBAL(RCT2_ADDRESS_SAVED_AGE, uint16)++;
 
 	// Input
 	game_handle_input();
-
-	if (RCT2_GLOBAL(0x009AAC73, uint8) != 255) {
-		RCT2_GLOBAL(0x009AAC73, uint8)++;
-		if (RCT2_GLOBAL(0x009AAC73, uint8) == 255)
-			config_save_default();
-	}
 }
 
 static uint8 *generate_random_script()
@@ -514,7 +526,7 @@ static uint8 *generate_random_script()
 
 #pragma region Load script.txt
 
-void title_script_get_line(FILE *file, char *parts)
+void title_script_get_line(SDL_RWops *file, char *parts)
 {
 	int i, c, part, cindex, whitespace, comment, load;
 
@@ -527,7 +539,10 @@ void title_script_get_line(FILE *file, char *parts)
 	comment = 0;
 	load = 0;
 	for (; part < 3;) {
-		c = fgetc(file);
+		c = 0;
+		if (SDL_RWread(file, &c, 1, 1) != 1)
+			c = EOF;
+
 		if (c == '\n' || c == '\r' || c == EOF) {
 			parts[part * 128 + cindex] = 0;
 			return;
@@ -559,23 +574,24 @@ void title_script_get_line(FILE *file, char *parts)
 
 static uint8 *title_script_load()
 {
-	FILE *file;
+	SDL_RWops *file;
 	char parts[3 * 128], *token, *part1, *part2, *src;
 
-	char path[MAX_PATH];
-	char filePath[] = "data/title/script.txt";
-	
+	utf8 path[MAX_PATH];
+	utf8 filePath[] = "data/title/script.txt";
+
 	sprintf(path, "%s%c%s", gExePath, platform_get_path_separator(), filePath);
 	log_verbose("loading title script, %s", path);
-	file = fopen(path, "r");
+	file = SDL_RWFromFile(path, "r");
 	if (file == NULL) {
 		log_error("unable to load title script");
 		return NULL;
 	}
+	sint64 fileSize = SDL_RWsize(file);
 
 	uint8 *binaryScript = (uint8*)malloc(1024 * 8);
 	if (binaryScript == NULL) {
-		fclose(file);
+		SDL_RWclose(file);
 
 		log_error("unable to allocate memory for script");
 		return NULL;
@@ -612,11 +628,13 @@ static uint8 *title_script_load()
 				*scriptPtr++ = atoi(part1) & 0xFF;
 			} else {
 				log_error("unknown token, %s", token);
+				SafeFree(binaryScript);
+				SDL_RWclose(file);
 				return NULL;
 			}
 		}
-	} while (!feof(file));
-	fclose(file);
+	} while (SDL_RWtell(file) < fileSize);
+	SDL_RWclose(file);
 
 	*scriptPtr++ = TITLE_SCRIPT_RESTART;
 
@@ -704,8 +722,11 @@ bool title_refresh_sequence()
 		_scriptWaitCounter = 0;
 		gTitleScriptCommand = -1;
 		gTitleScriptSave = 0xFF;
-		title_update_showcase();
-		gfx_invalidate_screen();
+
+		if (RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) == SCREEN_FLAGS_TITLE_DEMO) {
+			title_update_showcase();
+			gfx_invalidate_screen();
+		}
 
 		return true;
 	}
@@ -723,8 +744,12 @@ bool title_refresh_sequence()
 	gCurrentPreviewTitleSequence = 0;
 	window_invalidate_by_class(WC_OPTIONS);
 	window_invalidate_by_class(WC_TITLE_EDITOR);
-	title_update_showcase();
-	gfx_invalidate_screen();
+
+	if (RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) == SCREEN_FLAGS_TITLE_DEMO) {
+		title_update_showcase();
+		gfx_invalidate_screen();
+	}
+
 	return false;
 }
 

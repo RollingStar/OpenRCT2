@@ -1,9 +1,9 @@
 /*****************************************************************************
  * Copyright (c) 2014 Ted John
  * OpenRCT2, an open source clone of Roller Coaster Tycoon 2.
- * 
+ *
  * This file is part of OpenRCT2.
- * 
+ *
  * OpenRCT2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,12 +20,13 @@
 
 #include "addresses.h"
 #include "config.h"
+#include "interface/themes.h"
+#include "interface/title_sequences.h"
 #include "localisation/language.h"
 #include "localisation/localisation.h"
-#include "util/util.h"
-#include "interface/themes.h"
+#include "network/network.h"
 #include "openrct2.h"
-#include "interface/title_sequences.h"
+#include "util/util.h"
 
 // Magic number for original game cfg file
 static const int MagicNumber = 0x0003113A;
@@ -138,6 +139,9 @@ config_enum_definition _languageEnum[] = {
 	{ "sv-SE", LANGUAGE_SWEDISH },
 	{ "it-IT", LANGUAGE_ITALIAN },
 	{ "pt-BR", LANGUAGE_PORTUGUESE_BR },
+	{ "zh-Hant", LANGUAGE_CHINESE_TRADITIONAL },
+	{ "zh-Hans", LANGUAGE_CHINESE_SIMPLIFIED },
+	{ "fi-FI", LANGUAGE_FINNISH },
 	END_OF_ENUM
 };
 
@@ -153,7 +157,7 @@ config_enum_definition _dateFormatEnum[] = {
 
 config_property_definition _generalDefinitions[] = {
 	{ offsetof(general_configuration, always_show_gridlines),			"always_show_gridlines",		CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
-	{ offsetof(general_configuration, autosave_frequency),				"autosave",						CONFIG_VALUE_TYPE_UINT8,		AUTOSAVE_EVERY_MONTH,			NULL					},
+	{ offsetof(general_configuration, autosave_frequency),				"autosave",						CONFIG_VALUE_TYPE_UINT8,		AUTOSAVE_EVERY_5MINUTES,			NULL					},
 	{ offsetof(general_configuration, confirmation_prompt),				"confirmation_prompt",			CONFIG_VALUE_TYPE_UINT8,		0,								NULL					},
 	{ offsetof(general_configuration, construction_marker_colour),		"construction_marker_colour",	CONFIG_VALUE_TYPE_UINT8,		false,							NULL					},
 	{ offsetof(general_configuration, currency_format),					"currency_format",				CONFIG_VALUE_TYPE_UINT8,		CURRENCY_POUNDS,				_currencyEnum			},
@@ -180,28 +184,37 @@ config_property_definition _generalDefinitions[] = {
 	{ offsetof(general_configuration, no_test_crashes),					"no_test_crashes",				CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(general_configuration, date_format),						"date_format",					CONFIG_VALUE_TYPE_UINT8,		DATE_FORMAT_DMY,				_dateFormatEnum			},
 	{ offsetof(general_configuration, auto_staff_placement),			"auto_staff",					CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
+	{ offsetof(general_configuration, handymen_mow_default),			"handymen_mow_default",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(general_configuration, last_run_version),				"last_run_version",				CONFIG_VALUE_TYPE_STRING,		{ .value_string = NULL },		NULL					},
 	{ offsetof(general_configuration, invert_viewport_drag),			"invert_viewport_drag",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(general_configuration, load_save_sort),					"load_save_sort",				CONFIG_VALUE_TYPE_UINT8,		SORT_NAME_ASCENDING,			NULL					},
 	{ offsetof(general_configuration, minimize_fullscreen_focus_loss),	"minimize_fullscreen_focus_loss",CONFIG_VALUE_TYPE_BOOLEAN,		true,							NULL					},
+	{ offsetof(general_configuration, day_night_cycle),					"day_night_cycle",				CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
+	{ offsetof(general_configuration, upper_case_banners),				"upper_case_banners",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
+	{ offsetof(general_configuration, allow_loading_with_incorrect_checksum),"allow_loading_with_incorrect_checksum",	CONFIG_VALUE_TYPE_BOOLEAN,		false,			NULL					},
+	{ offsetof(general_configuration, steam_overlay_pause),				"steam_overlay_pause",			CONFIG_VALUE_TYPE_BOOLEAN,		true,							NULL					},
 };
 
 config_property_definition _interfaceDefinitions[] = {
 	{ offsetof(interface_configuration, toolbar_show_finances),			"toolbar_show_finances",		CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(interface_configuration, toolbar_show_research),			"toolbar_show_research",		CONFIG_VALUE_TYPE_BOOLEAN,		true,							NULL					},
 	{ offsetof(interface_configuration, toolbar_show_cheats),			"toolbar_show_cheats",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
-	{ offsetof(interface_configuration, select_by_track_type),		"select_by_track_type",		CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
+	{ offsetof(interface_configuration, toolbar_show_news),				"toolbar_show_news",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
+	{ offsetof(interface_configuration, select_by_track_type),			"select_by_track_type",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(interface_configuration, console_small_font),			"console_small_font",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(interface_configuration, current_theme_preset),			"current_theme",				CONFIG_VALUE_TYPE_STRING,		{ .value_string = "*RCT2" },	NULL					},
 	{ offsetof(interface_configuration, current_title_sequence_preset),	"current_title_sequence",		CONFIG_VALUE_TYPE_STRING,		{ .value_string = "*OPENRCT2" },NULL					},
+	{ offsetof(interface_configuration, object_selection_filter_flags),	"object_selection_filter_flags",CONFIG_VALUE_TYPE_UINT32,		0x7EF,							NULL					},
 };
 
 config_property_definition _soundDefinitions[] = {
 	{ offsetof(sound_configuration, title_music),						"title_music",					CONFIG_VALUE_TYPE_UINT8,		2,								NULL					},
 	{ offsetof(sound_configuration, sound),								"sound",						CONFIG_VALUE_TYPE_BOOLEAN,		true,							NULL					},
 	{ offsetof(sound_configuration, ride_music),						"ride_music",					CONFIG_VALUE_TYPE_BOOLEAN,		true,							NULL					},
+	{ offsetof(sound_configuration, audio_focus),						"audio_focus",					CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(sound_configuration, master_volume),						"master_volume",				CONFIG_VALUE_TYPE_UINT8,		100,							NULL					},
 	{ offsetof(sound_configuration, music_volume),						"music_volume",					CONFIG_VALUE_TYPE_UINT8,		100,							NULL					},
+	{ offsetof(sound_configuration, device),							"audio_device",					CONFIG_VALUE_TYPE_STRING,		{ .value_string = NULL },		NULL					},
 };
 
 config_property_definition _cheatDefinitions[] = {
@@ -210,6 +223,8 @@ config_property_definition _cheatDefinitions[] = {
 	{ offsetof(cheat_configuration, disable_all_breakdowns),			"disable_all_breakdowns",		CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(cheat_configuration, unlock_all_prices),					"unlock_all_prices",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 	{ offsetof(cheat_configuration, build_in_pause_mode),				"build_in_pause_mode",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
+	{ offsetof(cheat_configuration, ignore_ride_intensity),				"ignore_ride_intensity",		CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
+	{ offsetof(cheat_configuration, disable_vandalism),					"disable_vandalism",			CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
 };
 
 config_property_definition _twitchDefinitions[] = {
@@ -221,12 +236,19 @@ config_property_definition _twitchDefinitions[] = {
 	{ offsetof(twitch_configuration, enable_news),						"news",							CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					}
 };
 
+config_property_definition _networkDefinitions[] = {
+	{ offsetof(network_configuration, player_name),						"player_name",					CONFIG_VALUE_TYPE_STRING,		{.value_string = "Player" },	NULL					},
+	{ offsetof(network_configuration, default_port),					"default_port",					CONFIG_VALUE_TYPE_UINT32,		NETWORK_DEFAULT_PORT,			NULL					},
+	{ offsetof(network_configuration, stay_connected),					"stay_connected",				CONFIG_VALUE_TYPE_BOOLEAN,		false,							NULL					},
+};
+
 config_section_definition _sectionDefinitions[] = {
 	{ &gConfigGeneral, "general", _generalDefinitions, countof(_generalDefinitions) },
 	{ &gConfigInterface, "interface", _interfaceDefinitions, countof(_interfaceDefinitions) },
 	{ &gConfigSound, "sound", _soundDefinitions, countof(_soundDefinitions) },
 	{ &gConfigCheat, "cheat", _cheatDefinitions, countof(_cheatDefinitions) },
-	{ &gConfigTwitch, "twitch", _twitchDefinitions, countof(_twitchDefinitions) }
+	{ &gConfigTwitch, "twitch", _twitchDefinitions, countof(_twitchDefinitions) },
+	{ &gConfigNetwork, "network", _networkDefinitions, countof(_networkDefinitions) }
 };
 
 #pragma endregion
@@ -236,21 +258,47 @@ interface_configuration gConfigInterface;
 sound_configuration gConfigSound;
 cheat_configuration gConfigCheat;
 twitch_configuration gConfigTwitch;
+network_configuration gConfigNetwork;
 themes_configuration gConfigThemes;
 title_sequences_configuration gConfigTitleSequences;
 
 bool config_open(const utf8string path);
 bool config_save(const utf8string path);
 static void config_read_properties(config_section_definition **currentSection, const_utf8string line);
-static void config_save_property_value(FILE *file, uint8 type, value_union *value);
+static void config_save_property_value(SDL_RWops *file, uint8 type, value_union *value);
 static bool config_read_enum(void *dest, int destSize, const utf8 *key, int keySize, config_enum_definition *enumDefinitions);
-static void config_write_enum(FILE *file, uint8 type, value_union *value, config_enum_definition *enumDefinitions);
+static void config_write_enum(SDL_RWops *file, uint8 type, value_union *value, config_enum_definition *enumDefinitions);
 
-static int utf8_read(utf8 **outch);
 static void utf8_skip_whitespace(utf8 **outch);
 static void utf8_skip_non_whitespace(utf8 **outch);
 
 void config_apply_to_old_addresses();
+
+static int rwopsreadc(SDL_RWops *file)
+{
+	int c = 0;
+	if (SDL_RWread(file, &c, 1, 1) != 1)
+		c = EOF;
+	return c;
+}
+
+static void rwopswritec(SDL_RWops *file, char c)
+{
+	SDL_RWwrite(file, &c, 1, 1);
+}
+
+static void rwopsprintf(SDL_RWops *file, const char *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+
+	char buffer[64];
+	vsprintf(buffer, format, args);
+
+	SDL_RWwrite(file, buffer, strlen(buffer), 1);
+
+	va_end(args);
+}
 
 void config_set_defaults()
 {
@@ -260,9 +308,9 @@ void config_set_defaults()
 		config_section_definition *section = &_sectionDefinitions[i];
 		for (j = 0; j < section->property_definitions_count; j++) {
 			config_property_definition *property = &section->property_definitions[j];
-
 			value_union *destValue = (value_union*)((size_t)section->base_address + (size_t)property->offset);
 
+			// Special dynamic defaults
 			if (strcmp(property->property_name, "language") == 0){
 				destValue->value_uint16 = platform_get_locale_language();
 				if (destValue->value_uint16 == LANGUAGE_UNDEFINED)
@@ -278,7 +326,17 @@ void config_set_defaults()
 				destValue->value_uint8 = platform_get_locale_temperature_format();
 			}
 			else {
-				memcpy(destValue, &property->default_value, _configValueTypeSize[property->type]);
+				// Use static default
+				if (property->type == CONFIG_VALUE_TYPE_STRING) {
+					// Copy the string to new memory
+					const utf8 *src = property->default_value.value_string;
+					const utf8 **dst = (const utf8**)&(destValue->value_string);
+					if (src != NULL) {
+						*dst = _strdup(property->default_value.value_string);
+					}
+				} else {
+					memcpy(destValue, &property->default_value, _configValueTypeSize[property->type]);
+				}
 			}
 		}
 	}
@@ -314,14 +372,14 @@ bool config_save_default()
 
 bool config_open(const utf8string path)
 {
-	FILE *file;
+	SDL_RWops *file;
 	uint8 *lineBuffer;
 	size_t lineBufferCapacity;
 	size_t lineLength;
 	int c;
 	config_section_definition *currentSection;
 
-	file = fopen(path, "rb");
+	file = SDL_RWFromFile(path, "rb");
 	if (file == NULL)
 		return false;
 
@@ -331,11 +389,11 @@ bool config_open(const utf8string path)
 	lineLength = 0;
 
 	// Skim UTF-8 byte order mark
-	fread(lineBuffer, 3, 1, file);
+	SDL_RWread(file, lineBuffer, 3, 1);
 	if (!utf8_is_bom(lineBuffer))
-		fseek(file, 0, SEEK_SET);
+		SDL_RWseek(file, 0, RW_SEEK_SET);
 
-	while ((c = fgetc(file)) != EOF) {
+	while ((c = rwopsreadc(file)) != EOF) {
 		if (c == '\n' || c == '\r') {
 			lineBuffer[lineLength++] = 0;
 			config_read_properties(&currentSection, (const_utf8string)lineBuffer);
@@ -356,17 +414,17 @@ bool config_open(const utf8string path)
 	}
 
 	free(lineBuffer);
-	fclose(file);
+	SDL_RWclose(file);
 	return true;
 }
 
 bool config_save(const utf8string path)
 {
-	FILE *file;
+	SDL_RWops *file;
 	int i, j;
 	value_union *value;
 
-	file = fopen(path, "wb");
+	file = SDL_RWFromFile(path, "wb");
 	if (file == NULL) {
 		log_error("Unable to write to config file.");
 		return false;
@@ -375,67 +433,67 @@ bool config_save(const utf8string path)
 	for (i = 0; i < countof(_sectionDefinitions); i++) {
 		config_section_definition *section = &_sectionDefinitions[i];
 
-		fputc('[', file);
-		fwrite(section->section_name, strlen(section->section_name), 1, file);
-		fputc(']', file);
-		fputc('\n', file);
+		rwopswritec(file, '[');
+		SDL_RWwrite(file, section->section_name, strlen(section->section_name), 1);
+		rwopswritec(file, ']');
+		rwopswritec(file, '\n');
 
 		for (j = 0; j < section->property_definitions_count; j++) {
 			config_property_definition *property = &section->property_definitions[j];
 
-			fwrite(property->property_name, strlen(property->property_name), 1, file);
-			fwrite(" = ", 3, 1, file);
+			SDL_RWwrite(file, property->property_name, strlen(property->property_name), 1);
+			SDL_RWwrite(file, " = ", 3, 1);
 
 			value = (value_union*)((size_t)section->base_address + (size_t)property->offset);
 			if (property->enum_definitions != NULL)
 				config_write_enum(file, property->type, value, property->enum_definitions);
 			else
 				config_save_property_value(file, property->type, value);
-			fputc('\n', file);
+			rwopswritec(file, '\n');
 		}
-		fputc('\n', file);
+		rwopswritec(file, '\n');
 	}
 
-	fclose(file);
+	SDL_RWclose(file);
 	return true;
 }
 
-static void config_save_property_value(FILE *file, uint8 type, value_union *value)
+static void config_save_property_value(SDL_RWops *file, uint8 type, value_union *value)
 {
 	switch (type) {
 	case CONFIG_VALUE_TYPE_BOOLEAN:
-		if (value->value_boolean) fwrite("true", 4, 1, file);
-		else fwrite("false", 5, 1, file);
+		if (value->value_boolean) SDL_RWwrite(file, "true", 4, 1);
+		else SDL_RWwrite(file, "false", 5, 1);
 		break;
 	case CONFIG_VALUE_TYPE_UINT8:
-		fprintf(file, "%u", value->value_uint8);
+		rwopsprintf(file, "%u", value->value_uint8);
 		break;
 	case CONFIG_VALUE_TYPE_UINT16:
-		fprintf(file, "%u", value->value_uint16);
+		rwopsprintf(file, "%u", value->value_uint16);
 		break;
 	case CONFIG_VALUE_TYPE_UINT32:
-		fprintf(file, "%u", value->value_uint32);
+		rwopsprintf(file, "%lu", value->value_uint32);
 		break;
 	case CONFIG_VALUE_TYPE_SINT8:
-		fprintf(file, "%d", value->value_sint8);
+		rwopsprintf(file, "%d", value->value_sint8);
 		break;
 	case CONFIG_VALUE_TYPE_SINT16:
-		fprintf(file, "%d", value->value_sint16);
+		rwopsprintf(file, "%d", value->value_sint16);
 		break;
 	case CONFIG_VALUE_TYPE_SINT32:
-		fprintf(file, "%d", value->value_sint32);
+		rwopsprintf(file, "%ld", value->value_sint32);
 		break;
 	case CONFIG_VALUE_TYPE_FLOAT:
-		fprintf(file, "%.3f", value->value_float);
+		rwopsprintf(file, "%.3f", value->value_float);
 		break;
 	case CONFIG_VALUE_TYPE_DOUBLE:
-		fprintf(file, "%.6f", value->value_double);
+		rwopsprintf(file, "%.6f", value->value_double);
 		break;
 	case CONFIG_VALUE_TYPE_STRING:
-		fputc('"', file);
+		rwopswritec(file, '"');
 		if (value->value_string != NULL)
-			fwrite(value->value_string, strlen(value->value_string), 1, file);
-		fputc('"', file);
+			SDL_RWwrite(file, value->value_string, strlen(value->value_string), 1);
+		rwopswritec(file, '"');
 		break;
 	}
 }
@@ -450,8 +508,7 @@ bool config_get_section(const utf8string line, const utf8 **sectionName, int *se
 	if (*ch != '[') return false;
 	*sectionName = ++ch;
 
-	while (*ch != 0) {
-		c = utf8_read(&ch);
+	while ((c = utf8_get_next(ch, (const utf8**)&ch)) != 0) {
 		if (c == '#') return false;
 		if (c == '[') return false;
 		if (c == ' ') break;
@@ -470,12 +527,11 @@ bool config_get_property_name_value(const utf8string line, utf8 **propertyName, 
 
 	ch = line;
 	utf8_skip_whitespace(&ch);
-	
+
 	if (*ch == 0) return false;
 	*propertyName = ch;
 
-	while (*ch != 0) {
-		c = utf8_read(&ch);
+	while ((c = utf8_get_next(ch, (const utf8**)&ch)) != 0) {
 		if (isspace(c) || c == '=') {
 			*propertyNameSize = ch - *propertyName - 1;
 			break;
@@ -499,14 +555,14 @@ bool config_get_property_name_value(const utf8string line, utf8 **propertyName, 
 	}
 	*value = ch;
 
-	while (*ch != 0) {
-		c = utf8_read(&ch);
+	while ((c = utf8_get_next(ch, (const utf8**)&ch)) != 0) {
 		if (isspace(c) || c == '#') {
 			if (!quotes) break;
 		}
 		lastC = c;
 	}
 	*valueSize = ch - *value - 1;
+	if (quotes) (*valueSize)--;
 	return true;
 }
 
@@ -516,7 +572,8 @@ config_section_definition *config_get_section_def(const utf8 *name, int size)
 
 	for (i = 0; i < countof(_sectionDefinitions); i++) {
 		const_utf8string sectionName = _sectionDefinitions[i].section_name;
-		if (sectionName[size] == 0 && _strnicmp(sectionName, name, size) == 0)
+		const int sectionNameSize = strnlen(sectionName, size);
+		if (sectionNameSize == size && sectionName[size] == 0 && _strnicmp(sectionName, name, size) == 0)
 			return &_sectionDefinitions[i];
 	}
 
@@ -529,8 +586,11 @@ config_property_definition *config_get_property_def(config_section_definition *s
 
 	for (i = 0; i < section->property_definitions_count; i++) {
 		const_utf8string propertyName = section->property_definitions[i].property_name;
-		if (propertyName[size] == 0 && _strnicmp(propertyName, name, size) == 0)
+		const int propertyNameSize = strnlen(propertyName, size);
+		if (propertyNameSize == size && propertyName[size] == 0 && _strnicmp(propertyName, name, size) == 0)
+		{
 			return &section->property_definitions[i];
+		}
 	}
 
 	return NULL;
@@ -610,7 +670,7 @@ static void config_read_properties(config_section_definition **currentSection, c
 static bool config_read_enum(void *dest, int destSize, const utf8 *key, int keySize, config_enum_definition *enumDefinitions)
 {
 	while (enumDefinitions->key != NULL) {
-		if (_strnicmp(enumDefinitions->key, key, keySize) == 0) {
+		if (strlen(enumDefinitions->key) == keySize && _strnicmp(enumDefinitions->key, key, keySize) == 0) {
 			memcpy(dest, &enumDefinitions->value.value_uint32, destSize);
 			return true;
 		}
@@ -619,12 +679,12 @@ static bool config_read_enum(void *dest, int destSize, const utf8 *key, int keyS
 	return false;
 }
 
-static void config_write_enum(FILE *file, uint8 type, value_union *value, config_enum_definition *enumDefinitions)
+static void config_write_enum(SDL_RWops *file, uint8 type, value_union *value, config_enum_definition *enumDefinitions)
 {
 	uint32 enumValue = (value->value_uint32) & ((1 << (_configValueTypeSize[type] * 8)) - 1);
 	while (enumDefinitions->key != NULL) {
 		if (enumDefinitions->value.value_uint32 == enumValue) {
-			fwrite(enumDefinitions->key, strlen(enumDefinitions->key), 1, file);
+			SDL_RWwrite(file, enumDefinitions->key, strlen(enumDefinitions->key), 1);
 			return;
 		}
 		enumDefinitions++;
@@ -657,7 +717,7 @@ static void utf8_skip_whitespace(utf8 **outch)
 	utf8 *ch;
 	while (**outch != 0) {
 		ch = *outch;
-		if (!isspace(utf8_read(outch))) {
+		if (!isspace(utf8_get_next(*outch, (const utf8**)outch))) {
 			*outch = ch;
 			break;
 		}
@@ -667,7 +727,7 @@ static void utf8_skip_whitespace(utf8 **outch)
 static void utf8_skip_non_whitespace(utf8 **outch)
 {
 	while (**outch != 0) {
-		if (isspace(utf8_read(outch)))
+		if (isspace(utf8_get_next(*outch, (const utf8**)outch)))
 			break;
 	}
 }
@@ -699,13 +759,13 @@ static config_line *_configLines = NULL;
  * @param resultPath Pointer to where the absolute path of the RCT2 installation directory will be copied to.
  * @returns 1 if successful, otherwise 0.
  */
-static bool config_find_rct2_path(char *resultPath)
+static bool config_find_rct2_path(utf8 *resultPath)
 {
 	int i;
 
 	log_verbose("searching common installation locations.");
 
-	const char *searchLocations[] = {
+	const utf8 *searchLocations[] = {
 		"C:\\Program Files\\Infogrames\\RollerCoaster Tycoon 2",
 		"C:\\Program Files (x86)\\Infogrames\\RollerCoaster Tycoon 2",
 		"C:\\Program Files\\Infogrames Interactive\\RollerCoaster Tycoon 2",
@@ -728,8 +788,8 @@ static bool config_find_rct2_path(char *resultPath)
 
 bool config_find_or_browse_install_directory()
 {
-	char path[MAX_PATH];
-	char *installPath;
+	utf8 path[MAX_PATH];
+	utf8 *installPath;
 
 	if (config_find_rct2_path(path)) {
 		SafeFree(gConfigGeneral.game_path);
@@ -757,7 +817,7 @@ bool config_find_or_browse_install_directory()
 void config_apply_to_old_addresses()
 {
 	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_EDGE_SCROLLING, sint8) = gConfigGeneral.edge_scrolling;
-	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_CURRENCY, sint8) = gConfigGeneral.currency_format; 
+	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_CURRENCY, sint8) = gConfigGeneral.currency_format;
 	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_METRIC, sint8) = gConfigGeneral.measurement_format;
 	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_TEMPERATURE, sint8) = gConfigGeneral.temperature_format;
 	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_CONSTRUCTION_MARKER, uint8) = gConfigGeneral.construction_marker_colour;
@@ -788,7 +848,7 @@ void config_apply_to_old_addresses()
  *  Reads the config file data/config.cfg
  *  rct2: 0x006752D5
  */
-void config_dat_load()
+/*void config_dat_load()
 {
 	FILE *fp=NULL;
 
@@ -807,10 +867,10 @@ void config_dat_load()
 
 			//general configuration
 			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_EDGE_SCROLLING, sint8) = gConfigGeneral.edge_scrolling;
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_CURRENCY, sint8) = gConfigGeneral.currency_format; 
+			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_CURRENCY, sint8) = gConfigGeneral.currency_format;
 			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_METRIC, sint8) = gConfigGeneral.measurement_format;
 			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_TEMPERATURE, sint8) = gConfigGeneral.temperature_format;
-			
+
 			// always show gridlines
 			if (gConfigGeneral.always_show_gridlines){
 				RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FLAGS, uint8) |= CONFIG_FLAG_ALWAYS_SHOW_GRIDLINES;
@@ -826,7 +886,7 @@ void config_dat_load()
 			else {
 				RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FLAGS, uint8) &= !CONFIG_FLAG_DISABLE_SMOOTH_LANDSCAPE;
 			}
-			
+
 			// show height as units
 			if (gConfigGeneral.show_height_as_units){
 				RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FLAGS, uint8) |= CONFIG_FLAG_SHOW_HEIGHT_AS_UNITS;
@@ -845,48 +905,20 @@ void config_dat_load()
 
 			//sound configuration: force software buffering and best quality
 			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_SOUND_QUALITY, sint8) = 2;
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_SOUND_SW_BUFFER, sint8) = 1; 
+			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_SOUND_SW_BUFFER, sint8) = 1;
 
-			// Line below is temporaraly disabled until all config is in the new format.
-			//if (RCT2_GLOBAL(0x009AB4C6, sint8) == 1) 
+			// Line below is temporarily disabled until all config is in the new format.
+			//if (RCT2_GLOBAL(0x009AB4C6, sint8) == 1)
 			//	return;
-			
-			
+
 			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FIRST_TIME_LOAD_CONFIG, sint8) = 1; // Marks config as first time loaded
 
 			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_HEIGHT_MARKERS, sint16) = (RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_METRIC, sint8) + 2) * 256;
 			if (!(RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FLAGS, uint8) & CONFIG_FLAG_SHOW_HEIGHT_AS_UNITS))
 				RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_HEIGHT_MARKERS, sint16) = (RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_METRIC, sint8) + 1) * 256;
-			// No longer used (controls first time object load)
-			//RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FIRST_TIME_LOAD_OBJECTS, sint8) = 0;
 		}
-	
-	}
-	
-	/* TODO: CLEANUP
 
-			if (RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FIRST_TIME_LOAD_CONFIG, sint8) == 1)
-				return;
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FIRST_TIME_LOAD_CONFIG, sint8) = 1;
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_METRIC, sint8) = 0; 
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_TEMPERATURE, sint8) = 1; 
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_CURRENCY, sint8) = 1;
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_HEIGHT_MARKERS, sint16) = 0;
-			if (!(RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FLAGS, uint8) & CONFIG_FLAG_SHOW_HEIGHT_AS_UNITS))
-				RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_HEIGHT_MARKERS, sint16) = (RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_METRIC, sint8) + 1) * 256;
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FIRST_TIME_LOAD_OBJECTS, sint8) = 1;
-		}
-	
 	}
-
-	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_SOUND_QUALITY, sint8) = 0;
-	if (RCT2_GLOBAL(RCT2_ADDRESS_MEM_TOTAL_PHYSICAL, uint32) > 0x4000000) {
-		RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_SOUND_QUALITY, sint8) = 1;
-		if (RCT2_GLOBAL(RCT2_ADDRESS_MEM_TOTAL_PHYSICAL, uint32) > 0x8000000)
-			RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_SOUND_QUALITY, sint8) = 2;
-	}
-	*/
-
 
 	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_MAX_VEHICLE_SOUNDS, sint8) = RCT2_ADDRESS(0x009AF601, sint8)[RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_SOUND_QUALITY, sint8)];
 	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_MAX_NO_SOUNDS, sint8) = RCT2_ADDRESS(0x009AF604, sint8)[RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_SOUND_QUALITY, sint8)];
@@ -894,13 +926,13 @@ void config_dat_load()
 	if (!(RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FLAGS, uint8) & CONFIG_FLAG_SHOW_HEIGHT_AS_UNITS))
 		RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_HEIGHT_MARKERS, sint16) = (RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_METRIC, sint8) + 1) * 256;
 	RCT2_GLOBAL(RCT2_ADDRESS_CONFIG_FIRST_TIME_LOAD_OBJECTS, sint8) = 1;
-}
+}*/
 
 /**
  *  Save configuration to the data/config.cfg file
  *  rct2: 0x00675487
  */
-void config_dat_save()
+/*void config_dat_save()
 {
 	FILE *fp = fopen(get_file_path(PATH_ID_GAMECFG), "wb");
 	if (fp != NULL){
@@ -908,11 +940,15 @@ void config_dat_save()
 		fwrite((void*)0x009AAC5C, 2155, 1, fp);
 		fclose(fp);
 	}
-}
+}*/
 
 #pragma endregion
 
 #pragma region Shortcuts
+
+#define SHIFT 0x100
+#define CTRL 0x200
+#define ALT 0x400
 
 // Current keyboard shortcuts
 uint16 gShortcutKeys[SHORTCUT_COUNT];
@@ -920,12 +956,13 @@ uint16 gShortcutKeys[SHORTCUT_COUNT];
 // Default keyboard shortcuts
 static const uint16 _defaultShortcutKeys[SHORTCUT_COUNT] = {
 	SDL_SCANCODE_BACKSPACE,				// SHORTCUT_CLOSE_TOP_MOST_WINDOW
-	0x0100 | SDL_SCANCODE_BACKSPACE,	// SHORTCUT_CLOSE_ALL_FLOATING_WINDOWS
+	SHIFT | SDL_SCANCODE_BACKSPACE,		// SHORTCUT_CLOSE_ALL_FLOATING_WINDOWS
 	SDL_SCANCODE_ESCAPE,				// SHORTCUT_CANCEL_CONSTRUCTION_MODE
 	SDL_SCANCODE_PAUSE,					// SHORTCUT_PAUSE_GAME
 	SDL_SCANCODE_PAGEUP,				// SHORTCUT_ZOOM_VIEW_OUT
 	SDL_SCANCODE_PAGEDOWN,				// SHORTCUT_ZOOM_VIEW_IN
-	SDL_SCANCODE_RETURN,				// SHORTCUT_ROTATE_VIEW
+	SDL_SCANCODE_RETURN,				// SHORTCUT_ROTATE_VIEW_CLOCKWISE
+	SHIFT | SDL_SCANCODE_RETURN,		// SHORTCUT_ROTATE_VIEW_ANTICLOCKWISE
 	SDL_SCANCODE_Z,						// SHORTCUT_ROTATE_CONSTRUCTION_OBJECT
 	SDL_SCANCODE_1,						// SHORTCUT_UNDERGROUND_VIEW_TOGGLE
 	SDL_SCANCODE_H,						// SHORTCUT_REMOVE_BASE_LAND_TOGGLE
@@ -950,17 +987,25 @@ static const uint16 _defaultShortcutKeys[SHORTCUT_COUNT] = {
 	SDL_SCANCODE_S,						// SHORTCUT_SHOW_STAFF_LIST
 	SDL_SCANCODE_M,						// SHORTCUT_SHOW_RECENT_MESSAGES
 	SDL_SCANCODE_TAB,					// SHORTCUT_SHOW_MAP
-	0x0200 | SDL_SCANCODE_S,			// SHORTCUT_SCREENSHOT
+	CTRL | SDL_SCANCODE_S,				// SHORTCUT_SCREENSHOT
 
 	// New
 	SDL_SCANCODE_MINUS,					// SHORTCUT_REDUCE_GAME_SPEED,
 	SDL_SCANCODE_EQUALS,				// SHORTCUT_INCREASE_GAME_SPEED,
-	0x0200 | 0x0400 | SDL_SCANCODE_C, 	// SHORTCUT_OPEN_CHEAT_WINDOW,
+	CTRL | ALT | SDL_SCANCODE_C,		// SHORTCUT_OPEN_CHEAT_WINDOW,
 	SDL_SCANCODE_T,						// SHORTCUT_REMOVE_TOP_BOTTOM_TOOLBAR_TOGGLE,
+	SDL_SCANCODE_UP,					// SHORTCUT_SCROLL_MAP_UP
+	SDL_SCANCODE_LEFT,					// SHORTCUT_SCROLL_MAP_LEFT
+	SDL_SCANCODE_DOWN,					// SHORTCUT_SCROLL_MAP_DOWN
+	SDL_SCANCODE_RIGHT,					// SHORTCUT_SCROLL_MAP_RIGHT
+	SDL_SCANCODE_C,						// SHORTCUT_OPEN_CHAT_WINDOW
+	CTRL | SDL_SCANCODE_F10,			// SHORTCUT_QUICK_SAVE_GAME
 };
 
+#define SHORTCUT_FILE_VERSION 1
+
 /**
- * 
+ *
  *  rct2: 0x006E3604
  */
 void config_reset_shortcut_keys()
@@ -968,7 +1013,7 @@ void config_reset_shortcut_keys()
 	memcpy(gShortcutKeys, _defaultShortcutKeys, sizeof(gShortcutKeys));
 }
 
-void config_shortcut_keys_get_path(char *outPath)
+void config_shortcut_keys_get_path(utf8 *outPath)
 {
 	platform_get_user_directory(outPath, NULL);
 	strcat(outPath, "hotkeys.cfg");
@@ -976,16 +1021,22 @@ void config_shortcut_keys_get_path(char *outPath)
 
 bool config_shortcut_keys_load()
 {
-	char path[MAX_PATH];
-	FILE *file;
-	int result;
+	utf8 path[MAX_PATH];
+	SDL_RWops *file;
+	bool result;
+	uint16 version;
 
 	config_shortcut_keys_get_path(path);
 
-	file = fopen(path, "rb");
+	file = SDL_RWFromFile(path, "rb");
 	if (file != NULL) {
-		result = fread(gShortcutKeys, sizeof(gShortcutKeys), 1, file) == 1;
-		fclose(file);
+		result = SDL_RWread(file, &version, sizeof(version), 1) == 1;
+		if (result && version == SHORTCUT_FILE_VERSION) {
+			result = SDL_RWread(file, gShortcutKeys, sizeof(gShortcutKeys), 1) == 1;
+		} else {
+			result = false;
+		}
+		SDL_RWclose(file);
 	} else {
 		result = false;
 	}
@@ -995,16 +1046,21 @@ bool config_shortcut_keys_load()
 
 bool config_shortcut_keys_save()
 {
-	char path[MAX_PATH];
-	FILE *file;
-	int result;
+	const uint16 version = SHORTCUT_FILE_VERSION;
+
+	utf8 path[MAX_PATH];
+	SDL_RWops *file;
+	bool result;
 
 	config_shortcut_keys_get_path(path);
 
-	file = fopen(path, "wb");
+	file = SDL_RWFromFile(path, "wb");
 	if (file != NULL) {
-		result = fwrite(gShortcutKeys, sizeof(gShortcutKeys), 1, file) == 1;
-		fclose(file);
+		result = SDL_RWwrite(file, &version, sizeof(version), 1) == 1;
+		if (result) {
+			result = SDL_RWwrite(file, gShortcutKeys, sizeof(gShortcutKeys), 1) == 1;
+		}
+		SDL_RWclose(file);
 	} else {
 		result = false;
 	}
@@ -1146,7 +1202,7 @@ void themes_load_presets()
 bool themes_save_preset(int preset)
 {
 	utf8 path[MAX_PATH];
-	
+
 	platform_get_user_directory(path, "themes");
 	strcat(path, gConfigThemes.presets[preset].name);
 	strcat(path, ".ini");
@@ -1159,14 +1215,14 @@ bool themes_save_preset(int preset)
 
 bool themes_open(const_utf8string path)
 {
-	FILE *file;
+	SDL_RWops *file;
 	uint8 *lineBuffer;
 	size_t lineBufferCapacity;
 	size_t lineLength;
 	int c, preset;
 	theme_section_definition *currentSection;
 
-	file = fopen(path, "rb");
+	file = SDL_RWFromFile(path, "rb");
 	if (file == NULL)
 		return false;
 
@@ -1198,11 +1254,11 @@ bool themes_open(const_utf8string path)
 	lineLength = 0;
 
 	// Skim UTF-8 byte order mark
-	fread(lineBuffer, 3, 1, file);
+	SDL_RWread(file, lineBuffer, 3, 1);
 	if (!(lineBuffer[0] == 0xEF && lineBuffer[1] == 0xBB && lineBuffer[2] == 0xBF))
-		fseek(file, 0, SEEK_SET);
+		SDL_RWseek(file, 0, SEEK_SET);
 
-	while ((c = fgetc(file)) != EOF) {
+	while ((c = rwopsreadc(file)) != EOF) {
 		if (c == '\n' || c == '\r') {
 			lineBuffer[lineLength++] = 0;
 			themes_read_properties(&gConfigThemes.presets[preset], &currentSection, (utf8string)lineBuffer);
@@ -1224,17 +1280,17 @@ bool themes_open(const_utf8string path)
 	}
 
 	free(lineBuffer);
-	fclose(file);
+	SDL_RWclose(file);
 	return true;
 }
 
 static bool themes_save(const_utf8string path, int preset)
 {
-	FILE *file;
+	SDL_RWops *file;
 	int i, j;
 	value_union *value;
 
-	file = fopen(path, "wb");
+	file = SDL_RWFromFile(path, "wb");
 	if (file == NULL) {
 		log_error("Unable to write to theme file.");
 		return false;
@@ -1244,16 +1300,16 @@ static bool themes_save(const_utf8string path, int preset)
 	for (i = 1; i < countof(_themeSectionDefinitions); i++) {
 		theme_section_definition *section = &_themeSectionDefinitions[i];
 
-		fputc('[', file);
-		fwrite(section->section_name, strlen(section->section_name), 1, file);
-		fputc(']', file);
-		fputc('\n', file);
+		rwopswritec(file, '[');
+		SDL_RWwrite(file, section->section_name, strlen(section->section_name), 1);
+		rwopswritec(file, ']');
+		rwopswritec(file, '\n');
 
 		for (j = 0; j < section->property_definitions_count; j++) {
 			theme_property_definition *property = &section->property_definitions[j];
 
-			fwrite(property->property_name, strlen(property->property_name), 1, file);
-			fwrite(" = ", 3, 1, file);
+			SDL_RWwrite(file, property->property_name, strlen(property->property_name), 1);
+			SDL_RWwrite(file, " = ", 3, 1);
 
 			value = (value_union*)((size_t)&gConfigThemes.presets[preset] + (size_t)section->offset + (size_t)property->offset);
 
@@ -1261,24 +1317,24 @@ static bool themes_save(const_utf8string path, int preset)
 				config_write_enum(file, property->type, value, property->enum_definitions);
 			else
 				config_save_property_value(file, property->type, value);
-			fputc('\n', file);
+			rwopswritec(file, '\n');
 		}
-			fputc('\n', file);
-		}
+		rwopswritec(file, '\n');
+	}
 
 	for (i = 0; i < (int)gNumThemeWindows; i++) {
 		theme_section_definition *section = &_themeSectionDefinitions[0];
-		
-		fputc('[', file);
-		fwrite(gThemeWindowDefinitions[i].section_name, strlen(gThemeWindowDefinitions[i].section_name), 1, file);
-		fputc(']', file);
-		fputc('\n', file);
+
+		rwopswritec(file, '[');
+		SDL_RWwrite(file, gThemeWindowDefinitions[i].section_name, strlen(gThemeWindowDefinitions[i].section_name), 1);
+		rwopswritec(file, ']');
+		rwopswritec(file, '\n');
 
 		for (j = 0; j < section->property_definitions_count; j++) {
 			theme_property_definition *property = &section->property_definitions[j];
 
-			fwrite(property->property_name, strlen(property->property_name), 1, file);
-			fwrite(" = ", 3, 1, file);
+			SDL_RWwrite(file, property->property_name, strlen(property->property_name), 1);
+			SDL_RWwrite(file, " = ", 3, 1);
 
 			value = (value_union*)((size_t)gConfigThemes.presets[preset].windows + (size_t)(sizeof(theme_window) * i) + (size_t)property->offset);
 
@@ -1286,11 +1342,11 @@ static bool themes_save(const_utf8string path, int preset)
 				config_write_enum(file, property->type, value, property->enum_definitions);
 			else
 				config_save_property_value(file, property->type, value);
-		fputc('\n', file);
-	}
+			rwopswritec(file, '\n');
+		}
 	}
 
-	fclose(file);
+	SDL_RWclose(file);
 	return true;
 }
 
@@ -1305,8 +1361,7 @@ static void themes_read_properties(theme_preset *theme, theme_section_definition
 		int sectionNameSize;
 		if (config_get_section(ch, &sectionName, &sectionNameSize))
 			*currentSection = themes_get_section_def((utf8string)sectionName, sectionNameSize);
-	}
-	else {
+	} else {
 		if (*currentSection != NULL) {
 			utf8 *propertyName, *value;
 			int propertyNameSize, valueSize;
@@ -1419,7 +1474,7 @@ void title_sequences_set_default()
 
 	gConfigTitleSequences.presets = malloc(0);
 	gConfigTitleSequences.num_presets = 0;
-	
+
 	// Load OpenRCT2 title sequence
 	sprintf(path, "%s%c%s%c%s%c%s%c", gExePath, sep, "data", sep, "title", sep, "rct2", sep);
 	title_sequence_open(path, language_get_string(5308));
@@ -1469,7 +1524,7 @@ static void title_sequence_open(const char *path, const char *customName)
 {
 	utf8 titlePath[MAX_PATH], scriptPath[MAX_PATH];
 	file_info fileInfo;
-	FILE *file;
+	SDL_RWops *file;
 	int fileEnumHandle, i, preset;
 	char parts[3 * 128], *token, *part1, *part2;
 	char separator = platform_get_path_separator();
@@ -1493,7 +1548,7 @@ static void title_sequence_open(const char *path, const char *customName)
 	if (preset == gConfigTitleSequences.num_presets) {
 		gConfigTitleSequences.num_presets++;
 		gConfigTitleSequences.presets = realloc(gConfigTitleSequences.presets, sizeof(title_sequence) * (size_t)gConfigTitleSequences.num_presets);
-		
+
 		if (customName == NULL) {
 			char nameBuffer[MAX_PATH], *name;
 			strcpy(nameBuffer, path);
@@ -1512,7 +1567,7 @@ static void title_sequence_open(const char *path, const char *customName)
 			strcpy(gConfigTitleSequences.presets[preset].name, customName);
 			strcpy(gConfigTitleSequences.presets[preset].path, path);
 		}
-		
+
 		gConfigTitleSequences.presets[preset].saves = malloc(0);
 		gConfigTitleSequences.presets[preset].commands = malloc(0);
 		gConfigTitleSequences.presets[preset].num_saves = 0;
@@ -1526,7 +1581,8 @@ static void title_sequence_open(const char *path, const char *customName)
 	while (platform_enumerate_files_next(fileEnumHandle, &fileInfo)) {
 		gConfigTitleSequences.presets[preset].num_saves++;
 		gConfigTitleSequences.presets[preset].saves = realloc(gConfigTitleSequences.presets[preset].saves, sizeof(char[TITLE_SEQUENCE_MAX_SAVE_LENGTH]) * (size_t)gConfigTitleSequences.presets[preset].num_saves);
-		strcpy(gConfigTitleSequences.presets[preset].saves[gConfigTitleSequences.presets[preset].num_saves - 1], fileInfo.path);
+		strncpy(gConfigTitleSequences.presets[preset].saves[gConfigTitleSequences.presets[preset].num_saves - 1], fileInfo.path, TITLE_SEQUENCE_MAX_SAVE_LENGTH);
+		gConfigTitleSequences.presets[preset].saves[gConfigTitleSequences.presets[preset].num_saves - 1][TITLE_SEQUENCE_MAX_SAVE_LENGTH - 1] = '\0';
 	}
 	platform_enumerate_files_end(fileEnumHandle);
 	strcpy(titlePath, path);
@@ -1535,13 +1591,14 @@ static void title_sequence_open(const char *path, const char *customName)
 	while (platform_enumerate_files_next(fileEnumHandle, &fileInfo)) {
 		gConfigTitleSequences.presets[preset].num_saves++;
 		gConfigTitleSequences.presets[preset].saves = realloc(gConfigTitleSequences.presets[preset].saves, sizeof(char[TITLE_SEQUENCE_MAX_SAVE_LENGTH]) * (size_t)gConfigTitleSequences.presets[preset].num_saves);
-		strcpy(gConfigTitleSequences.presets[preset].saves[gConfigTitleSequences.presets[preset].num_saves - 1], fileInfo.path);
+		strncpy(gConfigTitleSequences.presets[preset].saves[gConfigTitleSequences.presets[preset].num_saves - 1], fileInfo.path, TITLE_SEQUENCE_MAX_SAVE_LENGTH);
+		gConfigTitleSequences.presets[preset].saves[gConfigTitleSequences.presets[preset].num_saves - 1][TITLE_SEQUENCE_MAX_SAVE_LENGTH - 1] = '\0';
 	}
 	platform_enumerate_files_end(fileEnumHandle);
-	
-	// Load the script file
-	file = fopen(scriptPath, "r");
 
+	// Load the script file
+	file = SDL_RWFromFile(scriptPath, "r");
+	sint64 fileSize = SDL_RWsize(file);
 	do {
 		title_script_get_line(file, parts);
 
@@ -1588,64 +1645,64 @@ static void title_sequence_open(const char *path, const char *customName)
 			gConfigTitleSequences.presets[preset].commands = realloc(gConfigTitleSequences.presets[preset].commands, sizeof(title_command) * (size_t)gConfigTitleSequences.presets[preset].num_commands);
 			gConfigTitleSequences.presets[preset].commands[gConfigTitleSequences.presets[preset].num_commands - 1] = command;
 		}
-	} while (!feof(file));
-	fclose(file);
+	} while (SDL_RWtell(file) < fileSize);
+	SDL_RWclose(file);
 }
 
 void title_sequence_save_preset_script(int preset)
 {
 	utf8 path[MAX_PATH];
-	FILE *file;
+	SDL_RWops *file;
 	int i;
 	char separator = platform_get_path_separator();
 
-	
+
 	platform_get_user_directory(path, "title sequences");
 	strcat(path, path_get_filename(gConfigTitleSequences.presets[preset].name));
 	strncat(path, &separator, 1);
 	strcat(path, "script.txt");
 
-	file = fopen(path, "wb");
+	file = SDL_RWFromFile(path, "wb");
 	if (file == NULL) {
 		log_error("Unable to write to script file.");
 		return;
 	}
-	
+
 	for (i = 0; i < gConfigTitleSequences.presets[preset].num_commands; i++) {
 		title_command *command = &gConfigTitleSequences.presets[preset].commands[i];
 		switch (command->command) {
 		case TITLE_SCRIPT_LOAD:
 			if (command->saveIndex == 0xFF)
-				fprintf(file, "LOAD <No save file>\r\n");
+				rwopsprintf(file, "LOAD <No save file>\r\n");
 			else
-				fprintf(file, "LOAD %s\r\n", gConfigTitleSequences.presets[preset].saves[command->saveIndex]);
+				rwopsprintf(file, "LOAD %s\r\n", gConfigTitleSequences.presets[preset].saves[command->saveIndex]);
 			break;
 		case TITLE_SCRIPT_LOCATION:
-			fprintf(file, "LOCATION %i %i\r\n", command->x, command->y);
+			rwopsprintf(file, "LOCATION %i %i\r\n", command->x, command->y);
 			break;
 		case TITLE_SCRIPT_ROTATE:
-			fprintf(file, "ROTATE %i\r\n", command->rotations);
+			rwopsprintf(file, "ROTATE %i\r\n", command->rotations);
 			break;
 		case TITLE_SCRIPT_ZOOM:
-			fprintf(file, "ZOOM %i\r\n", command->zoom);
+			rwopsprintf(file, "ZOOM %i\r\n", command->zoom);
 			break;
 		case TITLE_SCRIPT_SPEED:
-			fprintf(file, "SPEED %i\r\n", command->speed);
+			rwopsprintf(file, "SPEED %i\r\n", command->speed);
 			break;
 		case TITLE_SCRIPT_WAIT:
-			fprintf(file, "WAIT %i\r\n\r\n", command->seconds);
+			rwopsprintf(file, "WAIT %i\r\n\r\n", command->seconds);
 			break;
 		case TITLE_SCRIPT_RESTART:
-			fprintf(file, "RESTART\r\n");
+			rwopsprintf(file, "RESTART\r\n");
 			break;
 		case TITLE_SCRIPT_END:
-			fprintf(file, "END\r\n");
+			rwopsprintf(file, "END\r\n");
 			break;
 
 		}
 	}
 
-	fclose(file);
+	SDL_RWclose(file);
 }
 
 

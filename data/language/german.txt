@@ -839,16 +839,16 @@ STR_0834    :{SMALLFONT}{BLACK}Festplatten- und Spieloptionen
 STR_0835    :Spielinitialisierung fehlgeschlagen
 STR_0836    :Spiel kann nicht im minimierten Zustand gestartet werden
 STR_0837    :Grafiksystem kann nicht initialisiert werden
-STR_0838    :CD-Code {INT32} ist für Ihre RollerCoaster Tycoon 2-CD nicht gültig!{WINDOW_COLOUR_1}{WINDOW_COLOUR_1}Deinstallieren Sie RollerCoaster Tycoon 2% und installieren Sie das Spiel mit dem korrekten CD-Code erneut
+STR_0838    :<not used anymore>
 STR_0839    :{UINT16} x {UINT16}
 STR_0840    :{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16} x {UINT16}
-STR_0841    :Desktop-Fenster
-STR_0842    :640x480-Vollbild
-STR_0843    :800x600-Vollbild
-STR_0844    :1024x768-Vollbild
-STR_0845    :1152x864-Vollbild
-STR_0846    :1280x1024-Vollbild
-STR_0847    :Infos zu `RollerCoaster Tycoon 2'
+STR_0841    :<not used anymore>
+STR_0842    :<not used anymore>
+STR_0843    :<not used anymore>
+STR_0844    :<not used anymore>
+STR_0845    :<not used anymore>
+STR_0846    :<not used anymore>
+STR_0847    :Infos zu `OpenRCT2'
 STR_0848    :RollerCoaster Tycoon 2
 STR_0849    :{WINDOW_COLOUR_2}Version 2.01.032
 STR_0850    :{WINDOW_COLOUR_2}Copyright {COPYRIGHT} 2002 Chris Sawyer, alle Rechte vorbehalten
@@ -1044,10 +1044,10 @@ STR_1039    :Neuen Streckenentwurf installieren
 STR_1040    :Spiel speichern
 STR_1041    :Szenario speichern
 STR_1042    :Landschaft speichern
-STR_1043    :RollerCoaster Tycoon 2 - gespeichertes Spiel
-STR_1044    :RollerCoaster Tycoon 2 - Szenariodatei
-STR_1045    :RollerCoaster Tycoon 2 - Landschaftsdatei
-STR_1046    :RollerCoaster Tycoon 2 - Streckenentwurfsdatei
+STR_1043    :OpenRCT2 - gespeichertes Spiel
+STR_1044    :OpenRCT2 - Szenariodatei
+STR_1045    :OpenRCT2 - Landschaftsdatei
+STR_1046    :OpenRCT2 - Streckenentwurfsdatei
 STR_1047    :Speicherung des Spiels fehlgeschlagen!
 STR_1048    :Speicherung des Szenarios fehlgeschlagen!
 STR_1049    :Speicherung der Landschaft fehlgeschlagen!
@@ -1172,8 +1172,8 @@ STR_1167    :Wasserspiegel kann hier nicht erhöht werden...
 STR_1168    :Optionen
 STR_1169    :(Keine)
 STR_1170    :{STRING}
-STR_1171    :{RED}Geschlossen - -
-STR_1172    :{YELLOW}{STRINGID} - -
+STR_1171    :{RED}Geschlossen - - 
+STR_1172    :{YELLOW}{STRINGID} - - 
 STR_1173    :{SMALLFONT}{BLACK}Fußwege und Warteschlangenreihen anlegen
 STR_1174    :Banner im Weg
 STR_1175    :Kann nicht auf Fußweg mit Neigung angelegt werden
@@ -1731,8 +1731,8 @@ STR_1726    :Land nicht zum Verkauf!
 STR_1727    :Baurechte nicht zum Verkauf!
 STR_1728    :Erwerb von Baurechten hier nicht möglich...
 STR_1729    :Land gehört nicht dem Park!
-STR_1730    :{RED}Geschlossen - -
-STR_1731    :{WHITE}{STRINGID} - -
+STR_1730    :{RED}Geschlossen - - 
+STR_1731    :{WHITE}{STRINGID} - - 
 STR_1732    :Bauen
 STR_1733    :Modus
 STR_1734    :{WINDOW_COLOUR_2}Anzahl der Runden:
@@ -1779,7 +1779,7 @@ STR_1774    :Nur ein Kabellifthügel pro Bahn erlaubt
 STR_1775    :Aus
 STR_1776    :Ein
 STR_1777    :{WINDOW_COLOUR_2}Musik
-STR_1778    :{STRINGID} - -
+STR_1778    :{STRINGID} - - 
 STR_1779    :{INLINE_SPRITE}{254}{19}{00}{00} Pandakostüm
 STR_1780    :{INLINE_SPRITE}{255}{19}{00}{00} Tigerkostüm
 STR_1781    :{INLINE_SPRITE}{00}{20}{00}{00} Elefantenkostüm
@@ -1893,8 +1893,8 @@ STR_1888    :{WINDOW_COLOUR_2}Letzte Inspektion vor: {BLACK}mehr als 4 Stunden
 STR_1889    :{WINDOW_COLOUR_2}Ausfallzeit: {MOVE_X}{255}{BLACK}{COMMA16}%
 STR_1890    :{SMALLFONT}{BLACK}Auswählen, wie oft ein Mechaniker{NEWLINE}diese Bahn überprüfen soll
 STR_1891    :Noch kein {STRINGID} im Park
-STR_1892    :RollerCoaster Tycoon 2
-STR_1893    :Legen Sie die RollerCoaster Tycoon 2-CD in folgendes Laufwerk ein:
+STR_1892    :<not used anymore>
+STR_1893    :<not used anymore>
 STR_1894    :{WINDOW_COLOUR_2}{STRINGID} verkauft: {BLACK}{COMMA32}
 STR_1895    :{SMALLFONT}{BLACK}Neue Attraktion bauen
 STR_1896    :{WINDOW_COLOUR_2}Ausgaben/Einnahmen
@@ -1938,7 +1938,7 @@ STR_1933    :{STRINGID} ist in {STRINGID}
 STR_1934    :{STRINGID} hat {STRINGID} verlassen
 STR_1935    :{STRINGID} hat den Park verlassen
 STR_1936    :{STRINGID} hat {STRINGID} gekauft
-STR_1937    :{SMALLFONT}{BLACK}Informationen zum Thema dieser Nachricht anzeigen
+STR_1937    :{SMALLFONT}{BLACK}Informationen zum Thema dieser{NEWLINE}Nachricht anzeigen
 STR_1938    :{SMALLFONT}{BLACK}Ansicht des Besuchers anzeigen
 STR_1939    :{SMALLFONT}{BLACK}Ansicht des Mitarbeiters anzeigen
 STR_1940    :{SMALLFONT}{BLACK}Vergnügen, Energie, Hunger, usw.{NEWLINE}dieses Besuchers anzeigen
@@ -2318,10 +2318,10 @@ STR_2313    :{WINDOW_COLOUR_2}Übelkeitswert: {BLACK}{COMMA2DP32} (ungefähr)
 STR_2314    :{WINDOW_COLOUR_2}Fahrtlänge: {BLACK}{STRINGID}
 STR_2315    :{WINDOW_COLOUR_2}Kosten: {BLACK}ungefähr {CURRENCY}
 STR_2316    :{WINDOW_COLOUR_2}Erforderlicher Platz: {BLACK}{COMMA16} x {COMMA16} Blöcke
-STR_2317    :{WINDOW_COLOUR_2}Soundqualität:
-STR_2318    :Niedrig
-STR_2319    :Mittel
-STR_2320    :Hoch
+STR_2317    :<not used anymore>
+STR_2318    :<not used anymore>
+STR_2319    :<not used anymore>
+STR_2320    :<not used anymore>
 STR_2321    :{WINDOW_COLOUR_2}Anzahl der Attraktionen: {BLACK}{COMMA16}
 STR_2322    :{WINDOW_COLOUR_2}Personal: {BLACK}{COMMA16}
 STR_2323    :{WINDOW_COLOUR_2}Parkgröße: {BLACK}{COMMA32}m{SQUARED}
@@ -2438,12 +2438,12 @@ STR_2433    :{BLACK}Gutscheine für Gratis-{STRINGID}
 STR_2434    :{BLACK}Werbekampagne für {STRINGID}
 STR_2435    :{BLACK}Werbekampagne für {STRINGID}
 STR_2436    :1 Woche
-STR_2437    :2 Wochen
-STR_2438    :3 Wochen
-STR_2439    :4 Wochen
-STR_2440    :5 Wochen
-STR_2441    :6 Wochen
-STR_2442    :{BLACK}({STRINGID} übrig)
+STR_2437    :<not used anymore>
+STR_2438    :<not used anymore>
+STR_2439    :<not used anymore>
+STR_2440    :<not used anymore>
+STR_2441    :<not used anymore>
+STR_2442    :<not used anymore>
 STR_2443    :{WINDOW_COLOUR_2}Kosten pro Woche: {BLACK}{CURRENCY2DP}
 STR_2444    :{WINDOW_COLOUR_2}Gesamtkosten: {BLACK}{CURRENCY2DP}
 STR_2445    :Diese Marketingkampagne starten
@@ -2501,7 +2501,7 @@ STR_2495    :Baumodus abbrechen
 STR_2496    :Spielpause
 STR_2497    :Ansicht wegzoomen
 STR_2498    :Ansicht heranzoomen
-STR_2499    :Ansicht drehen
+STR_2499    :Ansicht im Uhrzeigersinn drehen
 STR_2500    :Bauobjekt drehen
 STR_2501    :Sicht auf Untergrund ein/aus
 STR_2502    :Grundfläche ein/aus
@@ -2684,7 +2684,7 @@ STR_2677    :???
 STR_2678    :???
 STR_2679    :???
 STR_2680    :Alle Forschungen beendet
-STR_2681    :{MEDIUMFONT}{BLACK}Erhöht Ihr Geld um 5.000
+STR_2681    :{MEDIUMFONT}{BLACK}Erhöht Ihr Geld um {CURRENCY}
 STR_2682    :{MEDIUMFONT}{BLACK}Zw. freiem und kostenpfl. Eintritt umsch.
 STR_2683    :{MEDIUMFONT}{BLACK}Erhöht das Vergnügen der Besucher maximal
 STR_2684    :{SMALLFONT}{BLACK}Eine große Gruppe von Besuchern tritt ein
@@ -2704,11 +2704,11 @@ STR_2697    :???
 STR_2698    :???
 STR_2699    :???
 STR_2700    :Autosave-Frequenz:
-STR_2701    :Jede Woche
-STR_2702    :Alle 2 Wochen
-STR_2703    :Jeden Monat
-STR_2704    :Alle 4 Monate
-STR_2705    :Jedes Jahr
+STR_2701    :Jede Minute
+STR_2702    :Alle 5 Minuten
+STR_2703    :Alle 15 Minuten
+STR_2704    :Alle 30 Minuten
+STR_2705    :Jede Stunde
 STR_2706    :Nie
 STR_2707    :Neues Fenster
 STR_2708    :{WINDOW_COLOUR_1}Sind Sie sicher, dass Sie {STRINGID} überschreiben möchten?
@@ -2764,14 +2764,14 @@ STR_2756    :Müll beseitigen
 STR_2757    :Schönes Wetter
 STR_2758    :Gewitter
 STR_2759    :Höhen auf Null
-STR_2760    :+5.000 Geld
+STR_2760    :+{CURRENCY}
 STR_2761    :Bezahlen für Eintritt
 STR_2762    :Bezahlen für Bahnen
 STR_2763    :???
 STR_2764    :Glückliche Gäste
 STR_2765    :Große Straßenbahn
 STR_2766    :Szenario gewinnen
-STR_2767    :Wetter stoppen
+STR_2767    :Wetter einfrieren
 STR_2768    :Wetter fortsetzen
 STR_2769    :Park öffnen
 STR_2770    :Park schließen
@@ -2786,7 +2786,7 @@ STR_2778    :{RIGHTGUILLEMET}{MOVE_X}{SMALLFONT}{STRING}
 STR_2779    :Ansichtsfenster {COMMA16}
 STR_2780    :Extra Ansichtsfenster
 # End of new strings
-STR_2781    :{STRINGID}:{MOVE_X}{195}{STRINGID}{STRINGID}
+STR_2781    :{STRINGID}:{MOVE_X}{195}{STRINGID}
 STR_2782    :UMSCHALT +
 STR_2783    :STRG +
 STR_2784    :Tastaturkürzel ändern
@@ -2864,7 +2864,7 @@ STR_2855    :{RED}{STRINGID} hat keinen Fußweg, der vom Ausgang wegführt!{NEWL
 STR_2856    :{WINDOW_COLOUR_2}Lehrgang
 STR_2857    :{WINDOW_COLOUR_2}(Drücken Sie eine Taste oder klicken Sie mit der Maus, um die Kontrolle zu übernehmen)
 STR_2858    :Marketingkampage kann nicht gestartet werden...
-STR_2859    :RollerCoaster Tycoon 2 läuft bereits
+STR_2859    :OpenRCT2 läuft bereits
 STR_2860    :Infogrames Interactive Credits...
 STR_2861    :{WINDOW_COLOUR_2}Lizenziert für Infogrames Interactive Inc.
 STR_2862    :Musik...
@@ -2974,8 +2974,8 @@ STR_2965    :{WINDOW_COLOUR_2}
 STR_2966    :
 STR_2967    :
 STR_2968    :
-STR_2969    :Die Verwendung dieses Produkts unterliegt den Bestimmungen eines Lizenzvertrages,
-STR_2970    :der in der {OPENQUOTES}ReadMe{ENDQUOTES}-Datei und dem Handbuch nachgesehen werden kann
+STR_2969    :<not used anymore>
+STR_2970    :<not used anymore>
 STR_2971    :Hauptfarbschema
 STR_2972    :Alternatives Farbschema 1
 STR_2973    :Alternatives Farbschema 2
@@ -2986,7 +2986,7 @@ STR_2977    :Mitarbeitername
 STR_2978    :Neuen Namen für diesen Mitarbeiter eingeben:
 STR_2979    :Dieser Mitarbeiter kann nicht benannt werden...
 STR_2980    :Zu viele Banner im Spiel
-STR_2981    :{RED}Kein Zutritt - -
+STR_2981    :{RED}Kein Zutritt - - 
 STR_2982    :Bannertext
 STR_2983    :Neuen Text für dieses Banner eingeben:
 STR_2984    :Neuer Text für das Banner kann nicht erstellt werden...
@@ -3165,8 +3165,8 @@ STR_3156    :
 STR_3157    :Karte
 STR_3158    :Diagramm
 STR_3159    :Liste
-STR_3160    :RollerCoaster Tycoon 2: Wird zum ersten Mal gestartet...
-STR_3161    :RollerCoaster Tycoon 2: Objektdateien werden überprüft...
+STR_3160    :<not used anymore>
+STR_3161    :<not used anymore>
 STR_3162    :Es kann nicht genügend Geld bereitgestellt werden
 STR_3163    :Neue Daten werden installiert:
 STR_3164    :{BLACK}{COMMA16} ausgewählt (maximal {COMMA16})
@@ -3310,14 +3310,14 @@ STR_3301    :{WINDOW_COLOUR_2}Zieldatum:
 STR_3302    :{WINDOW_COLOUR_2}{MONTHYEAR}
 STR_3303    :{WINDOW_COLOUR_2}Besucheranzahl:
 STR_3304    :{WINDOW_COLOUR_2}Verkehrswert:
-STR_3305    :{WINDOW_COLOUR_2}Mon. Einkünfte:
+STR_3305    :{WINDOW_COLOUR_2}Monatliche Einkünfte:
 STR_3306    :{WINDOW_COLOUR_2}Monatlicher Gewinn:
 STR_3307    :{WINDOW_COLOUR_2}Mindestlänge:
 STR_3308    :{WINDOW_COLOUR_2}Nervenkitzelwert:
 STR_3309    :{WINDOW_COLOUR_2}{COMMA16}
 STR_3310    :{WINDOW_COLOUR_2}{LENGTH}
 STR_3311    :{WINDOW_COLOUR_2}{COMMA2DP32}
-STR_3312    :{WINDOW_COLOUR_2}Attraktionen unter  Beibehaltungsauftrag:
+STR_3312    :{WINDOW_COLOUR_2}Attraktionen unter Beibehaltungsauftrag:
 STR_3313    :Szenarioname
 STR_3314    :Namen für Szenario eingeben:
 STR_3315    :Park-/Szenariodetails
@@ -3356,7 +3356,7 @@ STR_3347    :Bahn ist zu lang, enthält zu viele Elemente oder Szenerie ist zu z
 STR_3348    :Umbenennen
 STR_3349    :Löschen
 STR_3350    :Streckenentwurfsname
-STR_3351    :Neuen Namen für diesen Streckenentwurf eingeben:
+STR_3351    :Neuen Namen für Streckenentwurf eingeben:
 STR_3352    :Streckenentwurf kann nicht umbenannt werden...
 STR_3353    :Neuer Name enthält ungültige Zeichen
 STR_3354    :Entweder besteht bereits eine Datei mit diesem Namen oder die Datei ist schreibgeschützt
@@ -3367,8 +3367,8 @@ STR_3358    :Streckenentwurf kann nicht gelöscht werden...
 STR_3359    :{BLACK}Keine Streckenentwürfe dieser Art
 STR_3360    :Warnung!
 STR_3361    :Zu viele Streckenentwürfe dieser Art - einige werden nicht aufgeführt.
-STR_3362    :Erzwungenes Software-Buffer-Mixing
-STR_3363    :{SMALLFONT}{BLACK}Diese Option wählen, falls das Spiel jedesmal kurz anhält sobald Töne gespielt werden oder falls ein Rauschen zu hören ist.
+STR_3362    :<not used anymore>
+STR_3363    :<not used anymore>
 STR_3364    :Fortgeschritten
 STR_3365    :{SMALLFONT}{BLACK}Ermöglichen Sie die Auswahl einzelner Szenerieobjekte zusätzlich zu Szeneriegruppen
 STR_3366    :{BLACK}= Bahn
@@ -3453,8 +3453,8 @@ STR_3444    :Seite 5
 STR_3445    :Patrouillenbereich festlegen
 STR_3446    :Patrouillenbereich verwerfen
 # New strings, cleaner
-STR_5120    :Finanzen in der Symbolleiste anzeigen
-STR_5121    :Forschung in der Symbolleiste anzeigen
+STR_5120    :Finanzen
+STR_5121    :Forschung
 STR_5122    :Bahnen nach Streckentyp auswählen (wie in RCT1)
 STR_5123    :Bahnen erneuern
 STR_5124    :Keine Six Flags
@@ -3480,7 +3480,7 @@ STR_5143    :Erhöhte Geschwindigkeit
 STR_5144    :Hohe Geschwindigkeit
 STR_5145    :Sehr Hohe Geschwindigkeit
 STR_5146    :Extreme Geschwindigkeit
-STR_5147    :Cheats in der Symbolleiste anzeigen
+STR_5147    :Cheats
 STR_5148    :{SMALLFONT}{BLACK}Spielgeschwindigkeit ändern
 STR_5149    :{SMALLFONT}{BLACK}Cheats anzeigen
 STR_5150    :Aktiviere Debugging-Tools
@@ -3493,7 +3493,7 @@ STR_5156    :{SMALLFONT}{BLACK}Erlaubt das Testen der meisten Bahnarten, selbst 
 STR_5157    :Alle Preise freischalten
 STR_5158    :Spiel beenden
 STR_5159    :OpenRCT2 beenden
-STR_5160    :{MONTH} {STRINGID}, Jahr {COMMA16}
+STR_5160    :{POP16}{MONTH} {PUSH16}{PUSH16}{STRINGID}, Jahr {POP16}{COMMA16}
 STR_5161    :Datumsformat:
 STR_5162    :Tag/Monat/Jahr
 STR_5163    :Monat/Tag/Jahr
@@ -3602,7 +3602,7 @@ STR_5265    :{SMALLFONT}{BLACK}Auswählen, welche Inhaltsquellen{NEWLINE}angezei
 STR_5266    :{SMALLFONT}{BLACK}Anzeige
 STR_5267    :{SMALLFONT}{BLACK}Sprache und Einheiten
 STR_5268    :{SMALLFONT}{BLACK}Audio
-STR_5269    :{SMALLFONT}{BLACK}Steuerung
+STR_5269    :{SMALLFONT}{BLACK}Bedienung und Oberfläche
 STR_5270    :{SMALLFONT}{BLACK}Sonstiges
 STR_5271    :{SMALLFONT}{BLACK}Twitch
 STR_5272    :{SMALLFONT}{BLACK}Kleine Szenerie
@@ -3611,8 +3611,8 @@ STR_5274    :{SMALLFONT}{BLACK}Fußwege
 STR_5275    :Nach Objekten suchen
 STR_5276    :Zu suchenden Objektnamen eingeben:
 STR_5277    :Entfernen
-STR_5278    :Sandkasten-Modus
-STR_5279    :Sandk.-Modus aus
+STR_5278    :Sandkastenmodus
+STR_5279    :Sandkastenmod. aus
 STR_5280    :{SMALLFONT}{BLACK}Erlaubt das Bearbeiten der Landrechte im Kartenfenster sowie andere Optionen welche normalerweise nur im Szenario-Editor verfügbar sind
 STR_5281    :{SMALLFONT}{BLACK}Features
 STR_5282    :RCT1-Ampel Bahn öffnen/schließen
@@ -3694,10 +3694,10 @@ STR_5357    :{BLACK}Übelkeitstoleranz:
 STR_5358    :{BLACK}Toilette:
 STR_5359    :Besucher entfernen
 STR_5360    :{SMALLFONT}{BLACK}Alle Besucher von der Karte entfernen
-STR_5361    :{BLACK}Für alle Besucher:
-STR_5362    :{BLACK}Bevorz. Intensität:
-STR_5363    :> 1
-STR_5364    :< 15
+STR_5361    :Gib allen Besuchern:
+STR_5362    :{BLACK}Bevorzugte Bahnintensität aller Besucher:
+STR_5363    :Mehr als 1
+STR_5364    :Weniger als 15
 STR_5365    :{BLACK}Personalgeschw.:
 STR_5366    :Normal
 STR_5367    :Schnell
@@ -3788,3 +3788,102 @@ STR_5451    :Cheatfenster anzeigen
 STR_5452    :Symbolleiste ein-/ausblenden
 STR_5453    :Andere Attraktion auswählen
 STR_5454    :FPS-Limit aufheben
+STR_5455    :Sandkastenmodus aktivieren
+STR_5456    :Höhenüberprüfung deaktivieren
+STR_5457    :Stützenlimit deaktivieren
+STR_5458    :Im Uhrzeigersinn drehen
+STR_5459    :Gegen den Uhrzeigersinn drehen
+STR_5460    :Ansicht gegen den Uhrzeigers. drehen
+STR_5461    :Besucherparameter festlegen
+STR_5462    :{CURRENCY}
+STR_5463    :Ziel: Viel Spaß!
+STR_5464    :Allgemein
+STR_5465    :Klima
+STR_5466    :Personal
+STR_5467    :ALT + 
+STR_5468    :Letzte Nachrichten
+STR_5469    :Karte nach oben verschieben
+STR_5470    :Karte nach links verschieben
+STR_5471    :Karte nach unten verschieben
+STR_5472    :Karte nach rechts verschieben
+STR_5473    :Tag-Nacht-Wechsel
+STR_5474    :Text auf Banner in Großbuchstaben anzeigen
+STR_5475    :{COMMA16} Wochen
+STR_5476    :Hardware
+STR_5477    :Kartendarstellung
+STR_5478    :Bedienung
+STR_5479    :Symbolleiste
+STR_5480    :Schaltflächen anzeigen für:
+STR_5481    :Themen
+STR_5482    :{WINDOW_COLOUR_2}Letzte Inspektion vor: {BLACK}1 Minute
+STR_5483    :{BLACK}({COMMA16} Wochen verbleibend)
+STR_5484    :{BLACK}({COMMA16} Woche verbleibend)
+STR_5485    :{SMALLFONT}{STRING}
+STR_5486    :{BLACK}{COMMA16}
+STR_5487    :{SMALLFONT}{BLACK}Aktuelle Nachrichten anzeigen
+STR_5488    :Kein Eingang
+STR_5489    :{SMALLFONT}{BLACK}Nur überwachte Besucher anzeigen
+STR_5490    :Audio deaktivieren, wenn Spiel nicht im Vordergrund
+STR_5491    :Erfindungsliste
+STR_5492    :Szenario-Optionen
+STR_5493    :Nachricht senden
+STR_5494    :<not used anymore>
+STR_5495    :Spielerliste
+STR_5496    :Spieler:
+STR_5497    :Ping:
+STR_5498    :Serverliste
+STR_5499    :Spielername:
+STR_5500    :Server hinzufügen
+STR_5501    :Server starten
+STR_5502    :Mehrspieler
+STR_5503    :Hostnamen oder IP-Adresse eingeben:
+STR_5504    :{SMALLFONT}{BLACK}Mehrspielerstatus anzeigen
+STR_5505    :Verbindung zum Server konnte nicht hergestellt werden
+STR_5506    :Besucher ignorieren Bahnintensität
+STR_5507    :Parkpfleger mähen standardmäßig Gras
+STR_5508    :Laden von Dateien mit unzul. Prüfsummen erlauben
+STR_5509    :{SMALLFONT}{BLACK}Erlaubt das Laden von Szenarios und gespeicherten Spielständen, die eine unzulässige Prüfsumme haben, wie Szenarios aus der Demo oder fehlerhafte Spielstände
+STR_5510    :Standard Audiogerät
+STR_5511    :(UNBEKANNT)
+STR_5512    :Spiel speichern unter
+STR_5513    :Schnellspeichern
+STR_5514    :Vandalismus deaktivieren
+STR_5515    :{SMALLFONT}{BLACK}Verhindert Vandalismus durch{NEWLINE}verärgerte Besucher
+STR_5516    :{SMALLFONT}{BLACK}Schwarz
+STR_5517    :{SMALLFONT}{BLACK}Grau
+STR_5518    :{SMALLFONT}{BLACK}Weiß
+STR_5519    :{SMALLFONT}{BLACK}Dunkelviolett
+STR_5520    :{SMALLFONT}{BLACK}Hellviolett
+STR_5521    :{SMALLFONT}{BLACK}Lila
+STR_5522    :{SMALLFONT}{BLACK}Dunkelblau
+STR_5523    :{SMALLFONT}{BLACK}Hellblau
+STR_5524    :{SMALLFONT}{BLACK}Himmelblau
+STR_5525    :{SMALLFONT}{BLACK}Blaugrün
+STR_5526    :{SMALLFONT}{BLACK}Aquamarinblau
+STR_5527    :{SMALLFONT}{BLACK}Gesättigtes Grün
+STR_5528    :{SMALLFONT}{BLACK}Dunkelgrün
+STR_5529    :{SMALLFONT}{BLACK}Moosgrün
+STR_5530    :{SMALLFONT}{BLACK}Hellgrün
+STR_5531    :{SMALLFONT}{BLACK}Olivgrün
+STR_5532    :{SMALLFONT}{BLACK}Dunkles Olivgrün
+STR_5533    :{SMALLFONT}{BLACK}Hellgelb
+STR_5534    :{SMALLFONT}{BLACK}Gelb
+STR_5535    :{SMALLFONT}{BLACK}Dunkelgelb
+STR_5536    :{SMALLFONT}{BLACK}Orange
+STR_5537    :{SMALLFONT}{BLACK}Dunkelorange
+STR_5538    :{SMALLFONT}{BLACK}Hellbraun
+STR_5539    :{SMALLFONT}{BLACK}Gesättigtes Braun
+STR_5540    :{SMALLFONT}{BLACK}Dunkelbraun
+STR_5541    :{SMALLFONT}{BLACK}Lachsrosa
+STR_5542    :{SMALLFONT}{BLACK}Bordeauxrot
+STR_5543    :{SMALLFONT}{BLACK}Gesättigtes Rot
+STR_5544    :{SMALLFONT}{BLACK}Hellrot
+STR_5545    :{SMALLFONT}{BLACK}Dunkelrosa
+STR_5546    :{SMALLFONT}{BLACK}Leuchtendes Rosa
+STR_5547    :{SMALLFONT}{BLACK}Hellrosa
+STR_5548    :Alle Betriebsmodi anzeigen
+STR_5549    :Jahr/Monat/Tag
+STR_5550    :{POP16}{POP16}Jahr {COMMA16}, {PUSH16}{PUSH16}{MONTH} {PUSH16}{PUSH16}{STRINGID}
+STR_5551    :Jahr/Tag/Monat
+STR_5552    :{POP16}{POP16}Jahr {COMMA16}, {PUSH16}{PUSH16}{PUSH16}{STRINGID} {MONTH}
+STR_5553    :Spiel bei geöffnetem Steam Overlay pausieren

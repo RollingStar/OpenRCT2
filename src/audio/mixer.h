@@ -21,10 +21,15 @@
 #ifndef _MIXER_H_
 #define _MIXER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
 #include "../common.h"
 #include <SDL.h>
-
-#define USE_MIXER
+#include "../platform/platform.h"
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #define MIXER_LOOP_NONE			0
 #define MIXER_LOOP_INFINITE		-1
@@ -184,6 +189,13 @@ private:
 
 extern "C"
 {
+#endif
+
+#ifndef DSBPAN_LEFT
+#define DSBPAN_LEFT -10000
+#endif
+#ifndef DSBPAN_RIGHT
+#define DSBPAN_RIGHT 10000
 #endif
 
 void Mixer_Init(const char* device);

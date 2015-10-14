@@ -22,10 +22,12 @@
 #define _GAME_H_
 
 #include "common.h"
+#include "platform/platform.h"
+#include "scenario.h"
 
 enum GAME_COMMAND {
 	GAME_COMMAND_SET_RIDE_APPEARANCE,
-	GAME_COMMAND_1,
+	GAME_COMMAND_SET_LAND_HEIGHT,
 	GAME_COMMAND_TOGGLE_PAUSE,
 	GAME_COMMAND_PLACE_TRACK,
 	GAME_COMMAND_REMOVE_TRACK,
@@ -42,7 +44,7 @@ enum GAME_COMMAND {
 	GAME_COMMAND_PLACE_SCENERY,
 	GAME_COMMAND_SET_WATER_HEIGHT,
 	GAME_COMMAND_PLACE_PATH,
-	GAME_COMMAND_18,
+	GAME_COMMAND_PLACE_PATH_FROM_TRACK,
 	GAME_COMMAND_REMOVE_PATH,
 	GAME_COMMAND_CHANGE_SURFACE_STYLE,
 	GAME_COMMAND_SET_RIDE_PRICE,
@@ -84,12 +86,30 @@ enum GAME_COMMAND {
 	GAME_COMMAND_CLEAR_SCENERY
 };
 
-// If this flag is set, the command is applied, otherwise only the cost is retrieved
-#define GAME_COMMAND_FLAG_APPLY (1 << 0)
+enum {
+	GAME_COMMAND_FLAG_APPLY = (1 << 0), // If this flag is set, the command is applied, otherwise only the cost is retrieved
+	GAME_COMMAND_FLAG_2 = (1 << 2),
+	GAME_COMMAND_FLAG_ALLOW_DURING_PAUSED = (1 << 3), // Allow while paused
+	GAME_COMMAND_FLAG_4 = (1 << 4),
+	GAME_COMMAND_FLAG_5 = (1 << 5),
+	GAME_COMMAND_FLAG_GHOST = (1 << 6),
+	GAME_COMMAND_FLAG_7 = (1 << 7),
+	GAME_COMMAND_FLAG_NETWORKED = (1 << 31) // Game command is coming from network
+};
+
+
+
 
 typedef void (GAME_COMMAND_POINTER)(int* eax, int* ebx, int* ecx, int* edx, int* esi, int* edi, int* ebp);
 
+typedef void (GAME_COMMAND_CALLBACK_POINTER)(int eax, int ebx, int ecx, int edx, int esi, int edi, int ebp);
+
+extern GAME_COMMAND_CALLBACK_POINTER* game_command_callback;
+int game_command_callback_get_index(GAME_COMMAND_CALLBACK_POINTER* callback);
+GAME_COMMAND_CALLBACK_POINTER* game_command_callback_get_callback(int index);
+
 extern int gGameSpeed;
+extern float gDayNightCycle;
 
 void game_increase_game_speed();
 void game_reduce_game_speed();
@@ -107,13 +127,19 @@ void game_increase_game_speed();
 void game_reduce_game_speed();
 
 void game_load_or_quit_no_save_prompt();
-int game_load_sv6(const char *path);
+int game_load_sv6(SDL_RWops* rw);
+int game_load_network(SDL_RWops* rw);
 int game_load_save(const char *path);
+void game_load_init();
 void game_pause_toggle(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
 void pause_toggle();
-char save_game();
+void save_game();
+void save_game_as();
 void rct2_exit();
 void rct2_exit_reason(rct_string_id title, rct_string_id body);
 void game_autosave();
+void game_convert_strings_to_utf8();
+void game_convert_strings_to_rct2(rct_s6_data *s6);
+void game_fix_save_vars();
 
 #endif

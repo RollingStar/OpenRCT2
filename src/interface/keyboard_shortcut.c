@@ -21,7 +21,10 @@
 #include "../addresses.h"
 #include "../config.h"
 #include "../game.h"
+#include "../interface/chat.h"
 #include "../input.h"
+#include "../localisation/localisation.h"
+#include "../network/network.h"
 #include "keyboard_shortcut.h"
 #include "viewport.h"
 #include "window.h"
@@ -71,8 +74,33 @@ void keyboard_shortcut_handle(int key)
 
 void keyboard_shortcut_handle_command(int shortcutIndex)
 {
-	if (shortcutIndex >= 0 && shortcutIndex < countof(shortcut_table))
-		shortcut_table[shortcutIndex]();
+	if (shortcutIndex >= 0 && shortcutIndex < countof(shortcut_table)) {
+		shortcut_action action = shortcut_table[shortcutIndex];
+		if (action != NULL) {
+			action();
+		}
+	}
+}
+
+void keyboard_shortcut_format_string(char *buffer, uint16 shortcutKey)
+{
+	char formatBuffer[256];
+
+	*buffer = 0;
+	if (shortcutKey == 0xFFFF) return;
+	if (shortcutKey & 0x100) {
+		format_string(formatBuffer, STR_SHIFT_PLUS, NULL);
+		strcat(buffer, formatBuffer);
+	}
+	if (shortcutKey & 0x200) {
+		format_string(formatBuffer, STR_CTRL_PLUS, NULL);
+		strcat(buffer, formatBuffer);
+	}
+	if (shortcutKey & 0x400) {
+		format_string(formatBuffer, STR_ALT_PLUS, NULL);
+		strcat(buffer, formatBuffer);
+	}
+	strcat(buffer, SDL_GetScancodeName(shortcutKey & 0xFF));
 }
 
 #pragma region Shortcut Commands
@@ -155,19 +183,16 @@ static void shortcut_zoom_view_in()
 	}
 }
 
-static void shortcut_rotate_view()
+static void shortcut_rotate_view_clockwise()
 {
-	rct_window *window;
+	rct_window* w = window_get_main();
+	window_rotate_camera(w, 1);
+}
 
-	if (!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) || RCT2_GLOBAL(0x0141F570, uint8) == 1) {
-		if (!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_TRACK_MANAGER)) {
-			window = window_find_by_class(WC_TOP_TOOLBAR);
-			if (window != NULL) {
-				window_invalidate(window);
-				window_event_mouse_up_call(window, 4);
-			}
-		}
-	}
+static void shortcut_rotate_view_anticlockwise()
+{
+	rct_window* w = window_get_main();
+	window_rotate_camera(w, -1);
 }
 
 static void shortcut_rotate_construction_object()
@@ -470,6 +495,24 @@ static void shortcut_open_cheat_window()
 	window_cheats_open();
 }
 
+static void shortcut_open_chat_window()
+{
+	chat_toggle();
+}
+
+static void shortcut_quick_save_game()
+{
+	// Do a quick save in playing mode and a regular save in Scenario Editor mode. In other cases, don't do anything.
+	if (RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) == SCREEN_FLAGS_PLAYING) {
+		tool_cancel();
+		save_game();
+	}
+	else if (RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & SCREEN_FLAGS_SCENARIO_EDITOR) {
+		rct_s6_info *s6Info = (rct_s6_info*)0x0141F570;
+		window_loadsave_open(LOADSAVETYPE_SAVE | LOADSAVETYPE_LANDSCAPE, s6Info->name);
+	}
+}
+
 static const shortcut_action shortcut_table[SHORTCUT_COUNT] = {
 	shortcut_close_top_most_window,
 	shortcut_close_all_floating_windows,
@@ -477,7 +520,8 @@ static const shortcut_action shortcut_table[SHORTCUT_COUNT] = {
 	shortcut_pause_game,
 	shortcut_zoom_view_out,
 	shortcut_zoom_view_in,
-	shortcut_rotate_view,
+	shortcut_rotate_view_clockwise,
+	shortcut_rotate_view_anticlockwise,
 	shortcut_rotate_construction_object,
 	shortcut_underground_view_toggle,
 	shortcut_remove_base_land_toggle,
@@ -509,6 +553,12 @@ static const shortcut_action shortcut_table[SHORTCUT_COUNT] = {
 	shortcut_increase_game_speed,
 	shortcut_open_cheat_window,
 	shortcut_remove_top_bottom_toolbar_toggle,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	shortcut_open_chat_window,
+	shortcut_quick_save_game,
 };
 
 #pragma endregion

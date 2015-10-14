@@ -28,72 +28,78 @@
 #include "dropdown.h"
 #include "../interface/themes.h"
 
+#define MINIMUM_TOOL_SIZE 1
+#define MAXIMUM_TOOL_SIZE 64
+
 enum WINDOW_LAND_WIDGET_IDX {
 	WIDX_BACKGROUND,
 	WIDX_TITLE,
 	WIDX_CLOSE,
+	WIDX_MOUNTAINMODE,
+	WIDX_PAINTMODE,
 	WIDX_PREVIEW,
 	WIDX_DECREMENT,
 	WIDX_INCREMENT,
 	WIDX_FLOOR,
 	WIDX_WALL,
-	WIDX_PAINTMODE,
 };
 
 static rct_widget window_land_widgets[] = {
-	{ WWT_FRAME,	0,	0,	97,	0,	125,	-1,			STR_NONE },						// panel / background
-	{ WWT_CAPTION,	0,	1,	96,	1,	14,		STR_LAND,	STR_WINDOW_TITLE_TIP },			// title bar
-	{ WWT_CLOSEBOX,	0,	85,	95,	2,	13,		824,		STR_CLOSE_WINDOW_TIP },			// close x button
-	{ WWT_IMGBTN,	0,	10,	53,	17,	48,		5503,		STR_NONE },						// preview box
-	{ WWT_TRNBTN,	1,	11,	26,	18,	33,		0x20000000 | SPR_LAND_TOOL_DECREASE,	STR_ADJUST_SMALLER_LAND_TIP },	// decrement size
-	{ WWT_TRNBTN,	1,	37,	52,	32,	47,		0x20000000 | SPR_LAND_TOOL_INCREASE,	STR_ADJUST_LARGER_LAND_TIP },	// increment size
-	{ WWT_FLATBTN,	1,	2,	48,	75,	110,	0xFFFFFFFF,	STR_CHANGE_BASE_LAND_TIP },		// floor texture
-	{ WWT_FLATBTN,	1,	49,	95,	75,	110,	0xFFFFFFFF,	STR_CHANGE_VERTICAL_LAND_TIP },	// wall texture
-	{ WWT_FLATBTN,  1,	64,	87,	21,	44,		5173,		5127 }, // paint mode
+	{ WWT_FRAME,	0,	0,	97,	0,	143,		-1,										STR_NONE },						// panel / background
+	{ WWT_CAPTION,	0,	1,	96,	1,	14,			STR_LAND,								STR_WINDOW_TITLE_TIP },			// title bar
+	{ WWT_CLOSEBOX,	0,	85,	95,	2,	13,			824,									STR_CLOSE_WINDOW_TIP },			// close x button
+
+	{ WWT_FLATBTN,  1,	19,	42,	19,	42,			5147,									STR_ENABLE_MOUNTAIN_TOOL_TIP },	// mountain mode
+	{ WWT_FLATBTN,  1,	55,	78,	19,	42,			5173,									5127 },							// paint mode
+
+	{ WWT_IMGBTN,	0,	27,	70,	48,	79,			5503,									STR_NONE },						// preview box
+	{ WWT_TRNBTN,	1,	28,	43,	49,	64,			0x20000000 | SPR_LAND_TOOL_DECREASE,	STR_ADJUST_SMALLER_LAND_TIP },	// decrement size
+	{ WWT_TRNBTN,	1,	54,	69,	63,	78,			0x20000000 | SPR_LAND_TOOL_INCREASE,	STR_ADJUST_LARGER_LAND_TIP },	// increment size
+
+	{ WWT_FLATBTN,	1,	2,	48,	106,	141,	0xFFFFFFFF,								STR_CHANGE_BASE_LAND_TIP },		// floor texture
+	{ WWT_FLATBTN,	1,	49,	95,	106,	141,	0xFFFFFFFF,								STR_CHANGE_VERTICAL_LAND_TIP },	// wall texture
 	{ WIDGETS_END },
 };
 
-static void window_land_emptysub() { }
-static void window_land_close();
-static void window_land_mouseup();
+static void window_land_close(rct_window *w);
+static void window_land_mouseup(rct_window *w, int widgetIndex);
 static void window_land_mousedown(int widgetIndex, rct_window*w, rct_widget* widget);
-static void window_land_dropdown();
+static void window_land_dropdown(rct_window *w, int widgetIndex, int dropdownIndex);
 static void window_land_update(rct_window *w);
-static void window_land_invalidate();
-static void window_land_paint();
-static void window_land_textinput();
+static void window_land_invalidate(rct_window *w);
+static void window_land_paint(rct_window *w, rct_drawpixelinfo *dpi);
+static void window_land_textinput(rct_window *w, int widgetIndex, char *text);
 static void window_land_inputsize(rct_window *w);
 
-
-static void* window_land_events[] = {
+static rct_window_event_list window_land_events = {
 	window_land_close,
 	window_land_mouseup,
-	window_land_emptysub,
+	NULL,
 	window_land_mousedown,
 	window_land_dropdown,
-	window_land_emptysub,
+	NULL,
 	window_land_update,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_land_textinput,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
-	window_land_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_land_invalidate,
 	window_land_paint,
-	window_land_emptysub
+	NULL
 };
 
 static char window_land_floor_texture_order[] = {
@@ -127,7 +133,7 @@ void window_land_open()
 	if (window_find_by_class(WC_LAND) != NULL)
 		return;
 
-	window = window_create(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_WIDTH, uint16) - 98, 29, 98, 126, (uint32*)window_land_events, WC_LAND, 0);
+	window = window_create(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_WIDTH, uint16) - 98, 29, 98, 144, &window_land_events, WC_LAND, 0);
 	window->widgets = window_land_widgets;
 	window->enabled_widgets =
 		(1 << WIDX_CLOSE) |
@@ -135,6 +141,7 @@ void window_land_open()
 		(1 << WIDX_INCREMENT) |
 		(1 << WIDX_FLOOR) |
 		(1 << WIDX_WALL) |
+		(1 << WIDX_MOUNTAINMODE) |
 		(1 << WIDX_PAINTMODE) |
 		(1 << WIDX_PREVIEW);
 	window_init_scroll_widgets(window);
@@ -142,7 +149,8 @@ void window_land_open()
 
 	RCT2_GLOBAL(RCT2_ADDRESS_SELECTED_TERRAIN_SURFACE, uint8) = 255;
 	RCT2_GLOBAL(RCT2_ADDRESS_SELECTED_TERRAIN_EDGE, uint8) = 255;
-	LandPaintMode = false;
+	gLandMountainMode = false;
+	gLandPaintMode = false;
 	_selectedFloorTexture = 0;
 	_selectedWallTexture = 0;
 	RCT2_GLOBAL(RCT2_ADDRESS_LAND_RAISE_COST, money32) = MONEY32_UNDEFINED;
@@ -153,7 +161,7 @@ void window_land_open()
  *
  *  rct2: 0x006640A5
  */
-static void window_land_close()
+static void window_land_close(rct_window *w)
 {
 	// If the tool wasn't changed, turn tool off
 	if (land_tool_is_active())
@@ -164,48 +172,34 @@ static void window_land_close()
  *
  *  rct2: 0x00664064
  */
-static void window_land_mouseup()
+static void window_land_mouseup(rct_window *w, int widgetIndex)
 {
-	int limit;
-	short widgetIndex;
-	rct_window *w;
-
-	window_widget_get_registers(w, widgetIndex);
-
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
 		break;
 	case WIDX_DECREMENT:
 		// Decrement land tool size
-		RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16)--;
-
-		// FEATURE: minimum size is always 0
-		limit = 0;
-		// limit = (RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & 2 ? 0 : 1);
-
-		if (RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) < limit)
-			RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) = limit;
+		RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) = max(MINIMUM_TOOL_SIZE, RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16)-1);
 
 		// Invalidate the window
 		window_invalidate(w);
 		break;
 	case WIDX_INCREMENT:
 		// Increment land tool size
-		RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16)++;
-
-		// FEATURE: maximum size is 64
-		limit = 64;
-		// limit = (RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & 2 ? 7 : 5);
-		
-		if (RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) > limit)
-			RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) = limit;
+		RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) = min(MAXIMUM_TOOL_SIZE, RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16)+1);
 
 		// Invalidate the window
 		window_invalidate(w);
 		break;
+	case WIDX_MOUNTAINMODE:
+		gLandMountainMode ^= 1;
+		gLandPaintMode = 0;
+		window_invalidate(w);
+		break;
 	case WIDX_PAINTMODE:
-		LandPaintMode ^= 1;
+		gLandMountainMode = 0;
+		gLandPaintMode ^= 1;
 		window_invalidate(w);
 		break;
 	case WIDX_PREVIEW:
@@ -267,13 +261,9 @@ static void window_land_mousedown(int widgetIndex, rct_window*w, rct_widget* wid
  *
  *  rct2: 0x00664090
  */
-static void window_land_dropdown()
+static void window_land_dropdown(rct_window *w, int widgetIndex, int dropdownIndex)
 {
 	int type;
-	short dropdownIndex, widgetIndex;
-	rct_window *w;
-
-	window_dropdown_get_registers(w, widgetIndex, dropdownIndex);
 
 	switch (widgetIndex) {
 	case WIDX_FLOOR:
@@ -311,33 +301,28 @@ static void window_land_dropdown()
 	}
 }
 
-static void window_land_textinput()
+static void window_land_textinput(rct_window *w, int widgetIndex, char *text)
 {
-	uint8 result;
-	short widgetIndex;
-	rct_window *w;
-	char *text;
 	int size;
 	char* end;
 
-	window_textinput_get_registers(w, widgetIndex, result, text);
-
-	if (widgetIndex != WIDX_PREVIEW || !result)
+	if (widgetIndex != WIDX_PREVIEW || text == NULL)
 		return;
 
 	size = strtol(text, &end, 10);
 	if (*end == '\0') {
-		if (size < 0) size = 0;
-		if (size > 64) size = 64;
+		size = max(MINIMUM_TOOL_SIZE,size);
+		size = min(MAXIMUM_TOOL_SIZE,size);
 		RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) = size;
+
 		window_invalidate(w);
 	}
 }
 
 static void window_land_inputsize(rct_window *w)
 {
-	((uint16*)TextInputDescriptionArgs)[0] = 0;
-	((uint16*)TextInputDescriptionArgs)[1] = 64;
+	((uint16*)TextInputDescriptionArgs)[0] = MINIMUM_TOOL_SIZE;
+	((uint16*)TextInputDescriptionArgs)[1] = MAXIMUM_TOOL_SIZE;
 	window_text_input_open(w, WIDX_PREVIEW, 5128, 5129, STR_NONE, STR_NONE, 3);
 }
 
@@ -355,11 +340,8 @@ static void window_land_update(rct_window *w)
  *
  *  rct2: 0x00663F20
  */
-static void window_land_invalidate()
+static void window_land_invalidate(rct_window *w)
 {
-	rct_window *w;
-
-	window_get_register(w);
 	colour_scheme_update(w);
 
 	w->pressed_widgets = (1 << WIDX_PREVIEW);
@@ -367,11 +349,14 @@ static void window_land_invalidate()
 		w->pressed_widgets |= (1 << WIDX_FLOOR);
 	if (RCT2_GLOBAL(RCT2_ADDRESS_SELECTED_TERRAIN_EDGE, uint8) != 255)
 		w->pressed_widgets |= (1 << WIDX_WALL);
-	if (LandPaintMode != 0)
+	if (gLandMountainMode)
+		w->pressed_widgets |= (1 << WIDX_MOUNTAINMODE);
+	if (gLandPaintMode)
 		w->pressed_widgets |= (1 << WIDX_PAINTMODE);
 
 	window_land_widgets[WIDX_FLOOR].image = SPR_FLOOR_TEXTURE_GRASS + _selectedFloorTexture;
 	window_land_widgets[WIDX_WALL].image = SPR_WALL_TEXTURE_ROCK + _selectedWallTexture;
+	// Update the preview image (for tool sizes up to 7)
 	window_land_widgets[WIDX_PREVIEW].image = RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) <= 7 ?
 		SPR_LAND_TOOL_SIZE_0 + RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) :
 		0xFFFFFFFF;
@@ -381,31 +366,27 @@ static void window_land_invalidate()
  *
  *  rct2: 0x00663F7C
  */
-static void window_land_paint()
+static void window_land_paint(rct_window *w, rct_drawpixelinfo *dpi)
 {
-	rct_window *w;
-	rct_drawpixelinfo *dpi;
 	int x, y, numTiles;
 	money32 price;
-
-	window_paint_get_registers(w, dpi);
+	rct_widget *previewWidget = &window_land_widgets[WIDX_PREVIEW];
 
 	window_draw_widgets(w, dpi);
 
-	x = w->x + (window_land_widgets[WIDX_PREVIEW].left + window_land_widgets[WIDX_PREVIEW].right) / 2;
-	y = w->y + (window_land_widgets[WIDX_PREVIEW].top + window_land_widgets[WIDX_PREVIEW].bottom) / 2;
-
-	// FEATURE larger land tool size support
+	// Draw number for tool sizes bigger than 7
 	if (RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16) > 7) {
-		RCT2_GLOBAL(0x009BC677, char) = FORMAT_BLACK;
-		RCT2_GLOBAL(0x009BC678, char) = FORMAT_COMMA16;
-		RCT2_GLOBAL(0x009BC679, char) = 0;
-		RCT2_GLOBAL(0x013CE952, sint16) = RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16);
-		gfx_draw_string_centred(dpi, 3165, x, y - 2, 0, (void*)0x013CE952);
+		x = w->x + (previewWidget->left + previewWidget->right) / 2;
+		y = w->y + (previewWidget->top + previewWidget->bottom) / 2;
+		gfx_draw_string_centred(dpi, STR_LAND_TOOL_SIZE_VALUE, x, y - 2, 0, &RCT2_GLOBAL(RCT2_ADDRESS_LAND_TOOL_SIZE, sint16));
+	} else if (gLandMountainMode) {
+		x = w->x + previewWidget->left;
+		y = w->y + previewWidget->top;
+		gfx_draw_sprite(dpi, SPR_LAND_TOOL_SIZE_0, x, y, 0);
 	}
 
-	x = w->x + (window_land_widgets[WIDX_PREVIEW].left + window_land_widgets[WIDX_PREVIEW].right) / 2 + 17;
-	y = w->y + window_land_widgets[WIDX_PREVIEW].bottom + 5;
+	x = w->x + (previewWidget->left + previewWidget->right) / 2;
+	y = w->y + previewWidget->bottom + 5;
 
 	// Draw raise cost amount
 	if (RCT2_GLOBAL(RCT2_ADDRESS_LAND_RAISE_COST, uint32) != MONEY32_UNDEFINED && RCT2_GLOBAL(RCT2_ADDRESS_LAND_RAISE_COST, uint32) != 0)

@@ -21,5 +21,13 @@
 #ifndef _CHEATS_H_
 #define _CHEATS_H_
 
-int gSandboxMode;
+#include "common.h"
+
+extern bool gCheatsSandboxMode;
+extern bool gCheatsDisableClearanceChecks;
+extern bool gCheatsDisableSupportLimits;
+extern bool gCheatsShowAllOperatingModes;
+
+void cheats_reset();
+
 #endif

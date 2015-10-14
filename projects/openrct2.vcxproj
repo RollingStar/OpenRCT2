@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build0;Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build0;Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="Build0">
     <Copy SourceFiles="..\openrct2.exe" DestinationFolder="$(OutDir)" />
     <Copy SourceFiles="..\curl-ca-bundle.crt" DestinationFolder="$(OutDir)" />
@@ -26,21 +26,25 @@
   <ItemGroup>
     <ClCompile Include="..\src\audio\audio.c" />
     <ClCompile Include="..\src\audio\mixer.cpp" />
+    <ClCompile Include="..\src\cheats.c" />
     <ClCompile Include="..\src\cmdline.c" />
     <ClCompile Include="..\src\cmdline_sprite.c" />
     <ClCompile Include="..\src\config.c" />
     <ClCompile Include="..\src\cursors.c" />
     <ClCompile Include="..\src\diagnostic.c" />
     <ClCompile Include="..\src\drawing\drawing.c" />
+    <ClCompile Include="..\src\drawing\font.c" />
     <ClCompile Include="..\src\drawing\line.c" />
     <ClCompile Include="..\src\drawing\rain.c" />
     <ClCompile Include="..\src\drawing\rect.c" />
+    <ClCompile Include="..\src\drawing\scrolling_text.c" />
     <ClCompile Include="..\src\drawing\sprite.c" />
     <ClCompile Include="..\src\drawing\string.c" />
     <ClCompile Include="..\src\editor.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\hook.c" />
     <ClCompile Include="..\src\input.c" />
+    <ClCompile Include="..\src\interface\chat.c" />
     <ClCompile Include="..\src\interface\themes.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
@@ -57,18 +61,22 @@
     <ClCompile Include="..\src\interface\widget.c" />
     <ClCompile Include="..\src\interface\window.c" />
     <ClCompile Include="..\src\intro.c" />
+    <ClCompile Include="..\src\localisation\convert.c" />
     <ClCompile Include="..\src\localisation\currency.c" />
     <ClCompile Include="..\src\localisation\date.c" />
-    <ClCompile Include="..\src\localisation\language.c" />
+    <ClCompile Include="..\src\localisation\language.cpp" />
+    <ClCompile Include="..\src\localisation\LanguagePack.cpp" />
     <ClCompile Include="..\src\localisation\localisation.c" />
     <ClCompile Include="..\src\localisation\real_names.c" />
     <ClCompile Include="..\src\localisation\user.c" />
+    <ClCompile Include="..\src\localisation\utf8.c" />
     <ClCompile Include="..\src\management\award.c" />
     <ClCompile Include="..\src\management\finance.c" />
     <ClCompile Include="..\src\management\marketing.c" />
     <ClCompile Include="..\src\management\news_item.c" />
     <ClCompile Include="..\src\management\research.c" />
     <ClCompile Include="..\src\network\http.cpp" />
+    <ClCompile Include="..\src\network\network.cpp" />
     <ClCompile Include="..\src\network\twitch.cpp" />
     <ClCompile Include="..\src\object.c" />
     <ClCompile Include="..\src\object_list.c" />
@@ -91,12 +99,19 @@
     <ClCompile Include="..\src\scenario.c" />
     <ClCompile Include="..\src\scenario_list.c" />
     <ClCompile Include="..\src\windows\changelog.c" />
+    <ClCompile Include="..\src\windows\network_status.c" />
+    <ClCompile Include="..\src\windows\player_list.c" />
+    <ClCompile Include="..\src\windows\server_list.c" />
     <ClCompile Include="..\src\windows\title_command_editor.c" />
     <ClCompile Include="..\src\windows\title_editor.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release with Tests|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\windows\maze_construction.c" />
+    <ClCompile Include="..\src\world\balloon.c" />
+    <ClCompile Include="..\src\world\duck.c" />
+    <ClCompile Include="..\src\world\money_effect.c" />
+    <ClCompile Include="..\src\world\particle.c" />
     <ClCompile Include="..\test\management\finance_test.c" />
     <ClCompile Include="..\test\ride\ride_ratings_test.c" />
     <ClCompile Include="..\test\tests.c" />
@@ -185,16 +200,27 @@
     <ClInclude Include="..\src\addresses.h" />
     <ClInclude Include="..\src\audio\audio.h" />
     <ClInclude Include="..\src\audio\mixer.h" />
+    <ClInclude Include="..\src\cheats.h" />
     <ClInclude Include="..\src\cmdline.h" />
     <ClInclude Include="..\src\common.h" />
     <ClInclude Include="..\src\config.h" />
+    <ClInclude Include="..\src\core\Exception.hpp" />
+    <ClInclude Include="..\src\core\FileStream.hpp" />
+    <ClInclude Include="..\src\core\IDisposable.hpp" />
+    <ClInclude Include="..\src\core\IStream.hpp" />
+    <ClInclude Include="..\src\core\Math.hpp" />
+    <ClInclude Include="..\src\core\Memory.hpp" />
+    <ClInclude Include="..\src\core\StringBuilder.hpp" />
+    <ClInclude Include="..\src\core\StringReader.hpp" />
     <ClInclude Include="..\src\cursors.h" />
     <ClInclude Include="..\src\diagnostic.h" />
     <ClInclude Include="..\src\drawing\drawing.h" />
+    <ClInclude Include="..\src\drawing\font.h" />
     <ClInclude Include="..\src\editor.h" />
     <ClInclude Include="..\src\game.h" />
     <ClInclude Include="..\src\hook.h" />
     <ClInclude Include="..\src\input.h" />
+    <ClInclude Include="..\src\interface\chat.h" />
     <ClInclude Include="..\src\interface\themes.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
@@ -214,6 +240,7 @@
     <ClInclude Include="..\src\localisation\date.h" />
     <ClInclude Include="..\src\localisation\format_codes.h" />
     <ClInclude Include="..\src\localisation\language.h" />
+    <ClInclude Include="..\src\localisation\LanguagePack.h" />
     <ClInclude Include="..\src\localisation\localisation.h" />
     <ClInclude Include="..\src\localisation\string_ids.h" />
     <ClInclude Include="..\src\management\award.h" />
@@ -223,6 +250,7 @@
     <ClInclude Include="..\src\management\research.h" />
     <ClInclude Include="..\src\network\http.h" />
     <ClInclude Include="..\src\network\twitch.h" />
+    <ClInclude Include="..\src\network\network.h" />
     <ClInclude Include="..\src\object.h" />
     <ClInclude Include="..\src\openrct2.h" />
     <ClInclude Include="..\src\peep\peep.h" />
@@ -272,25 +300,26 @@
     <ProjectGuid>{D24D94F6-2A74-480C-B512-629C306CE92F}</ProjectGuid>
     <RootNamespace>openrct2</RootNamespace>
     <ProjectName>openrct2</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Tests|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -308,13 +337,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)..\lodepng;$(SolutionDir)..\sdl\include;$(SolutionDir)..\libspeex;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\sdl\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib;$(SolutionDir)..\lib\libspeex;$(SolutionDir)..\lib\sdl\include;$(SolutionDir)..\lib\libcurl\include;$(SolutionDir)..\lib\jansson;$(SolutionDir)..\lib\cutest;$(SolutionDir)..\lib\SDL2_ttf\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\lib\sdl\lib\x86;$(SolutionDir)..\lib\libcurl\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)..\build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\obj\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)..\lib;$(SolutionDir)..\lib\libspeex;$(SolutionDir)..\lib\sdl\include;$(SolutionDir)..\lib\libcurl\include;$(SolutionDir)..\lib\jansson;$(SolutionDir)..\lib\cutest;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\lib;$(SolutionDir)..\lib\libspeex;$(SolutionDir)..\lib\sdl\include;$(SolutionDir)..\lib\libcurl\include;$(SolutionDir)..\lib\jansson;$(SolutionDir)..\lib\cutest;$(SolutionDir)..\lib\SDL2_ttf\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\lib\sdl\lib\x86;$(SolutionDir)..\lib\libcurl\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)..\build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\obj\$(ProjectName)\$(Configuration)\</IntDir>
@@ -322,7 +351,7 @@
     </CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release with Tests|Win32'">
-    <IncludePath>$(SolutionDir)..\lib;$(SolutionDir)..\lib\libspeex;$(SolutionDir)..\lib\sdl\include;$(SolutionDir)..\lib\libcurl\include;$(SolutionDir)..\lib\jansson;$(SolutionDir)..\lib\cutest;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\lib;$(SolutionDir)..\lib\libspeex;$(SolutionDir)..\lib\sdl\include;$(SolutionDir)..\lib\libcurl\include;$(SolutionDir)..\lib\jansson;$(SolutionDir)..\lib\cutest;$(SolutionDir)..\lib\SDL2_ttf\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\lib\sdl\lib\x86;$(SolutionDir)..\lib\libcurl\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)..\build\Release\</OutDir>
     <IntDir>$(SolutionDir)..\obj\$(ProjectName)\Release\</IntDir>
@@ -334,22 +363,27 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_CONFIG_H;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_CONFIG_H;_USE_MATH_DEFINES;CURL_STATICLIB;SDL_MAIN_HANDLED;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)fake\%(RelativeDir)</ObjectFileName>
+      <TreatSpecificWarningsAsErrors>4013</TreatSpecificWarningsAsErrors>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;sdl2.lib;Dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;sdl2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>"$(TargetDir)\openrct2.exe" sprite build "$(SolutionDir)\..\Data\g2.dat" "$(SolutionDir)\..\Resources\g2\"
 xcopy /YS "$(SolutionDir)\..\Data" "$(TargetDir)\Data"</Command>
+      <Message>Build g2.dat and copy the Data directory.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>
@@ -360,9 +394,10 @@ xcopy /YS "$(SolutionDir)\..\Data" "$(TargetDir)\Data"</Command>
       <OmitFramePointers>
       </OmitFramePointers>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_CONFIG_H;_USE_MATH_DEFINES;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_CONFIG_H;_USE_MATH_DEFINES;CURL_STATICLIB;SDL_MAIN_HANDLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)fake\%(RelativeDir)</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -399,7 +434,7 @@ xcopy /YS "$(SolutionDir)\..\Data" "$(TargetDir)\Data"</Command>
       <OmitFramePointers>
       </OmitFramePointers>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_CONFIG_H;_USE_MATH_DEFINES;CURL_STATICLIB;ENABLE_TESTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAVE_CONFIG_H;_USE_MATH_DEFINES;CURL_STATICLIB;SDL_MAIN_HANDLED;ENABLE_TESTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)fake\%(RelativeDir)</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>

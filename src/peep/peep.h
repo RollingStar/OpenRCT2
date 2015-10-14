@@ -22,6 +22,7 @@
 #define _PEEP_H_
 
 #include "../common.h"
+#include "../world/map.h"
 
 #define PEEP_MAX_THOUGHTS 5
 
@@ -40,6 +41,7 @@ enum PEEP_TYPE {
 };
 
 enum PEEP_THOUGHT_TYPE {
+	PEEP_THOUGHT_TYPE_CANT_AFFORD_0 = 0, // "I can't afford"
 	PEEP_THOUGHT_TYPE_SPENT_MONEY = 1, // "I've spent all my money"
 	PEEP_THOUGHT_TYPE_SICK = 2, // "I feel sick"
 	PEEP_THOUGHT_TYPE_VERY_SICK = 3, // "I feel very sick"
@@ -230,6 +232,7 @@ enum PEEP_ACTION_EVENTS {
 	PEEP_ACTION_STAFF_FIX_2 = 16,
 	PEEP_ACTION_STAFF_FIX_GROUND = 17,
 	PEEP_ACTION_STAFF_WATERING = 19,
+	PEEP_ACTION_READ_MAP = 21,
 	PEEP_ACTION_WAVE = 22,
 	PEEP_ACTION_STAFF_EMPTY_BIN = 23,
 	PEEP_ACTION_WAVE_2 = 24,
@@ -247,30 +250,33 @@ enum PEEP_ACTION_EVENTS {
 enum PEEP_FLAGS {
 	PEEP_FLAGS_LEAVING_PARK = (1 << 0),
 	PEEP_FLAGS_SLOW_WALK = (1 << 1),
-
+	PEEP_FLAGS_2 = (1 << 2),
 	PEEP_FLAGS_TRACKING = (1 << 3),
 	PEEP_FLAGS_WAVING = (1 << 4), // Makes the peep wave
-
+	PEEP_FLAGS_HAS_PAID_FOR_PARK_ENTRY = (1 << 5), // Set on paying to enter park
 	PEEP_FLAGS_PHOTO = (1 << 6), // Makes the peep take a picture
-	PEEP_FLAGS_PAINTING = (1 << 7), 
-
+	PEEP_FLAGS_PAINTING = (1 << 7),
+	PEEP_FLAGS_WOW = (1 << 8), // Makes a peep WOW2
 	PEEP_FLAGS_LITTER = (1 << 9), // Makes the peep throw litter
 	PEEP_FLAGS_LOST = (1 << 10), // Makes the peep feel lost (animation trigerred)
 	PEEP_FLAGS_HUNGER = (1 << 11), // Makes the peep become hungry quicker
 	PEEP_FLAGS_BATHROOM = (1 << 12), // Makes the peep want to go to the bathroom
 	PEEP_FLAGS_CROWDED = (1 << 13), // The peep will start feeling crowded
-
+	PEEP_FLAGS_HAPPINESS = (1 << 14), // The peep will start increasing happiness
 	PEEP_FLAGS_NAUSEA = (1 << 15), // Makes the peep feel sick (e.g. after an extreme ride)
-
+	PEEP_FLAGS_PURPLE = (1 << 16), // Makes surrounding peeps purple
 	PEEP_FLAGS_EATING = (1 << 17), // Reduces hunger
 	PEEP_FLAGS_EXPLODE = (1 << 18),
-
-	PEEP_FLAGS_21 = (1<<21),
-
+	PEEP_FLAGS_RIDE_SHOULD_BE_MARKED_AS_FAVOURITE = (1 << 19),
+	PEEP_FLAGS_PARK_ENTRANCE_CHOSEN = (1 << 20), //Set when the nearest park entrance has been chosen
+	PEEP_FLAGS_21 = (1 << 21),
+	PEEP_FLAGS_CONTAGIOUS = (1 << 22), // Makes any peeps in surrounding tiles sick
 	PEEP_FLAGS_JOY = (1 << 23), // Makes the peep jump in joy
 	PEEP_FLAGS_ANGRY = (1 << 24),
-	PEEP_FLAGS_ICE_CREAM = (1 << 25), // Unconfirmed
-
+	PEEP_FLAGS_ICE_CREAM = (1 << 25), // Gives the peeps infront of them in queue ice cream
+	PEEP_FLAGS_NICE_RIDE = (1 << 26), // Makes the peep think "Nice ride! But not as good as the Phoenix..." on exiting a ride
+	PEEP_FLAGS_INTAMIN = (1 << 27), // Makes the peep think "I'm so excited - It's an Intamin ride!" while riding on a Intamin
+	PEEP_FLAGS_HERE_WE_ARE = (1 << 28), // Makes the peep think  "...and here we are on X!" while riding a ride
 	PEEP_FLAGS_TWITCH = (1 << 31)		// Added for twitch integration
 };
 
@@ -337,6 +343,35 @@ enum PEEP_ITEM {
 	PEEP_ITEM_EMPTY_BOWL_BLUE = (1 << 21)
 };
 
+enum {
+	PEEP_SPRITE_TYPE_NORMAL = 0,
+	PEEP_SPRITE_TYPE_3 = 3,
+	PEEP_SPRITE_TYPE_19 = 19,
+	PEEP_SPRITE_TYPE_UMBRELLA = 21,
+	PEEP_SPRITE_TYPE_23 = 23,
+	PEEP_SPRITE_TYPE_25 = 25,
+	PEEP_SPRITE_TYPE_26 = 26,
+	PEEP_SPRITE_TYPE_NAUSEOUS = 27,
+	PEEP_SPRITE_TYPE_VERY_NAUSEOUS = 28,
+	PEEP_SPRITE_TYPE_REQUIRE_BATHROOM = 29,
+	PEEP_SPRITE_TYPE_WATCHING = 38
+};
+
+// Flags used by peep->window_invalidate_flags
+enum {
+	PEEP_INVALIDATE_PEEP_THOUGHTS = 1,
+	PEEP_INVALIDATE_PEEP_STATS = 1 << 1,
+	PEEP_INVALIDATE_PEEP_2 = 1 << 2,
+	PEEP_INVALIDATE_PEEP_INVENTORY = 1 << 3,
+	PEEP_INVALIDATE_STAFF_STATS = 1 << 4,
+};
+
+// Flags used by peep_should_go_on_ride()
+enum {
+	PEEP_RIDE_DECISION_AT_QUEUE = 1,
+	PEEP_RIDE_DECISION_THINKING = 1 << 2
+};
+
 typedef struct {
 	uint8 type;		//0
 	uint8 item;		//1
@@ -373,7 +408,7 @@ typedef struct {
 	uint16 next_y;					// 0x26
 	uint8 next_z;					// 0x28
 	uint8 next_var_29;				// 0x29
-	uint8 var_2A;
+	uint8 outside_of_park;
 	uint8 state;					// 0x2B
 	uint8 sub_state;				// 0x2C
 	uint8 sprite_type;				// 0x2D
@@ -399,11 +434,11 @@ typedef struct {
 	uint8 bathroom;					// 0x40
 	uint8 var_41;
 	uint8 var_42;
-	uint8 intensity;				// 0x43
+	uint8 intensity;				// 0x43 The max intensity is stored in the first 4 bits, and the min intensity in the second 4 bits
 	uint8 nausea_tolerance;			// 0x44
-	uint8 var_45;					//		Some sort of flags?
+	uint8 window_invalidate_flags;	// 0x45
 	money16 paid_on_drink;			// 0x46
-	uint8 var_48[16];
+	uint8 ride_types_been_on[16];	// 0x48
 	uint32 item_extra_flags;		// 0x58
 	uint8 photo2_ride_ref;			// 0x5C
 	uint8 photo3_ride_ref;			// 0x5D
@@ -438,7 +473,7 @@ typedef struct {
 	uint8 pad_77;
 	union{
 		uint8 maze_last_edge;			// 0x78
-		uint8 var_78;
+		uint8 var_78;	//Direction ?
 	};
 	uint8 var_79;
 	uint16 time_in_queue;			// 0x7A
@@ -454,23 +489,27 @@ typedef struct {
 	uint16 previous_ride_time_out;	// 0xAE
 	rct_peep_thought thoughts[PEEP_MAX_THOUGHTS];	// 0xB0
 	uint8 var_C4;					// 0xC4
-	union							// 0xC5
-	{
-		uint8 staff_id;
-		uint8 guest_heading_to_ride_id;
+	union {
+		uint8 staff_id;						// 0xC5
+		uint8 guest_heading_to_ride_id;		// 0xC5
 	};
-	union{
+	union {
 		uint8 staff_orders;			// 0xC6
 		uint8 var_C6;
 	};
 	uint8 photo1_ride_ref;			// 0xC7
 	uint32 flags;					// 0xC8
-	uint32 var_CC;
-	uint8 pad_D0[0x10];
+	rct_xyzd8 var_CC;
+	rct_xyzd8 var_D0[4];
 	uint8 no_action_frame_no;		// 0xE0
-	uint8 var_E1;
-	uint8 var_E2;					// 0xE2
-	uint8 var_E3;
+	// 0x3F Litter Count split into lots of 3 with time, 0xC0 Time since last recalc
+	uint8 litter_count;				// 0xE1
+	union{
+		uint8 time_on_ride;			// 0xE2
+		uint8 var_E2;				// 0xE2
+	};
+	// 0x3F Sick Count split into lots of 3 with time, 0xC0 Time since last recalc
+	uint8 disgusting_count;			// 0xE3
 	union{
 		money16 paid_to_enter;			// 0xE4
 		uint16 staff_lawns_mown;		// 0xE4
@@ -541,7 +580,7 @@ enum {
 #define GET_PEEP(sprite_index) &(g_sprite_list[sprite_index].peep)
 
 /**
- * Helper macro loop for enumerating through all the non null rides. To avoid needing a end loop counterpart, statements are
+ * Helper macro loop for enumerating through all the peeps. To avoid needing a end loop counterpart, statements are
  * applied in tautology if statements.
  */
 #define FOR_ALL_PEEPS(sprite_index, peep) \
@@ -571,6 +610,7 @@ int get_peep_face_sprite_large(rct_peep *peep);
 int peep_check_easteregg_name(int index, rct_peep *peep);
 int peep_get_easteregg_name_id(rct_peep *peep);
 int peep_is_mechanic(rct_peep *peep);
+bool peep_has_item(rct_peep *peep, int peepItem);
 int peep_has_food(rct_peep* peep);
 void peep_sprite_remove(rct_peep* peep);
 void peep_remove(rct_peep* peep);
@@ -594,5 +634,7 @@ void remove_peep_from_queue(rct_peep* peep);
 void sub_693BE5(rct_peep* peep, uint8 al);
 void peep_update_name_sort(rct_peep *peep);
 void peep_update_names(bool realNames);
+
+void game_command_set_peep_name(int *eax, int *ebx, int *ecx, int *edx, int *esi, int *edi, int *ebp);
 
 #endif

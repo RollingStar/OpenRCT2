@@ -22,6 +22,7 @@
 #define _DRAWING_H_
 
 #include "../common.h"
+#include "font.h"
 
 // Size: 0x10
 typedef struct {
@@ -80,7 +81,7 @@ extern rct_gx g2;
 
 // 
 rct_drawpixelinfo* clip_drawpixelinfo(rct_drawpixelinfo* dpi, int left, int width, int top, int height);
-void gfx_set_dirty_blocks(uint16 left, uint16 top, uint16 right, uint16 bottom);
+void gfx_set_dirty_blocks(sint16 left, sint16 top, sint16 right, sint16 bottom);
 void gfx_draw_all_dirty_blocks();
 void gfx_redraw_screen_rect(short left, short top, short right, short bottom);
 void gfx_invalidate_screen();
@@ -93,6 +94,8 @@ void load_palette();
 void gfx_draw_rain(int left, int top, int width, int height, sint32 x_start, sint32 y_start);
 void gfx_clear(rct_drawpixelinfo *dpi, int colour);
 void gfx_draw_pixel(rct_drawpixelinfo *dpi, int x, int y, int colour);
+void gfx_invalidate_pickedup_peep();
+void gfx_draw_pickedup_peep();
 
 // line
 void gfx_draw_line(rct_drawpixelinfo *dpi, int x1, int y1, int x2, int y2, int colour);
@@ -109,9 +112,9 @@ void gfx_bmp_sprite_to_buffer(uint8* palette_pointer, uint8* unknown_pointer, ui
 void gfx_rle_sprite_to_buffer(uint8* source_bits_pointer, uint8* dest_bits_pointer, uint8* palette_pointer, rct_drawpixelinfo *dpi, int image_type, int source_y_start, int height, int source_x_start, int width);
 void gfx_draw_sprite(rct_drawpixelinfo *dpi, int image_id, int x, int y, uint32 tertiary_colour);
 void gfx_draw_sprite_palette_set(rct_drawpixelinfo *dpi, int image_id, int x, int y, uint8* palette_pointer, uint8* unknown_pointer);
+void gfx_draw_sprite_raw_masked(rct_drawpixelinfo *dpi, int x, int y, int maskImage, int colourImage);
 
 // string
-void gfx_load_character_widths();
 int clip_text(char *buffer, int width);
 int gfx_wrap_string(char* buffer, int width, int* num_lines, int* font_height);
 int gfx_get_string_width(char *buffer);
@@ -130,13 +133,19 @@ void draw_string_centred_raw(rct_drawpixelinfo *dpi, int x, int y, int numLines,
 void gfx_draw_string_right(rct_drawpixelinfo *dpi, int format, void *args, int colour, int x, int y);
 void draw_string_right_underline(rct_drawpixelinfo *dpi, int format, void *args, int colour, int x, int y);
 int string_get_height_raw(char *buffer);
-void sub_6C1F57(rct_drawpixelinfo *dpi, int x, int y, int width, int colour, rct_string_id format, void *args, int ticks);
+void gfx_draw_string_centred_wrapped_partial(rct_drawpixelinfo *dpi, int x, int y, int width, int colour, rct_string_id format, void *args, int ticks);
+void gfx_draw_string_with_y_offsets(rct_drawpixelinfo *dpi, utf8 *text, int colour, int x, int y, const sint8 *yOffsets);
+int gfx_clip_string(char* buffer, int width);
+
+bool ttf_initialise();
+void ttf_dispose();
 
 // rain
 void update_rain_animation();
-void redraw_peep_and_rain();
+void redraw_rain();
 
-// unknown
-void sub_681DE2(rct_drawpixelinfo *dpi, int x, int y, int image1, int image2);
+// scrolling text
+void scrolling_text_initialise_bitmaps();
+int scrolling_text_setup(rct_string_id stringId, uint16 scroll, uint16 scrollingMode);
 
 #endif

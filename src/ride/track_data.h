@@ -19,6 +19,7 @@
 *****************************************************************************/
 
 #include "../common.h"
+#include "track.h"
 
 // 0x009968BB, 0x009968BC, 0x009968BD, 0x009968BF, 0x009968C1, 0x009968C3
 extern const rct_track_coordinates TrackCoordinates[256];
@@ -28,3 +29,15 @@ extern const rct_track_coordinates* FlatTrackCoordinates;
 extern const uint64 RideTypePossibleTrackConfigurations[91];
 extern const rct_preview_track *TrackBlocks[256];
 extern const rct_preview_track *FlatRideTrackBlocks[255];
+
+extern const uint8 TrackPieceLengths[256];
+
+typedef struct {
+	uint16 next;
+	uint16 previous;
+} track_curve_chain;
+
+extern const track_curve_chain gTrackCurveChain[256];
+extern const track_curve_chain gFlatRideTrackCurveChain[256];
+
+extern const uint32 RideTypeTrackPaintFunctions[91];

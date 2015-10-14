@@ -60,7 +60,8 @@ enum WINDOW_CHEATS_WIDGET_IDX {
 	WIDX_TAB_4,
 	WIDX_HIGH_MONEY,
 	WIDX_CLEAR_LOAN,
-	WIDX_GUEST_HAPPINESS_MAX = 8, //Same as HIGH_MONEY as it is also the 8th widget but on a different page
+	WIDX_GUEST_PARAMETERS_GROUP = 8, //Same as HIGH_MONEY as it is also the 8th widget but on a different page
+	WIDX_GUEST_HAPPINESS_MAX,
 	WIDX_GUEST_HAPPINESS_MIN,
 	WIDX_GUEST_ENERGY_MAX,
 	WIDX_GUEST_ENERGY_MIN,
@@ -76,41 +77,48 @@ enum WINDOW_CHEATS_WIDGET_IDX {
 	WIDX_GUEST_BATHROOM_MIN,
 	WIDX_GUEST_RIDE_INTENSITY_MORE_THAN_1,
 	WIDX_GUEST_RIDE_INTENSITY_LESS_THAN_15,
-	WIDX_TRAM_GUESTS,
-	WIDX_REMOVE_ALL_GUESTS,
-	WIDX_EXPLODE_GUESTS,
+	WIDX_GUEST_IGNORE_RIDE_INTENSITY,
+	WIDX_DISABLE_VANDALISM,
+	WIDX_GIVE_ALL_GUESTS_GROUP,
+	WIDX_GIVE_GUESTS_MONEY,
 	WIDX_GIVE_GUESTS_PARK_MAPS,
 	WIDX_GIVE_GUESTS_BALLOONS,
 	WIDX_GIVE_GUESTS_UMBRELLAS,
-	WIDX_FREEZE_CLIMATE = 8,
+	WIDX_TRAM_GUESTS,
+	WIDX_REMOVE_ALL_GUESTS,
+	WIDX_EXPLODE_GUESTS,
+	WIDX_GENERAL_GROUP = 8,
 	WIDX_OPEN_CLOSE_PARK,
-	WIDX_ZERO_CLEARANCE,
+	WIDX_PARK_PARAMETERS,
+	WIDX_SANDBOX_MODE,
+	WIDX_UNLOCK_ALL_PRICES,
+	WIDX_FORCE_PARK_RATING,
+	WIDX_PARK_RATING_SPINNER,
+	WIDX_INCREASE_PARK_RATING,
+	WIDX_DECREASE_PARK_RATING,
+	WIDX_WIN_SCENARIO,
+	WIDX_HAVE_FUN,
+	WIDX_CLIMATE_GROUP,
+	WIDX_FREEZE_CLIMATE,
 	WIDX_WEATHER_SUN,
 	WIDX_WEATHER_THUNDER,
+	WIDX_STAFF_GROUP,
 	WIDX_CLEAR_GRASS,
 	WIDX_MOWED_GRASS,
 	WIDX_WATER_PLANTS,
 	WIDX_FIX_VANDALISM,
 	WIDX_REMOVE_LITTER,
-	WIDX_WIN_SCENARIO,
-	WIDX_UNLOCK_ALL_PRICES,
-	WIDX_SANDBOX_MODE,
 	WIDX_FAST_STAFF,
 	WIDX_NORMAL_STAFF,
-	WIDX_PARK_PARAMETERS,
-	WIDX_FORCE_PARK_RATING,
-	WIDX_PARK_RATING_SPINNER,
-	WIDX_INCREASE_PARK_RATING,
-	WIDX_DECREASE_PARK_RATING,
 	WIDX_RENEW_RIDES = 8,
-	WIDX_REMOVE_SIX_FLAGS,
 	WIDX_MAKE_DESTRUCTIBLE,
 	WIDX_FIX_ALL,
 	WIDX_FAST_LIFT_HILL,
 	WIDX_DISABLE_BRAKES_FAILURE,
 	WIDX_DISABLE_ALL_BREAKDOWNS,
 	WIDX_BUILD_IN_PAUSE_MODE,
-	WIDX_RESET_CRASH_STATUS
+	WIDX_RESET_CRASH_STATUS,
+	WIDX_SHOW_ALL_OPERATING_MODES
 };
 
 enum {
@@ -125,34 +133,38 @@ enum {
 };
 
 enum {
+	OBJECT_MONEY,
 	OBJECT_PARK_MAP,
 	OBJECT_BALLOON,
 	OBJECT_UMBRELLA
 };
 
 #pragma region MEASUREMENTS
-#define WW 240
-#define WH 300
-#define TAB_HEIGHT 43
-#define XSPA 5			//X spacing
-#define YSPA 5			//Y spacing
-#define XOS 0			+ XSPA	//X offset from left
-#define YOS TAB_HEIGHT	+ YSPA	//Y offset from top (includes tabs height)
-#define BTNW 110		//button width
-#define BTNH 16			//button height
-#define OPTW 220		//Option (checkbox) width (two colums)
-#define OPTH 10			//Option (checkbox) height (two colums)
-#define YPL(ROW) YOS + ((BTNH + YSPA) * ROW)
-#define HPL(ROW) YPL(ROW) + BTNH
-#define OHPL(ROW) YPL(ROW) + OPTH
-#define XPL(COL) XOS + ((BTNW + XSPA) * COL)
-#define WPL(COL) XPL(COL) + BTNW
-#define OWPL XPL(0) + OPTW
+
+#define WW				249
+#define WH				300
+#define TAB_HEIGHT		43
+#define XSPA			5												// X spacing
+#define YSPA			5												// Y spacing
+#define XOS				6 + XSPA										// X offset from left
+#define YOS				TAB_HEIGHT + YSPA								// Y offset from top (includes tabs height)
+#define BTNW			110												// button width
+#define BTNH			16												// button height
+#define OPTW			220												// Option (checkbox) width (two colums)
+#define OPTH			10												// Option (checkbox) height (two colums)
+#define GROUP_SPACE		6
+
+#define YPL(ROW)		((sint16)(YOS + ((BTNH + YSPA) * ROW)))
+#define HPL(ROW)		((sint16)(YPL(ROW) + BTNH))
+#define OHPL(ROW)		((sint16)(YPL(ROW) + OPTH))
+#define XPL(COL)		((sint16)(XOS + ((BTNW + XSPA) * COL)))
+#define WPL(COL)		((sint16)(XPL(COL) + BTNW))
+#define OWPL			((sint16)(XPL(0) + OPTW))
 
 #define MIN_BTN_LEFT	((sint16)(XPL(1)))
-#define MIN_BTN_RIGHT	((sint16)(WPL(1) / 2))
+#define MIN_BTN_RIGHT	((sint16)(WPL(1) - (BTNW / 2)))
 #define MAX_BTN_LEFT	((sint16)(XPL(1.5)))
-#define MAX_BTN_RIGHT	((sint16)(WPL(1.5) / 2))
+#define MAX_BTN_RIGHT	((sint16)(WPL(1)))
 
 #define TXTO 3	//text horizontal offset from button left (for button text)
 #pragma endregion
@@ -169,74 +181,84 @@ enum {
 
 static rct_widget window_cheats_money_widgets[] = {
 	MAIN_CHEATS_WIDGETS,
-	{ WWT_CLOSEBOX,			1,	XPL(0),		WPL(0),	YPL(1),	HPL(1),		STR_CHEAT_5K_MONEY,			STR_NONE},					// high money
-	{ WWT_CLOSEBOX,			1,	XPL(0),		WPL(0), YPL(5), HPL(5),		STR_CHEAT_CLEAR_LOAN,		STR_NONE },					// Clear loan
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(1),			HPL(1),			STR_CHEAT_5K_MONEY,					STR_NONE },								// high money
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(5),			HPL(5),			STR_CHEAT_CLEAR_LOAN,				STR_NONE },								// Clear loan
 	{ WIDGETS_END },
 };
 
 static rct_widget window_cheats_guests_widgets[] = {
 	MAIN_CHEATS_WIDGETS,
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(0),		HPL(0),		STR_MAX,						STR_NONE },								// happiness max
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(0),		HPL(0),		STR_MIN,						STR_NONE },								// happiness min
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(1),		HPL(1),		STR_MAX,						STR_NONE },								// energy max
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(1),		HPL(1),		STR_MIN,						STR_NONE },								// energy min
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(2),		HPL(2),		STR_MAX,						STR_NONE },								// hunger max
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(2),		HPL(2),		STR_MIN,						STR_NONE },								// hunger min
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(3),		HPL(3),		STR_MAX,						STR_NONE },								// thirst max
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(3),		HPL(3),		STR_MIN,						STR_NONE },								// thirst min
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(4),		HPL(4),		STR_MAX,						STR_NONE },								// nausea max
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(4),		HPL(4),		STR_MIN,						STR_NONE },								// nausea min
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(5),		HPL(5),		STR_MAX,						STR_NONE },								// nausea tolerance max
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(5),		HPL(5),		STR_MIN,						STR_NONE },								// nausea tolerance min
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(6),		HPL(6),		STR_MAX,						STR_NONE },								// bathroom max
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(6),		HPL(6),		STR_MIN,						STR_NONE },								// bathroom min
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(7),		HPL(7),		STR_CHEAT_MORE_THAN_1,			STR_NONE },								// ride intensity > 1
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(7),		HPL(7),		STR_CHEAT_LESS_THAN_15,			STR_NONE },								// ride intensity < 15
-	{ WWT_CLOSEBOX,	1, XPL(1),			WPL(1),			YPL(10),	HPL(10),	STR_CHEAT_LARGE_TRAM_GUESTS,	STR_CHEAT_TIP_LARGE_TRAM_GUESTS },		// large tram
-	{ WWT_CLOSEBOX,	1, XPL(0),			WPL(0),			YPL(11),	HPL(11),	STR_CHEAT_REMOVE_ALL_GUESTS,	STR_CHEAT_TIP_REMOVE_ALL_GUESTS },		// explode guests
-	{ WWT_CLOSEBOX,	1, XPL(1),			WPL(1),			YPL(11),	HPL(11),	STR_CHEAT_EXPLODE,				STR_CHEAT_TIP_EXPLODE },				// explode guests
-	{ WWT_CLOSEBOX,	1, XPL(0),			WPL(0),			YPL(9),		HPL(9),		2018,							STR_NONE },								// give guests park maps
-	{ WWT_CLOSEBOX,	1, XPL(1),			WPL(1),			YPL(9),		HPL(9),		2016,							STR_NONE },								// give guests balloons
-	{ WWT_CLOSEBOX,	1, XPL(1),			WPL(1),			YPL(8),		HPL(8),		2020,							STR_NONE },								// give guests umbrellas
+	{ WWT_GROUPBOX,			1,		XPL(0) - GROUP_SPACE,	WPL(1) + GROUP_SPACE,	YPL(0),			HPL(11.5),		STR_CHEAT_SET_GUESTS_PARAMETERS,	STR_NONE },								// Guests parameters group frame
+	{ WWT_CLOSEBOX,			1,		MAX_BTN_LEFT,			MAX_BTN_RIGHT,			YPL(1),			HPL(1),			STR_MAX,							STR_NONE },								// happiness max
+	{ WWT_CLOSEBOX,			1,		MIN_BTN_LEFT,			MIN_BTN_RIGHT,			YPL(1),			HPL(1),			STR_MIN,							STR_NONE },								// happiness min
+	{ WWT_CLOSEBOX,			1,		MAX_BTN_LEFT,			MAX_BTN_RIGHT,			YPL(2),			HPL(2),			STR_MAX,							STR_NONE },								// energy max
+	{ WWT_CLOSEBOX,			1,		MIN_BTN_LEFT,			MIN_BTN_RIGHT,			YPL(2),			HPL(2),			STR_MIN,							STR_NONE },								// energy min
+	{ WWT_CLOSEBOX,			1,		MAX_BTN_LEFT,			MAX_BTN_RIGHT,			YPL(3),			HPL(3),			STR_MAX,							STR_NONE },								// hunger max
+	{ WWT_CLOSEBOX,			1,		MIN_BTN_LEFT,			MIN_BTN_RIGHT,			YPL(3),			HPL(3),			STR_MIN,							STR_NONE },								// hunger min
+	{ WWT_CLOSEBOX,			1,		MAX_BTN_LEFT,			MAX_BTN_RIGHT,			YPL(4),			HPL(4),			STR_MAX,							STR_NONE },								// thirst max
+	{ WWT_CLOSEBOX,			1,		MIN_BTN_LEFT,			MIN_BTN_RIGHT,			YPL(4),			HPL(4),			STR_MIN,							STR_NONE },								// thirst min
+	{ WWT_CLOSEBOX,			1,		MAX_BTN_LEFT,			MAX_BTN_RIGHT,			YPL(5),			HPL(5),			STR_MAX,							STR_NONE },								// nausea max
+	{ WWT_CLOSEBOX,			1,		MIN_BTN_LEFT,			MIN_BTN_RIGHT,			YPL(5),			HPL(5),			STR_MIN,							STR_NONE },								// nausea min
+	{ WWT_CLOSEBOX,			1,		MAX_BTN_LEFT,			MAX_BTN_RIGHT,			YPL(6),			HPL(6),			STR_MAX,							STR_NONE },								// nausea tolerance max
+	{ WWT_CLOSEBOX,			1,		MIN_BTN_LEFT,			MIN_BTN_RIGHT,			YPL(6),			HPL(6),			STR_MIN,							STR_NONE },								// nausea tolerance min
+	{ WWT_CLOSEBOX,			1,		MAX_BTN_LEFT,			MAX_BTN_RIGHT,			YPL(7),			HPL(7),			STR_MAX,							STR_NONE },								// bathroom max
+	{ WWT_CLOSEBOX,			1,		MIN_BTN_LEFT,			MIN_BTN_RIGHT,			YPL(7),			HPL(7),			STR_MIN,							STR_NONE },								// bathroom min
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(9),			HPL(9),			STR_CHEAT_MORE_THAN_1,				STR_NONE },								// ride intensity > 1
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(9),			HPL(9),			STR_CHEAT_LESS_THAN_15,				STR_NONE },								// ride intensity < 15
+	{ WWT_CHECKBOX,			2,		XPL(0),					OWPL, 					YPL(10),		OHPL(10),		STR_CHEAT_IGNORE_INTENSITY,			STR_NONE },								// guests ignore intensity
+	{ WWT_CHECKBOX,			2,		XPL(0),					OWPL, 					YPL(11),		OHPL(11),		STR_CHEAT_DISABLE_VANDALISM,		STR_CHEAT_DISABLE_VANDALISM_TIP },		// disable vandalism
+	{ WWT_GROUPBOX,			1,		XPL(0) - GROUP_SPACE,	WPL(1) + GROUP_SPACE,	YPL(13),		HPL(15.5),		STR_CHEAT_GIVE_ALL_GUESTS,			STR_NONE },								// Guests parameters group frame
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(14),		HPL(14),		STR_CHEAT_CURRENCY_FORMAT,			STR_NONE },								// give guests money
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(14),		HPL(14),		STR_SHOP_ITEM_PLURAL_PARK_MAP,		STR_NONE },								// give guests park maps
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(15),		HPL(15),		STR_SHOP_ITEM_PLURAL_BALLOON,		STR_NONE },								// give guests balloons
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(15),		HPL(15),		STR_SHOP_ITEM_PLURAL_UMBRELLA,		STR_NONE },								// give guests umbrellas
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(17),		HPL(17),		STR_CHEAT_LARGE_TRAM_GUESTS,		STR_CHEAT_TIP_LARGE_TRAM_GUESTS },		// large tram
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(17),		HPL(17),		STR_CHEAT_REMOVE_ALL_GUESTS,		STR_CHEAT_TIP_REMOVE_ALL_GUESTS },		// remove all guests
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(18),		HPL(18),		STR_CHEAT_EXPLODE,					STR_CHEAT_TIP_EXPLODE },				// explode guests
 	{ WIDGETS_END },
 };
 
 //Strings for following moved to window_cheats_paint()
 static rct_widget window_cheats_misc_widgets[] = {
 	MAIN_CHEATS_WIDGETS,
-	{ WWT_CLOSEBOX,	1, XPL(1),	WPL(1),	YPL(1), HPL(1),		STR_CHEAT_FREEZE_CLIMATE,		STR_NONE},							// Freeze climate
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0),	YPL(0), HPL(0),		STR_CHEAT_OPEN_PARK,			STR_NONE},							// open / close park
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0),	YPL(1), HPL(1),		STR_CHEAT_ZERO_CLEARANCE,		STR_NONE},							// Zero Clearance
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0),	YPL(2), HPL(2),		STR_CHEAT_FORCE_SUN,			STR_NONE},							// Sun
-	{ WWT_CLOSEBOX,	1, XPL(1),	WPL(1),	YPL(2), HPL(2),		STR_CHEAT_FORCE_THUNDER,		STR_NONE},							// Thunder
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0),	YPL(3), HPL(3),		STR_CHEAT_CLEAR_GRASS,			STR_NONE},							// Clear grass
-	{ WWT_CLOSEBOX,	1, XPL(1),	WPL(1),	YPL(3), HPL(3),		STR_CHEAT_MOWED_GRASS,			STR_NONE},							// Mowed grass
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0),	YPL(4), HPL(4),		STR_CHEAT_WATER_PLANTS,			STR_NONE},							// Water plants
-	{ WWT_CLOSEBOX,	1, XPL(1),	WPL(1),	YPL(4), HPL(4),		STR_CHEAT_FIX_VANDALISM,		STR_NONE},							// Fix vandalism
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0),	YPL(5), HPL(5),		STR_CHEAT_REMOVE_LITTER,		STR_NONE},							// Remove litter
-	{ WWT_CLOSEBOX,	1, XPL(1),	WPL(1),	YPL(0), HPL(0),		STR_CHEAT_WIN_SCENARIO,			STR_NONE},							// Win scenario
-	{ WWT_CHECKBOX,	1, XPL(0),	OWPL, YPL(11),OHPL(11),		STR_CHEAT_UNLOCK_PRICES,		STR_NONE}, 							// Unlock all prices
-	{ WWT_CLOSEBOX,	1, XPL(1),	WPL(1), YPL(5), HPL(5),		STR_CHEAT_SANDBOX_MODE,			STR_CHEAT_SANDBOX_MODE_TIP},		// Sandbox mode (edit land ownership in-game)
-	{ WWT_CLOSEBOX,	1, MAX_BTN_LEFT,	MAX_BTN_RIGHT,	YPL(6),		HPL(6),		STR_FAST,	STR_NONE },							// fast staff
-	{ WWT_CLOSEBOX,	1, MIN_BTN_LEFT,	MIN_BTN_RIGHT,	YPL(6),		HPL(6),		STR_NORMAL,	STR_NONE },							// normal staff
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0), YPL(7), HPL(7),		STR_CHEAT_PARK_PARAMETERS,		STR_CHEAT_TIP_PARK_PARAMETERS},		// Park parameters
-	{ WWT_CHECKBOX,	1, XPL(0),	WPL(0), YPL(8), HPL(8),		STR_FORCE_PARK_RATING,			STR_NONE},							// Force park rating
-	{ WWT_SPINNER,			1,	XPL(1),			WPL(1) - 10,	YPL(8) + 2,	HPL(8) - 3,			STR_NONE,				STR_NONE },							// park rating
-	{ WWT_DROPDOWN_BUTTON,	1,	WPL(1) - 10,	WPL(1),			YPL(8) + 3,	YPL(8) + 7,			STR_NUMERIC_UP,			STR_NONE },							// increase rating
-	{ WWT_DROPDOWN_BUTTON,	1,	WPL(1) - 10,	WPL(1),			YPL(8) + 8,	YPL(8) + 12,		STR_NUMERIC_DOWN,		STR_NONE },							// decrease rating
+	{ WWT_GROUPBOX,			1,		XPL(0) - GROUP_SPACE,	WPL(1) + GROUP_SPACE,	YPL(0),			HPL(5.5),		STR_CHEAT_GENERAL_GROUP,			STR_NONE },								// General group
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(1), 		HPL(1),			STR_CHEAT_OPEN_PARK,				STR_NONE},								// open / close park
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1), 				YPL(1), 		HPL(1),			STR_CHEAT_PARK_PARAMETERS,			STR_CHEAT_TIP_PARK_PARAMETERS},			// Park parameters
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0), 				YPL(2), 		HPL(2),			STR_CHEAT_SANDBOX_MODE,				STR_CHEAT_SANDBOX_MODE_TIP},			// Sandbox mode (edit land ownership in-game)
+	{ WWT_CHECKBOX,			1,		XPL(0),					OWPL, 					YPL(3),			OHPL(3),		STR_CHEAT_UNLOCK_PRICES,			STR_NONE}, 								// Unlock all prices
+	{ WWT_CHECKBOX,			1,		XPL(0),					WPL(0), 				YPL(4), 		HPL(4),			STR_FORCE_PARK_RATING,				STR_NONE},								// Force park rating
+	{ WWT_SPINNER,			1,		XPL(1),					WPL(1) - 10,			YPL(4) + 2,		HPL(4) - 3,		STR_NONE,							STR_NONE },								// park rating
+	{ WWT_DROPDOWN_BUTTON,	1,		WPL(1) - 10,			WPL(1),					YPL(4) + 3,		YPL(4) + 7,		STR_NUMERIC_UP,						STR_NONE },								// increase rating
+	{ WWT_DROPDOWN_BUTTON,	1,		WPL(1) - 10,			WPL(1),					YPL(4) + 8,		YPL(4) + 12,	STR_NUMERIC_DOWN,					STR_NONE },								// decrease rating
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(5), 		HPL(5),			STR_CHEAT_WIN_SCENARIO,				STR_NONE},								// Win scenario
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(5), 		HPL(5),			STR_CHEAT_HAVE_FUN,					STR_NONE},								// Have fun!
+	{ WWT_GROUPBOX,			1,		XPL(0) - GROUP_SPACE,	WPL(1) + GROUP_SPACE,	YPL(7),			HPL(9.5),		STR_CHEAT_CLIMATE_GROUP,			STR_NONE },								// Climate group
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(8), 		HPL(8),			STR_CHEAT_FREEZE_CLIMATE,			STR_NONE},								// Freeze climate
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(9), 		HPL(9),			STR_CHEAT_FORCE_SUN,				STR_NONE},								// Sun
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(9), 		HPL(9),			STR_CHEAT_FORCE_THUNDER,			STR_NONE},								// Thunder
+	{ WWT_GROUPBOX,			1,		XPL(0) - GROUP_SPACE,	WPL(1) + GROUP_SPACE,	YPL(11),		HPL(15.5),		STR_CHEAT_STAFF_GROUP,				STR_NONE },								// Staff group
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(12), 		HPL(12),		STR_CHEAT_CLEAR_GRASS,				STR_NONE},								// Clear grass
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(12), 		HPL(12),		STR_CHEAT_MOWED_GRASS,				STR_NONE},								// Mowed grass
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(13), 		HPL(13),		STR_CHEAT_WATER_PLANTS,				STR_NONE},								// Water plants
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(13), 		HPL(13),		STR_CHEAT_FIX_VANDALISM,			STR_NONE},								// Fix vandalism
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(14), 		HPL(14),		STR_CHEAT_REMOVE_LITTER,			STR_NONE},								// Remove litter
+	{ WWT_CLOSEBOX,			1,		MAX_BTN_LEFT,			MAX_BTN_RIGHT,			YPL(15),		HPL(15),		STR_FAST,							STR_NONE },								// Fast staff
+	{ WWT_CLOSEBOX,			1,		MIN_BTN_LEFT,			MIN_BTN_RIGHT,			YPL(15),		HPL(15),		STR_NORMAL,							STR_NONE },								// Normal staff
+
+
 	{ WIDGETS_END },
 };
 static rct_widget window_cheats_rides_widgets[] = {
 	MAIN_CHEATS_WIDGETS,
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0),	YPL(0), HPL(0),		STR_CHEAT_RENEW_RIDES,			STR_NONE},							// Renew rides
-	{ WWT_CLOSEBOX,	1, XPL(1),	WPL(1),	YPL(0), HPL(0),		STR_CHEAT_REMOVE_FLAGS,			STR_NONE},							// Remove flags
-	{ WWT_CLOSEBOX,	1, XPL(1),	WPL(1),	YPL(1), HPL(1),		STR_CHEAT_MAKE_DESTRUCTABLE,	STR_NONE},							// Make destructable
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0), YPL(1), HPL(1),		STR_CHEAT_FIX_ALL_RIDES,		STR_NONE },							// Fix all rides
-	{ WWT_CHECKBOX,	2, XPL(0),    OWPL, YPL(11),OHPL(11) + 8,STR_CHEAT_410_HILL_LIFT,		STR_NONE }, 						// 410 km/h lift hill
-	{ WWT_CHECKBOX,	2, XPL(0),    OWPL, YPL(9),OHPL(9),		STR_CHEAT_DISABLE_BRAKES_FAILURE,STR_NONE }, 						// Disable brakes failure
-	{ WWT_CHECKBOX,	2, XPL(0),    OWPL, YPL(10),OHPL(10),	STR_CHEAT_DISABLE_BREAKDOWNS,	STR_NONE }, 						// Disable all breakdowns
-	{ WWT_CHECKBOX,	2, XPL(0),    OWPL, YPL(8),OHPL(8),		STR_CHEAT_BUILD_IN_PAUSE_MODE,	STR_NONE }, 						// Build in pause mode
-	{ WWT_CLOSEBOX,	1, XPL(0),	WPL(0), YPL(2), HPL(2),		STR_CHEAT_RESET_CRASH_STATUS,	STR_NONE },							// Reset crash status
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(0),			HPL(0),			STR_CHEAT_RENEW_RIDES,				STR_NONE},								// Renew rides
+	{ WWT_CLOSEBOX,			1,		XPL(1),					WPL(1),					YPL(1),			HPL(1),			STR_CHEAT_MAKE_DESTRUCTABLE,		STR_NONE},								// Make destructable
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(1),			HPL(1),			STR_CHEAT_FIX_ALL_RIDES,			STR_NONE },								// Fix all rides
+	{ WWT_CHECKBOX,			2,		XPL(0),					OWPL,					YPL(11),		OHPL(11) + 8,	STR_CHEAT_410_HILL_LIFT,			STR_NONE }, 							// 410 km/h lift hill
+	{ WWT_CHECKBOX,			2,		XPL(0),					OWPL,					YPL(9),			OHPL(9),		STR_CHEAT_DISABLE_BRAKES_FAILURE,	STR_NONE }, 							// Disable brakes failure
+	{ WWT_CHECKBOX,			2,		XPL(0),					OWPL,					YPL(10),		OHPL(10),		STR_CHEAT_DISABLE_BREAKDOWNS,		STR_NONE }, 							// Disable all breakdowns
+	{ WWT_CHECKBOX,			2,		XPL(0),					OWPL,					YPL(8),			OHPL(8),		STR_CHEAT_BUILD_IN_PAUSE_MODE,		STR_NONE }, 							// Build in pause mode
+	{ WWT_CLOSEBOX,			1,		XPL(0),					WPL(0),					YPL(2),			HPL(2),			STR_CHEAT_RESET_CRASH_STATUS,		STR_NONE },								// Reset crash status
+	{ WWT_CHECKBOX,			2,		XPL(0),					OWPL,					YPL(7),			OHPL(7),		STR_CHEAT_SHOW_ALL_OPERATING_MODES,	STR_NONE }, 							// Show all operating modes
 	{ WIDGETS_END },
 };
 
@@ -247,155 +269,152 @@ static rct_widget *window_cheats_page_widgets[] = {
 	window_cheats_rides_widgets,
 };
 
-static void window_cheats_emptysub() { }
-static void window_cheats_money_mouseup();
-static void window_cheats_guests_mouseup();
-static void window_cheats_misc_mouseup();
-static void window_cheats_rides_mouseup();
-static void window_cheats_misc_tool_update();
-static void window_cheats_misc_tool_down();
+static void window_cheats_money_mouseup(rct_window *w, int widgetIndex);
+static void window_cheats_guests_mouseup(rct_window *w, int widgetIndex);
+static void window_cheats_misc_mouseup(rct_window *w, int widgetIndex);
+static void window_cheats_rides_mouseup(rct_window *w, int widgetIndex);
 static void window_cheats_update(rct_window *w);
-static void window_cheats_invalidate();
-static void window_cheats_paint();
+static void window_cheats_invalidate(rct_window *w);
+static void window_cheats_paint(rct_window *w, rct_drawpixelinfo *dpi);
 static void window_cheats_set_page(rct_window *w, int page);
 
-static void* window_cheats_money_events[] = {
-	window_cheats_emptysub,
+static rct_window_event_list window_cheats_money_events = {
+	NULL,
 	window_cheats_money_mouseup,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_cheats_update,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_cheats_invalidate,
 	window_cheats_paint,
-	window_cheats_emptysub
+	NULL
 };
 
-static void* window_cheats_guests_events[] = {
-	window_cheats_emptysub,
+static rct_window_event_list window_cheats_guests_events = {
+	NULL,
 	window_cheats_guests_mouseup,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_cheats_update,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_cheats_invalidate,
 	window_cheats_paint,
-	window_cheats_emptysub
+	NULL
 };
 
-static void* window_cheats_misc_events[] = {
-	window_cheats_emptysub,
+static rct_window_event_list window_cheats_misc_events = {
+	NULL,
 	window_cheats_misc_mouseup,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_cheats_update,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_misc_tool_update,
-	window_cheats_misc_tool_down,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_cheats_invalidate,
 	window_cheats_paint,
-	window_cheats_emptysub
+	NULL
 };
 
-static void* window_cheats_rides_events[] = {
-	window_cheats_emptysub,
+static rct_window_event_list window_cheats_rides_events = {
+	NULL,
 	window_cheats_rides_mouseup,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_cheats_update,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
-	window_cheats_emptysub,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	window_cheats_invalidate,
 	window_cheats_paint,
-	window_cheats_emptysub
+	NULL
 };
 
 
-static void* window_cheats_page_events[] = {
-	window_cheats_money_events,
-	window_cheats_guests_events,
-	window_cheats_misc_events,
-	window_cheats_rides_events,
+static rct_window_event_list *window_cheats_page_events[] = {
+	&window_cheats_money_events,
+	&window_cheats_guests_events,
+	&window_cheats_misc_events,
+	&window_cheats_rides_events,
 };
 
-static uint32 window_cheats_page_enabled_widgets[] = {
-	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_HIGH_MONEY) | (1 << WIDX_CLEAR_LOAN),
-	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_GUEST_HAPPINESS_MAX)  | (1 << WIDX_GUEST_HAPPINESS_MIN) | (1 << WIDX_GUEST_ENERGY_MAX) | (1 << WIDX_GUEST_ENERGY_MIN) | (1 << WIDX_GUEST_HUNGER_MAX) | (1 << WIDX_GUEST_HUNGER_MIN) | (1 << WIDX_GUEST_THIRST_MAX) | (1 << WIDX_GUEST_THIRST_MIN) | (1 << WIDX_GUEST_NAUSEA_MAX) | (1 << WIDX_GUEST_NAUSEA_MIN) | (1 << WIDX_GUEST_NAUSEA_TOLERANCE_MAX) | (1 << WIDX_GUEST_NAUSEA_TOLERANCE_MIN) | (1 << WIDX_GUEST_BATHROOM_MAX) | (1 << WIDX_GUEST_BATHROOM_MIN) | (1 << WIDX_GUEST_RIDE_INTENSITY_MORE_THAN_1) | (1 << WIDX_GUEST_RIDE_INTENSITY_LESS_THAN_15) | (1 << WIDX_TRAM_GUESTS) | (1 << WIDX_REMOVE_ALL_GUESTS) | (1 << WIDX_EXPLODE_GUESTS) | (1 << WIDX_GIVE_GUESTS_PARK_MAPS) | (1 << WIDX_GIVE_GUESTS_BALLOONS) | (1 << WIDX_GIVE_GUESTS_UMBRELLAS),
-	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_FREEZE_CLIMATE) | (1 << WIDX_OPEN_CLOSE_PARK) | (1 << WIDX_ZERO_CLEARANCE) | (1 << WIDX_WEATHER_SUN) | (1 << WIDX_WEATHER_THUNDER) | (1 << WIDX_CLEAR_GRASS) | (1 << WIDX_MOWED_GRASS) | (1 << WIDX_WATER_PLANTS) | (1 << WIDX_FIX_VANDALISM) | (1 << WIDX_REMOVE_LITTER) | (1 << WIDX_WIN_SCENARIO) | (1 << WIDX_UNLOCK_ALL_PRICES) | (1 << WIDX_SANDBOX_MODE) | (1 << WIDX_FAST_STAFF) | (1 << WIDX_NORMAL_STAFF) | (1 << WIDX_PARK_PARAMETERS) | (1 << WIDX_FORCE_PARK_RATING) | (1 << WIDX_INCREASE_PARK_RATING) | (1 << WIDX_DECREASE_PARK_RATING),
-	(1 << WIDX_CLOSE) | (1 << WIDX_TAB_1) | (1 << WIDX_TAB_2) | (1 << WIDX_TAB_3) | (1 << WIDX_TAB_4) | (1 << WIDX_RENEW_RIDES) | (1 << WIDX_REMOVE_SIX_FLAGS) | (1 << WIDX_MAKE_DESTRUCTIBLE) | (1 << WIDX_FIX_ALL) | (1 << WIDX_FAST_LIFT_HILL) | (1 << WIDX_DISABLE_BRAKES_FAILURE) | (1 << WIDX_DISABLE_ALL_BREAKDOWNS) | (1 << WIDX_BUILD_IN_PAUSE_MODE) | (1 << WIDX_RESET_CRASH_STATUS)
+static uint64 window_cheats_page_enabled_widgets[] = {
+	(1ULL << WIDX_CLOSE) | (1ULL << WIDX_TAB_1) | (1ULL << WIDX_TAB_2) | (1ULL << WIDX_TAB_3) | (1ULL << WIDX_TAB_4) | (1ULL << WIDX_HIGH_MONEY) | (1ULL << WIDX_CLEAR_LOAN),
+	(1ULL << WIDX_CLOSE) | (1ULL << WIDX_TAB_1) | (1ULL << WIDX_TAB_2) | (1ULL << WIDX_TAB_3) | (1ULL << WIDX_TAB_4) | (1ULL << WIDX_GUEST_PARAMETERS_GROUP) | (1ULL << WIDX_GUEST_HAPPINESS_MAX)  | (1ULL << WIDX_GUEST_HAPPINESS_MIN) | (1ULL << WIDX_GUEST_ENERGY_MAX) | (1ULL << WIDX_GUEST_ENERGY_MIN) | (1ULL << WIDX_GUEST_HUNGER_MAX) | (1ULL << WIDX_GUEST_HUNGER_MIN) | (1ULL << WIDX_GUEST_THIRST_MAX) | (1ULL << WIDX_GUEST_THIRST_MIN) | (1ULL << WIDX_GUEST_NAUSEA_MAX) | (1ULL << WIDX_GUEST_NAUSEA_MIN) | (1ULL << WIDX_GUEST_NAUSEA_TOLERANCE_MAX) | (1ULL << WIDX_GUEST_NAUSEA_TOLERANCE_MIN) | (1ULL << WIDX_GUEST_BATHROOM_MAX) | (1ULL << WIDX_GUEST_BATHROOM_MIN) | (1ULL << WIDX_GUEST_RIDE_INTENSITY_MORE_THAN_1) | (1ULL << WIDX_GUEST_RIDE_INTENSITY_LESS_THAN_15) | (1ULL << WIDX_GUEST_IGNORE_RIDE_INTENSITY) | (1ULL << WIDX_GIVE_ALL_GUESTS_GROUP) | (1ULL << WIDX_GIVE_GUESTS_MONEY) | (1ULL << WIDX_GIVE_GUESTS_PARK_MAPS) | (1ULL << WIDX_GIVE_GUESTS_BALLOONS) | (1ULL << WIDX_GIVE_GUESTS_UMBRELLAS) | (1ULL << WIDX_TRAM_GUESTS) | (1ULL << WIDX_REMOVE_ALL_GUESTS) | (1ULL << WIDX_EXPLODE_GUESTS) | (1ULL << WIDX_DISABLE_VANDALISM),
+	(1ULL << WIDX_CLOSE) | (1ULL << WIDX_TAB_1) | (1ULL << WIDX_TAB_2) | (1ULL << WIDX_TAB_3) | (1ULL << WIDX_TAB_4) | (1ULL << WIDX_FREEZE_CLIMATE) | (1ULL << WIDX_OPEN_CLOSE_PARK) | (1ULL << WIDX_WEATHER_SUN) | (1ULL << WIDX_WEATHER_THUNDER) | (1ULL << WIDX_CLEAR_GRASS) | (1ULL << WIDX_MOWED_GRASS) | (1ULL << WIDX_WATER_PLANTS) | (1ULL << WIDX_FIX_VANDALISM) | (1ULL << WIDX_REMOVE_LITTER) | (1ULL << WIDX_WIN_SCENARIO) | (1ULL << WIDX_HAVE_FUN) | (1ULL << WIDX_UNLOCK_ALL_PRICES) | (1ULL << WIDX_SANDBOX_MODE) | (1ULL << WIDX_FAST_STAFF) | (1ULL << WIDX_NORMAL_STAFF) | (1ULL << WIDX_PARK_PARAMETERS) | (1ULL << WIDX_FORCE_PARK_RATING) | (1ULL << WIDX_INCREASE_PARK_RATING) | (1ULL << WIDX_DECREASE_PARK_RATING),
+	(1ULL << WIDX_CLOSE) | (1ULL << WIDX_TAB_1) | (1ULL << WIDX_TAB_2) | (1ULL << WIDX_TAB_3) | (1ULL << WIDX_TAB_4) | (1ULL << WIDX_RENEW_RIDES) | (1ULL << WIDX_MAKE_DESTRUCTIBLE) | (1ULL << WIDX_FIX_ALL) | (1ULL << WIDX_FAST_LIFT_HILL) | (1ULL << WIDX_DISABLE_BRAKES_FAILURE) | (1ULL << WIDX_DISABLE_ALL_BREAKDOWNS) | (1ULL << WIDX_BUILD_IN_PAUSE_MODE) | (1ULL << WIDX_RESET_CRASH_STATUS) | (1ULL << WIDX_SHOW_ALL_OPERATING_MODES)
 };
 
 static rct_string_id window_cheats_page_titles[] = {
@@ -536,18 +555,6 @@ static void cheat_renew_rides()
 	window_invalidate_by_class(WC_RIDE);
 }
 
-static void cheat_remove_six_flags()
-{
-	int i;
-	rct_ride *ride;
-	FOR_ALL_RIDES(i, ride)
-	{
-		if (ride->lifecycle_flags & RIDE_LIFECYCLE_SIX_FLAGS)
-			ride->lifecycle_flags&=~RIDE_LIFECYCLE_SIX_FLAGS;
-	}
-	window_invalidate_by_class(WC_RIDE);
-}
-
 static void cheat_make_destructible()
 {
 	int i;
@@ -658,19 +665,23 @@ static void cheat_give_all_guests(int object)
 	FOR_ALL_GUESTS(spriteIndex, peep) {
 		switch(object)
 		{
+			case OBJECT_MONEY:
+				peep->cash_in_pocket = MONEY(1000,00);
+				break;
 			case OBJECT_PARK_MAP:
 				peep->item_standard_flags |= PEEP_ITEM_MAP;
 				break;
 			case OBJECT_BALLOON:
 				peep->item_standard_flags |= PEEP_ITEM_BALLOON;
 				peep->balloon_colour=scenario_rand_max(31);
+				peep_update_sprite_type(peep);
 				break;
 			case OBJECT_UMBRELLA:
 				peep->item_standard_flags |= PEEP_ITEM_UMBRELLA;
 				peep->umbrella_colour=scenario_rand_max(31);
+				peep_update_sprite_type(peep);
 				break;
 		}
-		peep_update_sprite_type(peep);
 	}
 	window_invalidate_by_class(WC_PEEP);
 }
@@ -697,7 +708,8 @@ static void cheat_remove_all_guests()
 		ride_set_status(i, RIDE_STATUS_CLOSED);
 
 		for(int i=0;i<4;i++) {
-			ride->first_peep_in_queue[i]=0xFFFF;
+			ride->queue_length[i] = 0;
+			ride->last_peep_in_queue[i]=0xFFFF;
 		}
 	}
 	window_invalidate_by_class(WC_RIDE);
@@ -738,7 +750,7 @@ void window_cheats_open()
 	if (window != NULL)
 		return;
 
-	window = window_create(32, 32, WW, WH, (uint32*)window_cheats_money_events, WC_CHEATS, 0);
+	window = window_create(32, 32, WW, WH, &window_cheats_money_events, WC_CHEATS, 0);
 	window->widgets = window_cheats_money_widgets;
 	window->enabled_widgets = window_cheats_page_enabled_widgets[0];
 	window_init_scroll_widgets(window);
@@ -746,13 +758,8 @@ void window_cheats_open()
 	park_rating_spinner_value = get_forced_park_rating() >= 0 ? get_forced_park_rating() : 999;
 }
 
-static void window_cheats_money_mouseup()
+static void window_cheats_money_mouseup(rct_window *w, int widgetIndex)
 {
-	short widgetIndex;
-	rct_window *w;
-
-	window_widget_get_registers(w, widgetIndex);
-
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
@@ -772,13 +779,8 @@ static void window_cheats_money_mouseup()
 	}
 }
 
-static void window_cheats_guests_mouseup()
+static void window_cheats_guests_mouseup(rct_window *w, int widgetIndex)
 {
-	short widgetIndex;
-	rct_window *w;
-	
-	window_widget_get_registers(w, widgetIndex);
-
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
@@ -846,6 +848,9 @@ static void window_cheats_guests_mouseup()
 	case WIDX_EXPLODE_GUESTS:
 		cheat_explode_guests();
 		break;
+	case WIDX_GIVE_GUESTS_MONEY:
+		cheat_give_all_guests(OBJECT_MONEY);
+		break;
 	case WIDX_GIVE_GUESTS_PARK_MAPS:
 		cheat_give_all_guests(OBJECT_PARK_MAP);
 		break;
@@ -855,16 +860,21 @@ static void window_cheats_guests_mouseup()
 	case WIDX_GIVE_GUESTS_UMBRELLAS:
 		cheat_give_all_guests(OBJECT_UMBRELLA);
 		break;
+	case WIDX_GUEST_IGNORE_RIDE_INTENSITY:
+		gConfigCheat.ignore_ride_intensity ^= 1;
+		config_save_default();
+		window_invalidate(w);
+		break;
+	case WIDX_DISABLE_VANDALISM:
+		gConfigCheat.disable_vandalism ^= 1;
+		config_save_default();
+		window_invalidate(w);
+		break;
 	}
 }
 
-static void window_cheats_misc_mouseup()
+static void window_cheats_misc_mouseup(rct_window *w, int widgetIndex)
 {
-	short widgetIndex;
-	rct_window *w;
-
-	window_widget_get_registers(w, widgetIndex);
-
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
@@ -881,11 +891,6 @@ static void window_cheats_misc_mouseup()
 		break;
 	case WIDX_OPEN_CLOSE_PARK:
 		park_set_open(park_is_open() ? 0 : 1);
-		break;
-	case WIDX_ZERO_CLEARANCE:
-		if (tool_set(w, widgetIndex, 7)) {
-			return;
-		}
 		break;
 	case WIDX_WEATHER_SUN:
 		climate_force_weather(WEATHER_SUNNY);
@@ -911,6 +916,9 @@ static void window_cheats_misc_mouseup()
 	case WIDX_WIN_SCENARIO:
 		scenario_success();
 		break;
+	case WIDX_HAVE_FUN:
+		RCT2_GLOBAL(RCT2_ADDRESS_OBJECTIVE_TYPE, uint8) = OBJECTIVE_HAVE_FUN;
+		break;
 	case WIDX_UNLOCK_ALL_PRICES:
 		gConfigCheat.unlock_all_prices ^= 1;
 		config_save_default();
@@ -919,7 +927,7 @@ static void window_cheats_misc_mouseup()
 		window_invalidate_by_class(WC_PARK_INFORMATION);
 		break;
 	case WIDX_SANDBOX_MODE:
-		gSandboxMode = !gSandboxMode;
+		gCheatsSandboxMode = !gCheatsSandboxMode;
 		w->widgets[widgetIndex].image = w->widgets[widgetIndex].image == STR_CHEAT_SANDBOX_MODE ? STR_CHEAT_SANDBOX_MODE_DISABLE : STR_CHEAT_SANDBOX_MODE;
 		// To prevent tools from staying active after disabling cheat
 		tool_cancel();
@@ -957,13 +965,8 @@ static void window_cheats_misc_mouseup()
 	}
 }
 
-static void window_cheats_rides_mouseup()
+static void window_cheats_rides_mouseup(rct_window *w, int widgetIndex)
 {
-	short widgetIndex;
-	rct_window *w;
-
-	window_widget_get_registers(w, widgetIndex);
-
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
@@ -976,9 +979,6 @@ static void window_cheats_rides_mouseup()
 		break;
 	case WIDX_RENEW_RIDES:
 		cheat_renew_rides();
-		break;
-	case WIDX_REMOVE_SIX_FLAGS:
-		cheat_remove_six_flags();
 		break;
 	case WIDX_MAKE_DESTRUCTIBLE:
 		cheat_make_destructible();
@@ -1009,6 +1009,9 @@ static void window_cheats_rides_mouseup()
 	case WIDX_RESET_CRASH_STATUS:
 		cheat_reset_crash_status();
 		break;
+	case WIDX_SHOW_ALL_OPERATING_MODES:
+		gCheatsShowAllOperatingModes = !gCheatsShowAllOperatingModes;
+		break;
 	}
 }
 
@@ -1037,12 +1040,10 @@ static void window_cheats_update(rct_window *w)
 		}
 }
 
-static void window_cheats_invalidate()
+static void window_cheats_invalidate(rct_window *w)
 {
 	int i;
-	rct_window *w;
 
-	window_get_register(w);
 	colour_scheme_update(w);
 
 	rct_widget *widgets = window_cheats_page_widgets[w->page];
@@ -1054,6 +1055,14 @@ static void window_cheats_invalidate()
 	w->pressed_widgets = 0;
 
 	switch (w->page) {
+	case WINDOW_CHEATS_PAGE_MONEY:
+		RCT2_GLOBAL(0x013CE952, int) = 50000;
+		break;
+	case WINDOW_CHEATS_PAGE_GUESTS:
+		RCT2_GLOBAL(0x013CE952, int) = 10000;
+		widget_set_checkbox_value(w, WIDX_GUEST_IGNORE_RIDE_INTENSITY, gConfigCheat.ignore_ride_intensity);
+		widget_set_checkbox_value(w, WIDX_DISABLE_VANDALISM, gConfigCheat.disable_vandalism);
+		break;
 	case WINDOW_CHEATS_PAGE_MISC:
 		w->widgets[WIDX_OPEN_CLOSE_PARK].image = RCT2_GLOBAL(RCT2_ADDRESS_PARK_FLAGS, uint32) & PARK_FLAGS_PARK_OPEN ?
 			STR_CHEAT_CLOSE_PARK : STR_CHEAT_OPEN_PARK;
@@ -1066,6 +1075,7 @@ static void window_cheats_invalidate()
 		widget_set_checkbox_value(w, WIDX_DISABLE_BRAKES_FAILURE, gConfigCheat.disable_brakes_failure);
 		widget_set_checkbox_value(w, WIDX_DISABLE_ALL_BREAKDOWNS, gConfigCheat.disable_all_breakdowns);
 		widget_set_checkbox_value(w, WIDX_BUILD_IN_PAUSE_MODE, gConfigCheat.build_in_pause_mode);
+		widget_set_checkbox_value(w, WIDX_SHOW_ALL_OPERATING_MODES, gCheatsShowAllOperatingModes);
 		break;
 	}
 
@@ -1078,34 +1088,29 @@ static void window_cheats_invalidate()
 	w->widgets[WIDX_TITLE].image = window_cheats_page_titles[w->page];
 }
 
-static void window_cheats_paint()
+static void window_cheats_paint(rct_window *w, rct_drawpixelinfo *dpi)
 {
-	rct_window *w;
-	rct_drawpixelinfo *dpi;
-
-	window_paint_get_registers(w, dpi);
-
 	window_draw_widgets(w, dpi);
 	window_cheats_draw_tab_images(dpi, w);
 
 	if (w->page == WINDOW_CHEATS_PAGE_MONEY){
-		gfx_draw_string_left(dpi, STR_CHEAT_TIP_5K_MONEY,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(0) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_TIP_CLEAR_LOAN,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(4) + TXTO);
+		RCT2_GLOBAL(0x0013CE952, money32) = CHEATS_MONEY_INCREMENT;
+		gfx_draw_string_left(dpi, STR_CHEAT_TIP_5K_MONEY,	(void*)0x0013CE952,	0, w->x + XPL(0) + TXTO, w->y + YPL(0) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_TIP_CLEAR_LOAN,	NULL,				0, w->x + XPL(0) + TXTO, w->y + YPL(4) + TXTO);
 	}
 	else if(w->page == WINDOW_CHEATS_PAGE_MISC){
-		gfx_draw_string_left(dpi, STR_CHEAT_STAFF_SPEED,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(6) + TXTO);
-		gfx_draw_string_right(dpi, 5182,		&park_rating_spinner_value,	w->colours[2], w->x + WPL(1) - 10 - TXTO, w->y + YPL(8) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_STAFF_SPEED,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(15) + TXTO);
+		gfx_draw_string_right(dpi, 5182,		&park_rating_spinner_value,	w->colours[2], w->x + WPL(1) - 10 - TXTO, w->y + YPL(4) + TXTO);
 	}
 	else if (w->page == WINDOW_CHEATS_PAGE_GUESTS){
-		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_HAPPINESS,		NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(0) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_ENERGY,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(1) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_HUNGER,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(2) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_THIRST,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(3) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_NAUSEA,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(4) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_NAUSEA_TOLERANCE,	NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(5) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_BATHROOM,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(6) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_PREFERRED_INTENSITY,NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(7) + TXTO);
-		gfx_draw_string_left(dpi, STR_CHEAT_GIVE_ALL_GUESTS,		NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(8) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_HAPPINESS,		NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(1) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_ENERGY,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(2) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_HUNGER,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(3) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_THIRST,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(4) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_NAUSEA,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(5) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_NAUSEA_TOLERANCE,	NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(6) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_BATHROOM,			NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(7) + TXTO);
+		gfx_draw_string_left(dpi, STR_CHEAT_GUEST_PREFERRED_INTENSITY,NULL,	0, w->x + XPL(0) + TXTO, w->y + YPL(8) + TXTO);
 	}
 }
 
@@ -1169,65 +1174,4 @@ static void window_cheats_set_page(rct_window *w, int page)
 	w->widgets[WIDX_BACKGROUND].bottom = maxY - 1;
 	w->widgets[WIDX_PAGE_BACKGROUND].bottom = maxY - 1;
 	window_invalidate(w);
-}
-
-static void window_cheats_misc_tool_update()
-{
-	short widgetIndex;
-	rct_window* w;
-	short x, y;
-
-	window_tool_get_registers(w, widgetIndex, x, y);
-
-	if (widgetIndex != WIDX_ZERO_CLEARANCE) return;
-
-	map_invalidate_selection_rect();
-
-	RCT2_GLOBAL(RCT2_ADDRESS_MAP_SELECTION_FLAGS, uint16) &= ~(1 << 0);
-
-	int map_x, map_y;
-	footpath_get_coordinates_from_pos(x, y + 16, &map_x, &map_y, NULL, NULL);
-	if (map_x != (sint16)0x8000){
-		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SELECTION_FLAGS, uint16) |= 1;
-		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SELECTION_TYPE, uint16) = 4;
-		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SELECTION_A_X, sint16) = map_x;
-		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SELECTION_B_X, sint16) = map_x;
-		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SELECTION_A_Y, sint16) = map_y;
-		RCT2_GLOBAL(RCT2_ADDRESS_MAP_SELECTION_B_Y, sint16) = map_y;
-		map_invalidate_selection_rect();
-	}
-
-	RCT2_GLOBAL(RCT2_ADDRESS_PICKEDUP_PEEP_SPRITE, sint32) = -1;
-}
-
-static void window_cheats_misc_tool_down()
-{
-	short widgetIndex;
-	rct_window* w;
-	short x, y;
-
-	window_tool_get_registers(w, widgetIndex, x, y);
-
-	if (widgetIndex != WIDX_ZERO_CLEARANCE) return;
-
-	int dest_x, dest_y;
-	footpath_get_coordinates_from_pos(x, y + 16, &dest_x, &dest_y, NULL, NULL);
-
-	if (dest_x == (sint16)0x8000)return;
-
-	// Set the coordinate of destination to be exactly 
-	// in the middle of a tile.
-	dest_x += 16;
-	dest_y += 16;
-
-	// Set the tile coordinate to top left of tile
-	int tile_x = (dest_x & 0xFFE0) >> 5;
-	int tile_y = (dest_y & 0xFFE0) >> 5;
-
-	rct_map_element *mapElement = map_get_first_element_at(tile_x, tile_y);
-	do {
-		if (map_element_get_type(mapElement) != MAP_ELEMENT_TYPE_SURFACE) {
-			mapElement->clearance_height = 0;
-		}
-	} while (!map_element_is_last_for_tile(mapElement++));
 }
